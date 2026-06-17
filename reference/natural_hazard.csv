@@ -1,0 +1,101 @@
+site_id,name,country_iso2,eq_level,fl_level,division_code,division,match_confidence
+20,Ancient City of Damascus,SY,MED,LOW,26324,Syrian Arab Republic / City_Damascus / City_Damascus,adm2
+21,Ancient City of Aleppo,SY,MED,HIG,2834,Syrian Arab Republic / Aleppo,adm1
+22,Ancient City of Bosra,SY,MED,MED,2838,Syrian Arab Republic / Dara,adm1
+23,Site of Palmyra,SY,MED,MED,2842,Syrian Arab Republic / Homs,adm1
+86,Memphis and its Necropolis – the Pyramid Fields from Giza to Dahshur,EG,LOW,HIG,61520,Arab Republic of Egypt / Giza,adm1
+87,Ancient Thebes with its Necropolis,EG,VLO,MED,61524,Arab Republic of Egypt / Luxor,adm1
+88,Nubian Monuments from Abu Simbel to Philae,EG,LOW,HIG,61512,Arab Republic of Egypt / Aswan,adm1
+89,Historic Cairo,EG,LOW,HIG,61515,Arab Republic of Egypt / Cairo,adm1
+90,Abu Mena,EG,VLO,HIG,61510,Arab Republic of Egypt / Alexandria,adm1
+113,Tchogha Zanbil,IR,MED,HIG,41114,Islamic Republic of Iran / Khuzestan / Shush,adm2
+114,Persepolis,IR,HIG,MED,41029,Islamic Republic of Iran / Fars / Marvdasht,adm2
+115,"Meidan Emam, Esfahan",IR,MED,HIG,1543,Islamic Republic of Iran / Esfahan,adm1
+148,Old City of Jerusalem and its Walls,IL,LOW,VLO,1612,Israel / Jerusalem,adm1
+192,Old Walled City of Shibam,YE,VLO,LOW,32843,Republic of Yemen / Hadramaut / Shibam,adm2
+276,Samarra Archaeological City,IQ,VLO,HIG,123572,Iraq / Salah al-Din / Samarra,adm2
+277,Hatra,IQ,MED,LOW,36822,Iraq / Ninewa / Hatra,adm2
+278,Babylon,IQ,LOW,HIG,1571,Iraq / Babil,adm1
+293,Anjar,LB,MED,LOW,1797,Lebanon / Bekaa,adm1
+294,Baalbek,LB,MED,VLO,18791,Lebanon / Bekaa / Baalbek,adm2
+295,Byblos,LB,MED,VLO,1801,Lebanon / Mount Lebanon,adm1
+299,Tyre,LB,MED,LOW,1800,Lebanon / South,adm1
+326,Petra,JO,MED,HIG,130,Jordan,country
+327,Quseir Amra,JO,LOW,MED,1712,Jordan / Zarqa,adm1
+385,Old City of Sana'a,YE,NDA,LOW,144979,Republic of Yemen / Amanat Al Asimah / As Sabain,adm2
+433,Bahla Fort,OM,MED,LOW,187,Oman,country
+434,"Archaeological Sites of Bat, Al-Khutm and Al-Ayn",OM,MED,LOW,187,Oman,country
+611,Historic Town of Zabid,YE,LOW,LOW,32760,Republic of Yemen / Al Hudaydah / Zabid,adm2
+689,As-Salt - The Place of Tolerance and Urban Hospitality,JO,LOW,HIG,1702,Jordan / Balqa,adm1
+850,Ouadi Qadisha (the Holy Valley) and the Forest of the Cedars of God (Horsh Arz el-Rab),LB,MED,LOW,1799,Lebanon / North,adm1
+954,Saint Catherine Area,EG,MED,VLO,61534,Arab Republic of Egypt / South Sinai,adm1
+1010,Land of Frankincense,OM,LOW,LOW,2268,Oman / Dhofar,adm1
+1040,Masada,IL,MED,VLO,1614,Israel / Southern District,adm1
+1042,Old City of Acre,IL,MED,VLO,1613,Israel / Northern,adm1
+1077,Takht-e Soleyman,IR,MED,VLO,41124,Islamic Republic of Iran / West Azarbayejan / Takab,adm2
+1093,Um er-Rasas (Kastrom Mefa'a),JO,LOW,LOW,1705,Jordan / Amman,adm1
+1096,White City of Tel-Aviv – the Modern Movement,IL,LOW,LOW,1615,Israel / Tel Aviv,adm1
+1106,Pasargadae,IR,HIG,MED,1544,Islamic Republic of Iran / Fars,adm1
+1107,Incense Route - Desert Cities in the Negev,IL,MED,VLO,1614,Israel / Southern District,adm1
+1108,"Biblical Tels - Megiddo, Hazor, Beer Sheba",IL,MED,VLO,1614,Israel / Southern District,adm1
+1130,Ashur (Qal'at Sherqat),IQ,MED,MED,36837,Iraq / Salah al-Din / Al-Shirqat,adm2
+1186,Wadi Al-Hitan (Whale Valley),EG,MED,HIG,40765,Arab Republic of Egypt,country
+1188,Soltaniyeh,IR,HIG,MED,1563,Islamic Republic of Iran / Zanjan,adm1
+1192,Qal’at al-Bahrain – Ancient Harbour and Capital of Dilmun,BH,VLO,VLO,21,Bahrain,country
+1207,<i>Aflaj</i> Irrigation Systems of Oman,OM,MED,LOW,187,Oman,country
+1208,Bam and its Cultural Landscape,IR,HIG,LOW,40893,Islamic Republic of Iran / Kerman / Bam,adm2
+1220,Bahá’i Holy Places in Haifa and the Western Galilee,IL,MED,HIG,1611,Israel / Haifa,adm1
+1222,Bisotun,IR,MED,MED,1539,Islamic Republic of Iran / Kermanshah,adm1
+1229,Crac des Chevaliers and Qal’at Salah El-Din,SY,MED,MED,2842,Syrian Arab Republic / Homs,adm1
+1262,Armenian Monastic Ensembles of Iran,IR,MED,LOW,40982,Islamic Republic of Iran / East Azarbayejan / Jolfa,adm2
+1263,Socotra Archipelago,YE,MED,HIG,269,Republic of Yemen,country
+1293,Hegra Archaeological Site (al-Hijr / Madā ͐ in Ṣāliḥ),SA,MED,MED,215,Saudi Arabia,country
+1315,Shushtar Historical Hydraulic System,IR,MED,HIG,41115,Islamic Republic of Iran / Khuzestan / Shushtar,adm2
+1329,At-Turaif District in ad-Dir'iyah,SA,MED,MED,215,Saudi Arabia,country
+1343,"Cultural Sites of Al Ain (Hafit, Hili, Bidaa Bint Saud and Oases Areas)",AE,MED,MED,255,United Arab Emirates,country
+1345,Sheikh Safi al-din Khānegāh and Shrine Ensemble in Ardabil,IR,HIG,VLO,40876,Islamic Republic of Iran / Ardebil / Ardabil,adm2
+1346,Tabriz Historic Bazaar Complex,IR,MED,LOW,41121,Islamic Republic of Iran / East Azarbayejan / Tabriz,adm2
+1348,Ancient Villages of Northern Syria,SY,MED,VLO,26363,Syrian Arab Republic / Idleb / Ariha,adm2
+1361,"Historic Jeddah, the Gate to Makkah",SA,LOW,LOW,2629,Saudi Arabia / Makkah,adm1
+1364,"Pearling, Testimony of an Island Economy",BH,NDA,VLO,569,Bahrain / Muharraq,adm1
+1370,Caves of Maresha and Bet-Guvrin in the Judean Lowlands as a Microcosm of the Land of the Caves,IL,MED,VLO,1614,Israel / Southern District,adm1
+1372,The Persian Garden,IR,MED,MED,41111,Islamic Republic of Iran / Fars / Shiraz,adm2
+1377,Wadi Rum Protected Area,JO,MED,LOW,1703,Jordan / Aqaba,adm1
+1393,Sites of Human Evolution at Mount Carmel: The Nahal Me’arot / Wadi el-Mughara Caves,IL,MED,HIG,1611,Israel / Haifa,adm1
+1397,Masjed-e Jāmé of Isfahan,IR,MED,HIG,1543,Islamic Republic of Iran / Esfahan,adm1
+1398,Gonbad-e Qābus,IR,MED,HIG,33111,Islamic Republic of Iran / Golestan,adm1
+1402,Al Zubarah Archaeological Site,QA,VLO,VLO,2428,Qatar / Ash Shamal,adm1
+1422,Golestan Palace,IR,MED,VLO,41130,Islamic Republic of Iran / Tehran / Tehran,adm2
+1423,Cultural Landscape of Maymand,IR,HIG,LOW,1550,Islamic Republic of Iran / Kerman,adm1
+1433,"Birthplace of Jesus: Church of the Nativity and the Pilgrimage Route, Bethlehem",PS,LOW,VLO,3397,West Bank and Gaza / Bethlehem,override
+1437,Erbil Citadel,IQ,MED,LOW,123554,Iraq / Erbil / Erbil,adm2
+1446,Baptism Site “Bethany Beyond the Jordan” (Al-Maghtas),JO,LOW,HIG,1702,Jordan / Balqa,adm1
+1455,Susa,IR,MED,HIG,41114,Islamic Republic of Iran / Khuzestan / Shush,adm2
+1456,Shahr-i Sokhta,IR,MED,MED,1559,Islamic Republic of Iran / Sistan-o baluchestan,adm1
+1471,Necropolis of Bet She’arim: A Landmark of Jewish Renewal,IL,MED,VLO,1613,Israel / Northern,adm1
+1472,Rock Art in the Hail Region of Saudi Arabia,SA,MED,MED,215,Saudi Arabia,country
+1481,The Ahwar of Southern Iraq: Refuge of Biodiversity and the Relict Landscape of the Mesopotamian Cities,IQ,LOW,HIG,1565,Iraq / Basrah,adm1
+1492,"Palestine: Land of Olives and Vines – Cultural Landscape of Southern Jerusalem, Battir",PS,LOW,VLO,3397,West Bank and Gaza / Bethlehem,override
+1505,Lut Desert,IR,HIG,LOW,40994,Islamic Republic of Iran / Kerman / Kerman,adm2
+1506,The Persian Qanat,IR,HIG,LOW,40893,Islamic Republic of Iran / Kerman / Bam,adm2
+1537,Ancient City of Qalhat,OM,MED,LOW,187,Oman,country
+1542,Dilmun Burial Mounds,BH,VLO,VLO,21,Bahrain,country
+1544,Historic City of Yazd,IR,MED,NDA,41137,Islamic Republic of Iran / Yazd / Yazd,adm2
+1563,"Al-Ahsa Oasis, an Evolving Cultural Landscape",SA,MED,MED,215,Saudi Arabia,country
+1565,Hebron/Al-Khalil Old Town,PS,LOW,VLO,3394,West Bank and Gaza / Al Khalil (Hebron),override
+1568,Sassanid Archaeological Landscape of Fars Region,IR,MED,LOW,40955,Islamic Republic of Iran / Fars / Firuzabad,adm2
+1584,Hyrcanian Forests,IR,MED,MED,41093,Islamic Republic of Iran / Mazandaran / Sari,adm2
+1585,Trans-Iranian Railway,IR,MED,VLO,41130,Islamic Republic of Iran / Tehran / Tehran,adm2
+1619,Ḥimā Cultural Area,SA,VLO,LOW,2630,Saudi Arabia / Najran,adm1
+1647,Cultural Landscape of Hawraman/Uramanat,IR,MED,VLO,40980,Islamic Republic of Iran / Kermanshah / Javanrud,adm2
+1668,The Persian Caravanserai,IR,HIG,LOW,1548,Islamic Republic of Iran / Hormozgan,adm1
+1687,Ancient Jericho/Tell es-Sultan,PS,LOW,MED,3396,West Bank and Gaza / Ariha (Jericho),override
+1699,‘Uruq Bani Ma’arid,SA,MED,MED,215,Saudi Arabia,country
+1700,"Landmarks of the Ancient Kingdom of Saba, Marib",YE,VLO,MED,145031,Republic of Yemen / Marib / Marib,adm2
+1702,Rachid Karami International Fair-Tripoli,LB,NDA,VLO,18802,Lebanon / North / Tripoli,adm2
+1712,The Cultural Landscape of Al-Faw Archaeological Area,SA,MED,MED,215,Saudi Arabia,country
+1716,Hegmataneh,IR,MED,MED,40971,Islamic Republic of Iran / Hamedan / Hamedan,adm2
+1721,Umm Al-Jimāl,JO,LOW,LOW,1711,Jordan / Mafraq,adm1
+1735,Faya Palaeolandscape,AE,MED,MED,255,United Arab Emirates,country
+1744,Prehistoric Sites of the Khorramabad Valley,IR,HIG,VLO,41001,Islamic Republic of Iran / Lorestan / Khorramabad,adm2
+1749,Saint Hilarion Monastery/ Tell Umm Amer,PS,VLO,LOW,1291,West Bank and Gaza / Deir al Balah,override

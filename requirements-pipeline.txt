@@ -1,0 +1,19 @@
+# Pipeline-Laufzeit (Stufen 1 bis 3: Ingest, Verarbeitung, Export).
+# Auf exakte Versionen gepinnt fuer Reproduzierbarkeit.
+#
+# Diese Versionen entsprechen der conda-Env "heritage" (Stand 2026-06-12). Die
+# GDAL-gebundenen Pakete kommen ueber conda-forge, quackosm und pmtiles ueber pip.
+# Authoritativer Reproduktionsstand ist environment.yml.
+
+duckdb==1.5.3
+quackosm==0.17.1
+geopandas==1.1.3
+shapely==2.1.2
+pyproj==3.7.2
+pyarrow==24.0.0
+pandas==3.0.3
+requests==2.34.2
+lxml==6.1.1
+pmtiles==3.7.0
+
+# leafmap (Exploration/Notebook) bei Bedarf separat installieren, nicht Teil der Pipeline-Laufzeit.
