@@ -1,0 +1,69 @@
+# ignore-all-then-un-ignore
+# Erst alles ignorieren, dann gezielt freigeben. Das verhindert versehentlich
+# eingecheckte Rohdaten oder Geheimnisse.
+
+# --- alles ignorieren ---
+*
+
+# --- Verzeichnisse wieder betreten ---
+!*/
+
+# --- Code und Konfiguration freigeben ---
+!*.py
+!*.md
+!*.txt
+!*.toml
+!*.cfg
+!*.yml
+!*.yaml
+!.gitignore
+!.env.example
+
+# --- committete Laufzeit-Artefakte freigeben ---
+!artifacts/
+!artifacts/**
+
+# --- committete, kuratierte Referenzlisten freigeben ---
+!reference/
+!reference/**
+
+# --- Flutter-/Android-App-Quellen freigeben (app/) ---
+!*.dart
+!*.lock
+!*.gradle
+!*.kts
+!*.xml
+!*.json
+!*.png
+!*.jar
+!*.properties
+!app/assets/**
+
+# --- niemals: Rohdaten, Caches, Geheimnisse, Build-Output ---
+heritage_data/
+.env
+*.duckdb
+*.pbf
+*.parquet
+__pycache__/
+.venv/
+.ipynb_checkpoints/
+
+# --- niemals: lokale Editor-/Claude-Konfiguration ---
+.claude/
+
+# --- niemals: generierte/lokale Flutter-/Android-Artefakte ---
+app/build/
+app/.dart_tool/
+app/.gradle/
+app/android/.gradle/
+app/android/.kotlin/
+app/android/local.properties
+app/.flutter-plugins
+app/.flutter-plugins-dependencies
+*.iml
+build_apk_debug.log
+app/android/hs_err_pid*.log
+
+# --- niemals: lokales Icon-Review-Bild (von make_app_icon.py erzeugt) ---
+app_icon_preview.png
