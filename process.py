@@ -6,7 +6,7 @@ config.SCORE_MAX) aus vier unabhaengigen Komponenten:
 
   1. UNESCO In-Danger-Flag   (Gewicht 3, binaer)        reference/unesco_in_danger.csv
   2. Reisewarnstufe 0-2      (Gewicht 3, linear)        Auswaertiges Amt (CSV)
-  3. Konflikt-Ereignisse     (Gewicht 3, linear)        UCDP GED im CONFLICT_RADIUS_KM
+  3. Konflikt + Einschlaege  (Gewicht 3, log-gemischt)   UCDP GED + GDELT GKG im CONFLICT_RADIUS_KM
   4. Naturgefahr EQ+FL       (Gewicht 2, Stufen)        ThinkHazard! (reference/natural_hazard.csv)
 
 Die Naturgefahr nimmt das Maximum aus Erdbeben- und Flusshochwasser-Stufe je Site
@@ -16,13 +16,16 @@ EINER der beiden Gefahren stark ausgesetzt ist. Diese Komponente loest die
 WMF-Watch-Liste ab, die in der Region strukturell nie eine WHS flaggte
 (PROJECT_CONTEXT.md, Bewusst verworfene Ansaetze).
 
-Die Konflikt-Komponente zaehlt UCDP-GED-Punkte im geografischen Radius je Site
-ueber ST_Distance_Sphere auf ST_Point(lon, lat); die WKB-Geometrie der Parquets
-wird nicht dekodiert, es genuegen die latitude/longitude-Spalten.
+Die Konflikt-Komponente kombiniert ZWEI Quellen im geografischen Radius je Site
+(ST_Distance_Sphere auf ST_Point(lon, lat), latitude/longitude statt WKB): die
+toedlichen UCDP-GED-Ereignisse und die GDELT-GKG-Einschlag-Erwaehnungen (auch
+nicht-toedliche/abgefangene Einsätze, die UCDP nicht erfasst). Beide werden einzeln
+log-skaliert auf [0,1] und UCDP-verankert gemischt (config.CONFLICT_UCDP_BLEND),
+dann mit dem Konflikt-Gewicht skaliert.
 
-Konflikt-tolerant: fehlt ucdp_events.parquet (ingest_ucdp.py noch nicht gelaufen),
-zaehlt die Konflikt-Komponente fuer alle Sites 0. Der Rest rechnet durch. Sobald
-die Datei existiert, faellt sie ohne Codeaenderung ein.
+Quellen-tolerant: fehlt ucdp_events.parquet oder gkg_strikes.parquet, zaehlt der
+jeweilige Anteil fuer alle Sites 0. Der Rest rechnet durch. Sobald die Datei
+existiert, faellt sie ohne Codeaenderung ein.
 
 Input:  RAW_DIR/unesco/unesco_sites.parquet, reference/unesco_in_danger.csv,
         RAW_DIR/auswaertiges_amt/travel_warning_levels.csv, reference/natural_hazard.csv,
@@ -43,6 +46,7 @@ import ingest_common
 UNESCO_SITES_PARQUET: Path = config.RAW_DIR / "unesco" / "unesco_sites.parquet"
 AA_WARNINGS_CSV: Path = config.RAW_DIR / "auswaertiges_amt" / "travel_warning_levels.csv"
 CONFLICT_EVENTS_PARQUET: Path = config.RAW_DIR / "ucdp" / "ucdp_events.parquet"
+STRIKES_PARQUET: Path = config.RAW_DIR / "gdelt" / "gkg_strikes.parquet"
 
 SCORES_TABLE: str = "site_scores"
 
@@ -70,10 +74,10 @@ def _threat_level_case(score_column: str) -> str:
     return f"CASE {whens} ELSE '{top_label}' END"
 
 
-def _events_relation() -> str:
-    """SQL-Quelle der Konflikt-Ereignisse, leer (aber typkorrekt) wenn die Datei fehlt."""
-    if ingest_common.already_fetched(CONFLICT_EVENTS_PARQUET):
-        return f"SELECT latitude, longitude FROM read_parquet('{CONFLICT_EVENTS_PARQUET.as_posix()}')"
+def _points_relation(parquet_path: Path) -> str:
+    """SQL-Quelle einer Punktebene, leer (aber typkorrekt) wenn die Datei fehlt."""
+    if ingest_common.already_fetched(parquet_path):
+        return f"SELECT latitude, longitude FROM read_parquet('{parquet_path.as_posix()}')"
     return "SELECT NULL::DOUBLE AS latitude, NULL::DOUBLE AS longitude WHERE FALSE"
 
 
@@ -109,7 +113,10 @@ def _build_score_sql() -> str:
         FROM read_csv_auto('{config.NATURAL_HAZARD_PATH.as_posix()}')
     ),
     events AS (
-        {_events_relation()}
+        {_points_relation(CONFLICT_EVENTS_PARQUET)}
+    ),
+    strikes AS (
+        {_points_relation(STRIKES_PARQUET)}
     ),
     conflict AS (
         SELECT s.site_id, COUNT(e.longitude) AS conflict_count
@@ -119,6 +126,14 @@ def _build_score_sql() -> str:
                                   ST_Point(e.longitude, e.latitude)) <= {conflict_radius_m}
         GROUP BY s.site_id
     ),
+    strike_counts AS (
+        SELECT s.site_id, COUNT(k.longitude) AS strike_count
+        FROM sites s
+        LEFT JOIN strikes k
+            ON ST_Distance_Sphere(ST_Point(s.longitude, s.latitude),
+                                  ST_Point(k.longitude, k.latitude)) <= {conflict_radius_m}
+        GROUP BY s.site_id
+    ),
     scored AS (
         SELECT
             s.site_id, s.name, s.country_iso2, s.category, s.http_url,
@@ -126,19 +141,25 @@ def _build_score_sql() -> str:
             (s.site_id IN (SELECT site_id FROM in_danger)) AS in_danger,
             COALESCE(w.warning_level, 0) AS warning_level,
             c.conflict_count,
+            sc.strike_count,
             COALESCE(h.eq_level, 'NDA') AS eq_level,
             COALESCE(h.fl_level, 'NDA') AS fl_level,
             CASE WHEN s.site_id IN (SELECT site_id FROM in_danger)
                  THEN {config.SCORE_WEIGHT_UNESCO_IN_DANGER} ELSE 0 END AS score_in_danger,
             COALESCE(w.warning_level, 0) * 1.0 / {config.AA_WARNING_LEVEL_MAX}
                 * {config.SCORE_WEIGHT_TRAVEL_WARNING} AS score_travel,
-            LEAST(LN(1 + c.conflict_count) / LN(1 + {config.CONFLICT_EVENTS_FOR_FULL_SCORE}), 1.0)
-                * {config.SCORE_WEIGHT_CONFLICT} AS score_conflict,
+            (
+                {config.CONFLICT_UCDP_BLEND}
+                    * LEAST(LN(1 + c.conflict_count) / LN(1 + {config.CONFLICT_EVENTS_FOR_FULL_SCORE}), 1.0)
+                + {1.0 - config.CONFLICT_UCDP_BLEND}
+                    * LEAST(LN(1 + sc.strike_count) / LN(1 + {config.STRIKE_DAYS_FOR_FULL_SCORE}), 1.0)
+            ) * {config.SCORE_WEIGHT_CONFLICT} AS score_conflict,
             GREATEST({_hazard_score_case("h.eq_level")}, {_hazard_score_case("h.fl_level")})
                 * {config.SCORE_WEIGHT_NATURAL_HAZARD} AS score_natural
         FROM sites s
         LEFT JOIN warnings w ON s.country_iso2 = w.country_iso2
         LEFT JOIN conflict c ON s.site_id = c.site_id
+        LEFT JOIN strike_counts sc ON s.site_id = sc.site_id
         LEFT JOIN hazard h ON s.site_id = h.site_id
     )
     SELECT
@@ -176,6 +197,17 @@ def _report(con: duckdb.DuckDBPyConnection, *, conflict_available: bool) -> None
         ).fetchone()
         print(f"  Konflikt (UCDP GED): {with_conflict} Sites mit Ereignissen im "
               f"{config.CONFLICT_RADIUS_KM:.0f}-km-Radius, max {max_count} je Site.")
+
+    if ingest_common.already_fetched(STRIKES_PARQUET):
+        with_strikes, max_strikes, p90_strikes = con.execute(
+            f"SELECT COUNT(*) FILTER (WHERE strike_count > 0), MAX(strike_count), "
+            f"QUANTILE_CONT(strike_count, 0.9) FILTER (WHERE strike_count > 0) FROM {SCORES_TABLE}"
+        ).fetchone()
+        print(f"  Einschlaege (GDELT GKG, Ort-Tage): {with_strikes} Sites mit Treffern im "
+              f"{config.CONFLICT_RADIUS_KM:.0f}-km-Radius, max {max_strikes}, "
+              f"p90 aktiver Sites {p90_strikes:.0f} (Deckel STRIKE_DAYS_FOR_FULL_SCORE={config.STRIKE_DAYS_FOR_FULL_SCORE}).")
+    else:
+        print("  Hinweis: kein gkg_strikes.parquet, Einschlag-Anteil 0 (ingest_gkg.py laufen lassen).")
 
     top = con.execute(
         f"SELECT name, country_iso2, total_score, threat_level FROM {SCORES_TABLE} LIMIT 5"

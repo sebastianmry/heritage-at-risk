@@ -36,6 +36,10 @@ class SiteDetailSheet extends StatelessWidget {
   String _hazard(String key) =>
       _hazardLevels['${properties[key]}'.toUpperCase()] ?? '—';
 
+  /// Compact thousands for the summed GKG strike coverage-days (e.g. 4496 -> 4k).
+  static String _compact(int value) =>
+      value >= 1000 ? '${(value / 1000).round()}k' : '$value';
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -115,8 +119,9 @@ class SiteDetailSheet extends StatelessWidget {
               ),
               _ComponentRow(
                 color: const Color(0xFFD85A30),
-                title: 'Conflicts 30 km (UCDP GED)',
-                value: '${_num('conflict_count').toInt()} events',
+                title: 'Conflict & strikes 30 km',
+                value: '${_num('conflict_count').toInt()} ev · '
+                    '${_compact(_num('strike_count').toInt())} str-days',
                 contribution: _num('score_conflict').toDouble(),
               ),
               _ComponentRow(
@@ -129,7 +134,7 @@ class SiteDetailSheet extends StatelessWidget {
               Divider(color: theme.colorScheme.outlineVariant, height: 1),
               const SizedBox(height: 10),
               Text(
-                'Sources: UNESCO WHC · German Federal Foreign Office · UCDP GED (Uppsala) · ThinkHazard! (World Bank)',
+                'Sources: UNESCO WHC · German Federal Foreign Office · UCDP GED (Uppsala) + GDELT GKG · ThinkHazard! (World Bank)',
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.outline,
                 ),

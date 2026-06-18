@@ -47,6 +47,8 @@ class _MapScreenState extends State<MapScreen> {
   static const String _radiusLayer = 'conflict-radius-line';
   static const String _eventsSource = 'ucdp-events';
   static const String _eventsLayer = 'ucdp-events-circles';
+  static const String _strikesSource = 'gkg-strikes';
+  static const String _strikesLayer = 'gkg-strikes-circles';
 
   MapLibreMapController? _controller;
 
@@ -56,6 +58,7 @@ class _MapScreenState extends State<MapScreen> {
   Map<String, dynamic>? _models3dGeojson;
   Map<String, dynamic>? _radiusGeojson;
   Map<String, dynamic>? _eventsGeojson;
+  Map<String, dynamic>? _strikesGeojson;
 
   final Set<String> _activeLevels = {'high', 'medium', 'low'};
   bool _showPleiades = true;
@@ -64,6 +67,7 @@ class _MapScreenState extends State<MapScreen> {
   bool _showModels3d = true;
   bool _showRadius = false;
   bool _showEvents = false;
+  bool _showStrikes = false;
   int _siteCount = 0;
   int _inDangerCount = 0;
 
@@ -90,6 +94,7 @@ class _MapScreenState extends State<MapScreen> {
     _models3dGeojson ??= await _loadGeojson('assets/data/heritage_3d.geojson');
     _radiusGeojson ??= await _loadGeojson('assets/data/conflict_radius.geojson');
     _eventsGeojson ??= await _loadGeojson('assets/data/ucdp_events.geojson');
+    _strikesGeojson ??= await _loadGeojson('assets/data/gkg_strikes.geojson');
     final features = (_sitesGeojson!['features'] as List?) ?? const [];
     final count = features.length;
     final inDanger = features
@@ -243,6 +248,36 @@ class _MapScreenState extends State<MapScreen> {
       enableInteraction: false,
     );
 
+    // GDELT-GKG strike coverage as deep-orange dots, aggregated per place and
+    // sized by coverage-days (radius by 'days', one hit per place per day, media
+    // megaphone removed). Distinct hue from the UCDP crimson: this is the noisier,
+    // media-based signal of (also non-lethal) strikes that UCDP misses, blended
+    // into the conflict component. Off by default, non-interactive (taps belong
+    // to the sites).
+    await controller.addGeoJsonSource(_strikesSource, _strikesGeojson!);
+    await controller.addCircleLayer(
+      _strikesSource,
+      _strikesLayer,
+      const CircleLayerProperties(
+        circleColor: '#F4640A',
+        circleRadius: [
+          'interpolate',
+          ['linear'],
+          ['get', 'days'],
+          1,
+          2.0,
+          60,
+          6.0,
+          360,
+          12.0,
+        ],
+        circleOpacity: 0.5,
+        circleStrokeColor: '#9C3D00',
+        circleStrokeWidth: 0.4,
+      ),
+      enableInteraction: false,
+    );
+
     // The scored sites as the threat hero (on top). Colour from the data,
     // radius additionally by score; white stroke for contrast.
     await controller.addGeoJsonSource(_sitesSource, _sitesGeojson!);
@@ -300,6 +335,7 @@ class _MapScreenState extends State<MapScreen> {
     await controller.setLayerVisibility(_models3dLayer, _showModels3d);
     await controller.setLayerVisibility(_radiusLayer, _showRadius);
     await controller.setLayerVisibility(_eventsLayer, _showEvents);
+    await controller.setLayerVisibility(_strikesLayer, _showStrikes);
     await _styleBasemapBuildings();
   }
 
@@ -443,6 +479,11 @@ class _MapScreenState extends State<MapScreen> {
     _controller?.setLayerVisibility(_eventsLayer, show);
   }
 
+  void _toggleStrikes(bool show) {
+    setState(() => _showStrikes = show);
+    _controller?.setLayerVisibility(_strikesLayer, show);
+  }
+
   /// Foreground locate: request permission, get the current position, recentre
   /// the camera, show the location dot, and report the nearest scored site.
   Future<void> _locateMe() async {
@@ -578,6 +619,7 @@ class _MapScreenState extends State<MapScreen> {
               showModels3d: _showModels3d,
               showRadius: _showRadius,
               showEvents: _showEvents,
+              showStrikes: _showStrikes,
               onToggleLevel: _toggleLevel,
               onTogglePleiades: _togglePleiades,
               onToggleDensity: _toggleDensity,
@@ -585,6 +627,7 @@ class _MapScreenState extends State<MapScreen> {
               onToggleModels3d: _toggleModels3d,
               onToggleRadius: _toggleRadius,
               onToggleEvents: _toggleEvents,
+              onToggleStrikes: _toggleStrikes,
             ),
           ),
           if (_nearest != null)
@@ -733,7 +776,7 @@ class _ContextPanel extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              'Conflict data: UCDP GED (Uppsala)',
+              'Conflict data: UCDP GED (Uppsala) + GDELT GKG (strikes)',
               style: theme.textTheme.labelSmall?.copyWith(
                 color: theme.colorScheme.outline,
               ),

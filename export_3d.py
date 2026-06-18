@@ -29,6 +29,8 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import re
+import unicodedata
 from pathlib import Path
 
 import config
@@ -49,6 +51,13 @@ def _to_bool(value: str) -> bool:
     return str(value).strip().lower() in {"true", "1", "yes", "y"}
 
 
+def _ascii_fold(text: str) -> str:
+    """Diakritika folden, Gross-/Kleinschreibung erhalten (lesbarer ASCII-Name)."""
+    decomposed = unicodedata.normalize("NFKD", text)
+    folded = "".join(c for c in decomposed if not unicodedata.combining(c))
+    return re.sub(r"\s+", " ", folded.encode("ascii", "ignore").decode("ascii")).strip()
+
+
 def _feature(row: dict[str, str]) -> dict[str, object]:
     lon = round(float(row["longitude"]), COORD_PRECISION)
     lat = round(float(row["latitude"]), COORD_PRECISION)
@@ -59,6 +68,8 @@ def _feature(row: dict[str, str]) -> dict[str, object]:
             props[key] = _to_bool(value)
         elif key == "unesco_site_id":
             props[key] = int(value) if value else None
+        elif key == "name":
+            props[key] = _ascii_fold(value)
         else:
             props[key] = value
     return {

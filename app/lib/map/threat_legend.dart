@@ -29,6 +29,7 @@ class ThreatLegend extends StatelessWidget {
     required this.showModels3d,
     required this.showRadius,
     required this.showEvents,
+    required this.showStrikes,
     required this.onToggleLevel,
     required this.onTogglePleiades,
     required this.onToggleDensity,
@@ -36,6 +37,7 @@ class ThreatLegend extends StatelessWidget {
     required this.onToggleModels3d,
     required this.onToggleRadius,
     required this.onToggleEvents,
+    required this.onToggleStrikes,
   });
 
   final Set<String> activeLevels;
@@ -45,6 +47,7 @@ class ThreatLegend extends StatelessWidget {
   final bool showModels3d;
   final bool showRadius;
   final bool showEvents;
+  final bool showStrikes;
   final ValueChanged<ThreatLevel> onToggleLevel;
   final ValueChanged<bool> onTogglePleiades;
   final ValueChanged<bool> onToggleDensity;
@@ -52,6 +55,7 @@ class ThreatLegend extends StatelessWidget {
   final ValueChanged<bool> onToggleModels3d;
   final ValueChanged<bool> onToggleRadius;
   final ValueChanged<bool> onToggleEvents;
+  final ValueChanged<bool> onToggleStrikes;
 
   @override
   Widget build(BuildContext context) {
@@ -129,6 +133,12 @@ class ThreatLegend extends StatelessWidget {
                 label: 'Conflict events (UCDP)',
                 active: showEvents,
                 onTap: () => onToggleEvents(!showEvents),
+              ),
+              _LegendToggle(
+                color: const Color(0xFFF4640A),
+                label: 'Strike coverage (GDELT)',
+                active: showStrikes,
+                onTap: () => onToggleStrikes(!showStrikes),
               ),
             ],
           ),
