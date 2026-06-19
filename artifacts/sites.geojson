@@ -74,7 +74,7 @@
         "in_danger": true,
         "warning_level": 2,
         "conflict_count": 28,
-        "strike_count": 9837,
+        "strike_count": 554,
         "eq_level": "LOW",
         "fl_level": "VLO",
         "score_in_danger": 3,
@@ -105,7 +105,7 @@
         "in_danger": true,
         "warning_level": 2,
         "conflict_count": 1847,
-        "strike_count": 6271,
+        "strike_count": 1087,
         "eq_level": "VLO",
         "fl_level": "LOW",
         "score_in_danger": 3,
@@ -136,45 +136,14 @@
         "in_danger": true,
         "warning_level": 2,
         "conflict_count": 19,
-        "strike_count": 968,
+        "strike_count": 142,
         "eq_level": "MED",
         "fl_level": "LOW",
         "score_in_danger": 3,
         "score_travel": 3.0,
-        "score_conflict": 2.6359674625038956,
+        "score_conflict": 2.648620545043982,
         "score_natural": 0.6666666666666666,
-        "total_score": 9.3,
-        "threat_level": "high",
-        "threat_label": "hoch",
-        "threat_color": "#d7191c"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          36.4680555556,
-          32.5169444445
-        ]
-      },
-      "properties": {
-        "site_id": 22,
-        "name": "Ancient City of Bosra",
-        "country_iso2": "SY",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/22",
-        "in_danger": true,
-        "warning_level": 2,
-        "conflict_count": 20,
-        "strike_count": 441,
-        "eq_level": "MED",
-        "fl_level": "MED",
-        "score_in_danger": 3,
-        "score_travel": 3.0,
-        "score_conflict": 2.5509468623898415,
-        "score_natural": 0.6666666666666666,
-        "total_score": 9.22,
+        "total_score": 9.32,
         "threat_level": "high",
         "threat_label": "hoch",
         "threat_color": "#d7191c"
@@ -198,7 +167,7 @@
         "in_danger": true,
         "warning_level": 2,
         "conflict_count": 17,
-        "strike_count": 6088,
+        "strike_count": 464,
         "eq_level": "LOW",
         "fl_level": "VLO",
         "score_in_danger": 3,
@@ -206,6 +175,37 @@
         "score_conflict": 2.796843157806637,
         "score_natural": 0.3333333333333333,
         "total_score": 9.13,
+        "threat_level": "high",
+        "threat_label": "hoch",
+        "threat_color": "#d7191c"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          36.4680555556,
+          32.5169444445
+        ]
+      },
+      "properties": {
+        "site_id": 22,
+        "name": "Ancient City of Bosra",
+        "country_iso2": "SY",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/22",
+        "in_danger": true,
+        "warning_level": 2,
+        "conflict_count": 20,
+        "strike_count": 27,
+        "eq_level": "MED",
+        "fl_level": "MED",
+        "score_in_danger": 3,
+        "score_travel": 3.0,
+        "score_conflict": 2.349119058827572,
+        "score_natural": 0.6666666666666666,
+        "total_score": 9.02,
         "threat_level": "high",
         "threat_label": "hoch",
         "threat_color": "#d7191c"
@@ -229,14 +229,14 @@
         "in_danger": true,
         "warning_level": 2,
         "conflict_count": 6,
-        "strike_count": 637,
+        "strike_count": 41,
         "eq_level": "MED",
         "fl_level": "HIG",
         "score_in_danger": 3,
         "score_travel": 3.0,
-        "score_conflict": 1.996354221995131,
+        "score_conflict": 1.8233436463166939,
         "score_natural": 1.0,
-        "total_score": 9.0,
+        "total_score": 8.82,
         "threat_level": "high",
         "threat_label": "hoch",
         "threat_color": "#d7191c"
@@ -260,45 +260,14 @@
         "in_danger": true,
         "warning_level": 2,
         "conflict_count": 11,
-        "strike_count": 180,
+        "strike_count": 9,
         "eq_level": "VLO",
         "fl_level": "MED",
         "score_in_danger": 3,
         "score_travel": 3.0,
-        "score_conflict": 2.114414114733927,
+        "score_conflict": 1.8338168866055444,
         "score_natural": 0.6666666666666666,
-        "total_score": 8.78,
-        "threat_level": "high",
-        "threat_label": "hoch",
-        "threat_color": "#d7191c"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          36.2944444444,
-          34.7566666667
-        ]
-      },
-      "properties": {
-        "site_id": 1229,
-        "name": "Crac des Chevaliers and Qal’at Salah El-Din",
-        "country_iso2": "SY",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1229",
-        "in_danger": true,
-        "warning_level": 2,
-        "conflict_count": 9,
-        "strike_count": 180,
-        "eq_level": "MED",
-        "fl_level": "MED",
-        "score_in_danger": 3,
-        "score_travel": 3.0,
-        "score_conflict": 2.0136869575121192,
-        "score_natural": 0.6666666666666666,
-        "total_score": 8.68,
+        "total_score": 8.5,
         "threat_level": "high",
         "threat_label": "hoch",
         "threat_color": "#d7191c"
@@ -322,14 +291,45 @@
         "in_danger": true,
         "warning_level": 2,
         "conflict_count": 7,
-        "strike_count": 742,
+        "strike_count": 143,
         "eq_level": "NDA",
         "fl_level": "LOW",
         "score_in_danger": 3,
         "score_travel": 3.0,
-        "score_conflict": 2.091860489758902,
+        "score_conflict": 2.143792709530725,
         "score_natural": 0.3333333333333333,
-        "total_score": 8.43,
+        "total_score": 8.48,
+        "threat_level": "high",
+        "threat_label": "hoch",
+        "threat_color": "#d7191c"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          36.2944444444,
+          34.7566666667
+        ]
+      },
+      "properties": {
+        "site_id": 1229,
+        "name": "Crac des Chevaliers and Qal’at Salah El-Din",
+        "country_iso2": "SY",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1229",
+        "in_danger": true,
+        "warning_level": 2,
+        "conflict_count": 9,
+        "strike_count": 7,
+        "eq_level": "MED",
+        "fl_level": "MED",
+        "score_in_danger": 3,
+        "score_travel": 3.0,
+        "score_conflict": 1.6884160582524597,
+        "score_natural": 0.6666666666666666,
+        "total_score": 8.36,
         "threat_level": "high",
         "threat_label": "hoch",
         "threat_color": "#d7191c"
@@ -353,14 +353,14 @@
         "in_danger": true,
         "warning_level": 2,
         "conflict_count": 4,
-        "strike_count": 399,
+        "strike_count": 21,
         "eq_level": "MED",
         "fl_level": "VLO",
         "score_in_danger": 3,
         "score_travel": 3.0,
-        "score_conflict": 1.7438627976606467,
+        "score_conflict": 1.5079971701831762,
         "score_natural": 0.6666666666666666,
-        "total_score": 8.41,
+        "total_score": 8.17,
         "threat_level": "high",
         "threat_label": "hoch",
         "threat_color": "#d7191c"
@@ -384,7 +384,7 @@
         "in_danger": true,
         "warning_level": 1,
         "conflict_count": 26,
-        "strike_count": 10632,
+        "strike_count": 517,
         "eq_level": "LOW",
         "fl_level": "VLO",
         "score_in_danger": 3,
@@ -415,76 +415,14 @@
         "in_danger": true,
         "warning_level": 2,
         "conflict_count": 5,
-        "strike_count": 28,
+        "strike_count": 4,
         "eq_level": "VLO",
         "fl_level": "LOW",
         "score_in_danger": 3,
         "score_travel": 3.0,
-        "score_conflict": 1.4702459321700687,
+        "score_conflict": 1.312104892883868,
         "score_natural": 0.3333333333333333,
-        "total_score": 7.8,
-        "threat_level": "high",
-        "threat_label": "hoch",
-        "threat_color": "#d7191c"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          43.9155883333,
-          34.0802897222
-        ]
-      },
-      "properties": {
-        "site_id": 276,
-        "name": "Samarra Archaeological City",
-        "country_iso2": "IQ",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/276",
-        "in_danger": true,
-        "warning_level": 2,
-        "conflict_count": 0,
-        "strike_count": 136,
-        "eq_level": "VLO",
-        "fl_level": "HIG",
-        "score_in_danger": 3,
-        "score_travel": 3.0,
-        "score_conflict": 0.7018471942851955,
-        "score_natural": 1.0,
-        "total_score": 7.7,
-        "threat_level": "high",
-        "threat_label": "hoch",
-        "threat_color": "#d7191c"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          38.2666666667,
-          34.5541666667
-        ]
-      },
-      "properties": {
-        "site_id": 23,
-        "name": "Site of Palmyra",
-        "country_iso2": "SY",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/23",
-        "in_danger": true,
-        "warning_level": 2,
-        "conflict_count": 1,
-        "strike_count": 88,
-        "eq_level": "MED",
-        "fl_level": "MED",
-        "score_in_danger": 3,
-        "score_travel": 3.0,
-        "score_conflict": 1.0232577451233842,
-        "score_natural": 0.6666666666666666,
-        "total_score": 7.69,
+        "total_score": 7.65,
         "threat_level": "high",
         "threat_label": "hoch",
         "threat_color": "#d7191c"
@@ -508,14 +446,14 @@
         "in_danger": true,
         "warning_level": 2,
         "conflict_count": 1,
-        "strike_count": 593,
+        "strike_count": 126,
         "eq_level": "NDA",
         "fl_level": "VLO",
         "score_in_danger": 3,
         "score_travel": 3.0,
-        "score_conflict": 1.2940466990552688,
+        "score_conflict": 1.3527563618728302,
         "score_natural": 0.0,
-        "total_score": 7.29,
+        "total_score": 7.35,
         "threat_level": "high",
         "threat_label": "hoch",
         "threat_color": "#d7191c"
@@ -526,25 +464,56 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          43.2611111111,
-          35.4566666667
+          43.9155883333,
+          34.0802897222
         ]
       },
       "properties": {
-        "site_id": 1130,
-        "name": "Ashur (Qal'at Sherqat)",
+        "site_id": 276,
+        "name": "Samarra Archaeological City",
         "country_iso2": "IQ",
         "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1130",
+        "http_url": "https://whc.unesco.org/en/list/276",
         "in_danger": true,
         "warning_level": 2,
         "conflict_count": 0,
-        "strike_count": 67,
+        "strike_count": 3,
+        "eq_level": "VLO",
+        "fl_level": "HIG",
+        "score_in_danger": 3,
+        "score_travel": 3.0,
+        "score_conflict": 0.27753819465124563,
+        "score_natural": 1.0,
+        "total_score": 7.28,
+        "threat_level": "high",
+        "threat_label": "hoch",
+        "threat_color": "#d7191c"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          38.2666666667,
+          34.5541666667
+        ]
+      },
+      "properties": {
+        "site_id": 23,
+        "name": "Site of Palmyra",
+        "country_iso2": "SY",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/23",
+        "in_danger": true,
+        "warning_level": 2,
+        "conflict_count": 1,
+        "strike_count": 2,
         "eq_level": "MED",
         "fl_level": "MED",
         "score_in_danger": 3,
         "score_travel": 3.0,
-        "score_conflict": 0.6019229929522841,
+        "score_conflict": 0.6028867119160903,
         "score_natural": 0.6666666666666666,
         "total_score": 7.27,
         "threat_level": "high",
@@ -570,14 +539,45 @@
         "in_danger": true,
         "warning_level": 2,
         "conflict_count": 2,
-        "strike_count": 8,
+        "strike_count": 1,
         "eq_level": "LOW",
         "fl_level": "LOW",
         "score_in_danger": 3,
         "score_travel": 3.0,
-        "score_conflict": 0.9203895379034678,
+        "score_conflict": 0.7457192280309148,
         "score_natural": 0.3333333333333333,
-        "total_score": 7.25,
+        "total_score": 7.08,
+        "threat_level": "high",
+        "threat_label": "hoch",
+        "threat_color": "#d7191c"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          43.2611111111,
+          35.4566666667
+        ]
+      },
+      "properties": {
+        "site_id": 1130,
+        "name": "Ashur (Qal'at Sherqat)",
+        "country_iso2": "IQ",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1130",
+        "in_danger": true,
+        "warning_level": 2,
+        "conflict_count": 0,
+        "strike_count": 6,
+        "eq_level": "MED",
+        "fl_level": "MED",
+        "score_in_danger": 3,
+        "score_travel": 3.0,
+        "score_conflict": 0.38957410840657797,
+        "score_natural": 0.6666666666666666,
+        "total_score": 7.06,
         "threat_level": "high",
         "threat_label": "hoch",
         "threat_color": "#d7191c"
@@ -601,14 +601,14 @@
         "in_danger": true,
         "warning_level": 2,
         "conflict_count": 0,
-        "strike_count": 11,
+        "strike_count": 1,
         "eq_level": "MED",
         "fl_level": "LOW",
         "score_in_danger": 3,
         "score_travel": 3.0,
-        "score_conflict": 0.35447795154221673,
+        "score_conflict": 0.13876909732562281,
         "score_natural": 0.6666666666666666,
-        "total_score": 7.02,
+        "total_score": 6.81,
         "threat_level": "high",
         "threat_label": "hoch",
         "threat_color": "#d7191c"
@@ -632,14 +632,76 @@
         "in_danger": false,
         "warning_level": 2,
         "conflict_count": 147,
-        "strike_count": 3177,
+        "strike_count": 433,
         "eq_level": "MED",
         "fl_level": "LOW",
         "score_in_danger": 0,
         "score_travel": 3.0,
-        "score_conflict": 2.950350177486178,
+        "score_conflict": 3.0,
         "score_natural": 0.6666666666666666,
-        "total_score": 6.62,
+        "total_score": 6.67,
+        "threat_level": "high",
+        "threat_label": "hoch",
+        "threat_color": "#d7191c"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          51.3983333333,
+          35.6583055556
+        ]
+      },
+      "properties": {
+        "site_id": 1585,
+        "name": "Trans-Iranian Railway",
+        "country_iso2": "IR",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1585",
+        "in_danger": false,
+        "warning_level": 2,
+        "conflict_count": 16,
+        "strike_count": 375,
+        "eq_level": "MED",
+        "fl_level": "VLO",
+        "score_in_danger": 0,
+        "score_travel": 3.0,
+        "score_conflict": 2.75237743227879,
+        "score_natural": 0.6666666666666666,
+        "total_score": 6.42,
+        "threat_level": "high",
+        "threat_label": "hoch",
+        "threat_color": "#d7191c"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          51.4205111111,
+          35.6803666667
+        ]
+      },
+      "properties": {
+        "site_id": 1422,
+        "name": "Golestan Palace",
+        "country_iso2": "IR",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1422",
+        "in_danger": false,
+        "warning_level": 2,
+        "conflict_count": 15,
+        "strike_count": 377,
+        "eq_level": "MED",
+        "fl_level": "VLO",
+        "score_in_danger": 0,
+        "score_travel": 3.0,
+        "score_conflict": 2.7199462378765253,
+        "score_natural": 0.6666666666666666,
+        "total_score": 6.39,
         "threat_level": "high",
         "threat_label": "hoch",
         "threat_color": "#d7191c"
@@ -663,7 +725,7 @@
         "in_danger": false,
         "warning_level": 2,
         "conflict_count": 14,
-        "strike_count": 6535,
+        "strike_count": 406,
         "eq_level": "LOW",
         "fl_level": "MED",
         "score_in_danger": 0,
@@ -694,7 +756,7 @@
         "in_danger": false,
         "warning_level": 2,
         "conflict_count": 26,
-        "strike_count": 8971,
+        "strike_count": 496,
         "eq_level": "LOW",
         "fl_level": "VLO",
         "score_in_danger": 0,
@@ -702,68 +764,6 @@
         "score_conflict": 3.0,
         "score_natural": 0.3333333333333333,
         "total_score": 6.33,
-        "threat_level": "high",
-        "threat_label": "hoch",
-        "threat_color": "#d7191c"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          51.3983333333,
-          35.6583055556
-        ]
-      },
-      "properties": {
-        "site_id": 1585,
-        "name": "Trans-Iranian Railway",
-        "country_iso2": "IR",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1585",
-        "in_danger": false,
-        "warning_level": 2,
-        "conflict_count": 16,
-        "strike_count": 990,
-        "eq_level": "MED",
-        "fl_level": "VLO",
-        "score_in_danger": 0,
-        "score_travel": 3.0,
-        "score_conflict": 2.549383194977103,
-        "score_natural": 0.6666666666666666,
-        "total_score": 6.22,
-        "threat_level": "high",
-        "threat_label": "hoch",
-        "threat_color": "#d7191c"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          51.4205111111,
-          35.6803666667
-        ]
-      },
-      "properties": {
-        "site_id": 1422,
-        "name": "Golestan Palace",
-        "country_iso2": "IR",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1422",
-        "in_danger": false,
-        "warning_level": 2,
-        "conflict_count": 15,
-        "strike_count": 1002,
-        "eq_level": "MED",
-        "fl_level": "VLO",
-        "score_in_danger": 0,
-        "score_travel": 3.0,
-        "score_conflict": 2.517606921951681,
-        "score_natural": 0.6666666666666666,
-        "total_score": 6.18,
         "threat_level": "high",
         "threat_label": "hoch",
         "threat_color": "#d7191c"
@@ -787,45 +787,14 @@
         "in_danger": false,
         "warning_level": 2,
         "conflict_count": 15,
-        "strike_count": 869,
+        "strike_count": 124,
         "eq_level": "MED",
         "fl_level": "LOW",
         "score_in_danger": 0,
         "score_travel": 3.0,
-        "score_conflict": 2.497313534171016,
+        "score_conflict": 2.4984071829317815,
         "score_natural": 0.6666666666666666,
-        "total_score": 6.16,
-        "threat_level": "high",
-        "threat_label": "hoch",
-        "threat_color": "#d7191c"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          29.66666667,
-          30.8358333333
-        ]
-      },
-      "properties": {
-        "site_id": 90,
-        "name": "Abu Mena",
-        "country_iso2": "EG",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/90",
-        "in_danger": true,
-        "warning_level": 1,
-        "conflict_count": 0,
-        "strike_count": 80,
-        "eq_level": "VLO",
-        "fl_level": "HIG",
-        "score_in_danger": 3,
-        "score_travel": 1.5,
-        "score_conflict": 0.6268788143963518,
-        "score_natural": 1.0,
-        "total_score": 6.13,
+        "total_score": 6.17,
         "threat_level": "high",
         "threat_label": "hoch",
         "threat_color": "#d7191c"
@@ -849,17 +818,17 @@
         "in_danger": false,
         "warning_level": 2,
         "conflict_count": 11,
-        "strike_count": 832,
+        "strike_count": 159,
         "eq_level": "MED",
         "fl_level": "VLO",
         "score_in_danger": 0,
         "score_travel": 3.0,
-        "score_conflict": 2.3321782592471854,
+        "score_conflict": 2.3888932759080355,
         "score_natural": 0.6666666666666666,
-        "total_score": 6.0,
-        "threat_level": "medium",
-        "threat_label": "mittel",
-        "threat_color": "#fdae61"
+        "total_score": 6.06,
+        "threat_level": "high",
+        "threat_label": "hoch",
+        "threat_color": "#d7191c"
       }
     },
     {
@@ -880,17 +849,17 @@
         "in_danger": false,
         "warning_level": 2,
         "conflict_count": 10,
-        "strike_count": 872,
+        "strike_count": 182,
         "eq_level": "MED",
         "fl_level": "LOW",
         "score_in_danger": 0,
         "score_travel": 3.0,
-        "score_conflict": 2.2907977712473717,
+        "score_conflict": 2.367711646254061,
         "score_natural": 0.6666666666666666,
-        "total_score": 5.96,
-        "threat_level": "medium",
-        "threat_label": "mittel",
-        "threat_color": "#fdae61"
+        "total_score": 6.03,
+        "threat_level": "high",
+        "threat_label": "hoch",
+        "threat_color": "#d7191c"
       }
     },
     {
@@ -911,14 +880,14 @@
         "in_danger": false,
         "warning_level": 2,
         "conflict_count": 5,
-        "strike_count": 1962,
+        "strike_count": 499,
         "eq_level": "MED",
         "fl_level": "VLO",
         "score_in_danger": 0,
         "score_travel": 3.0,
-        "score_conflict": 2.0715163843168036,
+        "score_conflict": 2.1898930271013457,
         "score_natural": 0.6666666666666666,
-        "total_score": 5.74,
+        "total_score": 5.86,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -929,27 +898,27 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          48.3393444444,
-          33.4418472222
+          29.66666667,
+          30.8358333333
         ]
       },
       "properties": {
-        "site_id": 1744,
-        "name": "Prehistoric Sites of the Khorramabad Valley",
-        "country_iso2": "IR",
+        "site_id": 90,
+        "name": "Abu Mena",
+        "country_iso2": "EG",
         "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1744",
-        "in_danger": false,
-        "warning_level": 2,
-        "conflict_count": 3,
-        "strike_count": 193,
-        "eq_level": "HIG",
-        "fl_level": "VLO",
-        "score_in_danger": 0,
-        "score_travel": 3.0,
-        "score_conflict": 1.5173585168878128,
+        "http_url": "https://whc.unesco.org/en/list/90",
+        "in_danger": true,
+        "warning_level": 1,
+        "conflict_count": 0,
+        "strike_count": 4,
+        "eq_level": "VLO",
+        "fl_level": "HIG",
+        "score_in_danger": 3,
+        "score_travel": 1.5,
+        "score_conflict": 0.32221186578252237,
         "score_natural": 1.0,
-        "total_score": 5.52,
+        "total_score": 5.82,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -973,14 +942,14 @@
         "in_danger": false,
         "warning_level": 2,
         "conflict_count": 1,
-        "strike_count": 628,
+        "strike_count": 148,
         "eq_level": "MED",
         "fl_level": "HIG",
         "score_in_danger": 0,
         "score_travel": 3.0,
-        "score_conflict": 1.3022138265693173,
+        "score_conflict": 1.38474039542214,
         "score_natural": 1.0,
-        "total_score": 5.3,
+        "total_score": 5.38,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -1004,14 +973,45 @@
         "in_danger": false,
         "warning_level": 2,
         "conflict_count": 1,
-        "strike_count": 615,
+        "strike_count": 147,
         "eq_level": "MED",
         "fl_level": "HIG",
         "score_in_danger": 0,
         "score_travel": 3.0,
-        "score_conflict": 1.2992346315714494,
+        "score_conflict": 1.3833922321555565,
         "score_natural": 1.0,
-        "total_score": 5.3,
+        "total_score": 5.38,
+        "threat_level": "medium",
+        "threat_label": "mittel",
+        "threat_color": "#fdae61"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          48.3393444444,
+          33.4418472222
+        ]
+      },
+      "properties": {
+        "site_id": 1744,
+        "name": "Prehistoric Sites of the Khorramabad Valley",
+        "country_iso2": "IR",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1744",
+        "in_danger": false,
+        "warning_level": 2,
+        "conflict_count": 3,
+        "strike_count": 16,
+        "eq_level": "HIG",
+        "fl_level": "VLO",
+        "score_in_danger": 0,
+        "score_travel": 3.0,
+        "score_conflict": 1.3330993216244424,
+        "score_natural": 1.0,
+        "total_score": 5.33,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -1035,14 +1035,14 @@
         "in_danger": false,
         "warning_level": 2,
         "conflict_count": 3,
-        "strike_count": 362,
+        "strike_count": 46,
         "eq_level": "MED",
         "fl_level": "LOW",
         "score_in_danger": 0,
         "score_travel": 3.0,
-        "score_conflict": 1.6067366321719694,
+        "score_conflict": 1.5366910737543806,
         "score_natural": 0.6666666666666666,
-        "total_score": 5.27,
+        "total_score": 5.2,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -1066,76 +1066,14 @@
         "in_danger": false,
         "warning_level": 2,
         "conflict_count": 2,
-        "strike_count": 364,
+        "strike_count": 73,
         "eq_level": "MED",
         "fl_level": "LOW",
         "score_in_danger": 0,
         "score_travel": 3.0,
-        "score_conflict": 1.448584776572449,
+        "score_conflict": 1.4686303691391718,
         "score_natural": 0.6666666666666666,
-        "total_score": 5.12,
-        "threat_level": "medium",
-        "threat_label": "mittel",
-        "threat_color": "#fdae61"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          48.5183333334,
-          34.8035555556
-        ]
-      },
-      "properties": {
-        "site_id": 1716,
-        "name": "Hegmataneh",
-        "country_iso2": "IR",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1716",
-        "in_danger": false,
-        "warning_level": 2,
-        "conflict_count": 2,
-        "strike_count": 212,
-        "eq_level": "MED",
-        "fl_level": "MED",
-        "score_in_danger": 0,
-        "score_travel": 3.0,
-        "score_conflict": 1.3717514421276544,
-        "score_natural": 0.6666666666666666,
-        "total_score": 5.04,
-        "threat_level": "medium",
-        "threat_label": "mittel",
-        "threat_color": "#fdae61"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          48.2913888889,
-          38.2486111111
-        ]
-      },
-      "properties": {
-        "site_id": 1345,
-        "name": "Sheikh Safi al-din Khānegāh and Shrine Ensemble in Ardabil",
-        "country_iso2": "IR",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1345",
-        "in_danger": false,
-        "warning_level": 2,
-        "conflict_count": 1,
-        "strike_count": 39,
-        "eq_level": "HIG",
-        "fl_level": "VLO",
-        "score_in_danger": 0,
-        "score_travel": 3.0,
-        "score_conflict": 0.9091704842581728,
-        "score_natural": 1.0,
-        "total_score": 4.91,
+        "total_score": 5.14,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -1159,14 +1097,45 @@
         "in_danger": false,
         "warning_level": 1,
         "conflict_count": 15,
-        "strike_count": 5255,
+        "strike_count": 318,
         "eq_level": "MED",
         "fl_level": "VLO",
         "score_in_danger": 0,
         "score_travel": 1.5,
-        "score_conflict": 2.7317715855842146,
+        "score_conflict": 2.6859714260811147,
         "score_natural": 0.6666666666666666,
-        "total_score": 4.9,
+        "total_score": 4.85,
+        "threat_level": "medium",
+        "threat_label": "mittel",
+        "threat_color": "#fdae61"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          48.5183333334,
+          34.8035555556
+        ]
+      },
+      "properties": {
+        "site_id": 1716,
+        "name": "Hegmataneh",
+        "country_iso2": "IR",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1716",
+        "in_danger": false,
+        "warning_level": 2,
+        "conflict_count": 2,
+        "strike_count": 15,
+        "eq_level": "MED",
+        "fl_level": "MED",
+        "score_in_danger": 0,
+        "score_travel": 3.0,
+        "score_conflict": 1.1620265200077833,
+        "score_natural": 0.6666666666666666,
+        "total_score": 4.83,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -1190,45 +1159,14 @@
         "in_danger": false,
         "warning_level": 2,
         "conflict_count": 0,
-        "strike_count": 359,
+        "strike_count": 49,
         "eq_level": "HIG",
         "fl_level": "MED",
         "score_in_danger": 0,
         "score_travel": 3.0,
-        "score_conflict": 0.8396669950602951,
+        "score_conflict": 0.7831928288906675,
         "score_natural": 1.0,
-        "total_score": 4.84,
-        "threat_level": "medium",
-        "threat_label": "mittel",
-        "threat_color": "#fdae61"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          35.1269444444,
-          32.7022222222
-        ]
-      },
-      "properties": {
-        "site_id": 1471,
-        "name": "Necropolis of Bet She’arim: A Landmark of Jewish Renewal",
-        "country_iso2": "IL",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1471",
-        "in_danger": false,
-        "warning_level": 1,
-        "conflict_count": 13,
-        "strike_count": 4575,
-        "eq_level": "MED",
-        "fl_level": "VLO",
-        "score_in_danger": 0,
-        "score_travel": 1.5,
-        "score_conflict": 2.6579995214605097,
-        "score_natural": 0.6666666666666666,
-        "total_score": 4.82,
+        "total_score": 4.78,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -1252,14 +1190,14 @@
         "in_danger": false,
         "warning_level": 1,
         "conflict_count": 12,
-        "strike_count": 3551,
+        "strike_count": 296,
         "eq_level": "MED",
         "fl_level": "VLO",
         "score_in_danger": 0,
         "score_travel": 1.5,
-        "score_conflict": 2.5832786122249645,
+        "score_conflict": 2.5569507531420723,
         "score_natural": 0.6666666666666666,
-        "total_score": 4.75,
+        "total_score": 4.72,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -1270,120 +1208,27 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          47.4386111111,
-          30.7391666667
+          35.1269444444,
+          32.7022222222
         ]
       },
       "properties": {
-        "site_id": 1481,
-        "name": "The Ahwar of Southern Iraq: Refuge of Biodiversity and the Relict Landscape of the Mesopotamian Cities",
-        "country_iso2": "IQ",
-        "category": "Mixed",
-        "http_url": "https://whc.unesco.org/en/list/1481",
-        "in_danger": false,
-        "warning_level": 2,
-        "conflict_count": 0,
-        "strike_count": 193,
-        "eq_level": "LOW",
-        "fl_level": "HIG",
-        "score_in_danger": 0,
-        "score_travel": 3.0,
-        "score_conflict": 0.7514727240957055,
-        "score_natural": 1.0,
-        "total_score": 4.75,
-        "threat_level": "medium",
-        "threat_label": "mittel",
-        "threat_color": "#fdae61"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          44.4208333333,
-          32.5419694444
-        ]
-      },
-      "properties": {
-        "site_id": 278,
-        "name": "Babylon",
-        "country_iso2": "IQ",
+        "site_id": 1471,
+        "name": "Necropolis of Bet She’arim: A Landmark of Jewish Renewal",
+        "country_iso2": "IL",
         "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/278",
+        "http_url": "https://whc.unesco.org/en/list/1471",
         "in_danger": false,
-        "warning_level": 2,
-        "conflict_count": 0,
-        "strike_count": 184,
-        "eq_level": "LOW",
-        "fl_level": "HIG",
-        "score_in_danger": 0,
-        "score_travel": 3.0,
-        "score_conflict": 0.7446964011115342,
-        "score_natural": 1.0,
-        "total_score": 4.74,
-        "threat_level": "medium",
-        "threat_label": "mittel",
-        "threat_color": "#fdae61"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          48.2563722222,
-          32.1894583333
-        ]
-      },
-      "properties": {
-        "site_id": 1455,
-        "name": "Susa",
-        "country_iso2": "IR",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1455",
-        "in_danger": false,
-        "warning_level": 2,
-        "conflict_count": 0,
-        "strike_count": 183,
+        "warning_level": 1,
+        "conflict_count": 13,
+        "strike_count": 206,
         "eq_level": "MED",
-        "fl_level": "HIG",
+        "fl_level": "VLO",
         "score_in_danger": 0,
-        "score_travel": 3.0,
-        "score_conflict": 0.743923215360707,
-        "score_natural": 1.0,
-        "total_score": 4.74,
-        "threat_level": "medium",
-        "threat_label": "mittel",
-        "threat_color": "#fdae61"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          48.522118,
-          32.00857
-        ]
-      },
-      "properties": {
-        "site_id": 113,
-        "name": "Tchogha Zanbil",
-        "country_iso2": "IR",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/113",
-        "in_danger": false,
-        "warning_level": 2,
-        "conflict_count": 0,
-        "strike_count": 138,
-        "eq_level": "MED",
-        "fl_level": "HIG",
-        "score_in_danger": 0,
-        "score_travel": 3.0,
-        "score_conflict": 0.7039146568760895,
-        "score_natural": 1.0,
-        "total_score": 4.7,
+        "score_travel": 1.5,
+        "score_conflict": 2.5256177618391433,
+        "score_natural": 0.6666666666666666,
+        "total_score": 4.69,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -1407,14 +1252,45 @@
         "in_danger": false,
         "warning_level": 2,
         "conflict_count": 0,
-        "strike_count": 135,
+        "strike_count": 26,
         "eq_level": "HIG",
         "fl_level": "MED",
         "score_in_danger": 0,
         "score_travel": 3.0,
-        "score_conflict": 0.7008021169238485,
+        "score_conflict": 0.6598314465601101,
         "score_natural": 1.0,
-        "total_score": 4.7,
+        "total_score": 4.66,
+        "threat_level": "medium",
+        "threat_label": "mittel",
+        "threat_color": "#fdae61"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          48.2563722222,
+          32.1894583333
+        ]
+      },
+      "properties": {
+        "site_id": 1455,
+        "name": "Susa",
+        "country_iso2": "IR",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1455",
+        "in_danger": false,
+        "warning_level": 2,
+        "conflict_count": 0,
+        "strike_count": 23,
+        "eq_level": "MED",
+        "fl_level": "HIG",
+        "score_in_danger": 0,
+        "score_travel": 3.0,
+        "score_conflict": 0.6362511074969053,
+        "score_natural": 1.0,
+        "total_score": 4.64,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -1438,14 +1314,14 @@
         "in_danger": false,
         "warning_level": 2,
         "conflict_count": 0,
-        "strike_count": 126,
+        "strike_count": 19,
         "eq_level": "HIG",
         "fl_level": "LOW",
         "score_in_danger": 0,
         "score_travel": 3.0,
-        "score_conflict": 0.6910350195415188,
+        "score_conflict": 0.599750060433768,
         "score_natural": 1.0,
-        "total_score": 4.69,
+        "total_score": 4.6,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -1456,120 +1332,27 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          54.3759722223,
-          27.1985
+          48.522118,
+          32.00857
         ]
       },
       "properties": {
-        "site_id": 1668,
-        "name": "The Persian Caravanserai",
+        "site_id": 113,
+        "name": "Tchogha Zanbil",
         "country_iso2": "IR",
         "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1668",
+        "http_url": "https://whc.unesco.org/en/list/113",
         "in_danger": false,
         "warning_level": 2,
         "conflict_count": 0,
-        "strike_count": 116,
-        "eq_level": "HIG",
-        "fl_level": "LOW",
-        "score_in_danger": 0,
-        "score_travel": 3.0,
-        "score_conflict": 0.6793356448375498,
-        "score_natural": 1.0,
-        "total_score": 4.68,
-        "threat_level": "medium",
-        "threat_label": "mittel",
-        "threat_color": "#fdae61"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          52.89028,
-          29.93444
-        ]
-      },
-      "properties": {
-        "site_id": 114,
-        "name": "Persepolis",
-        "country_iso2": "IR",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/114",
-        "in_danger": false,
-        "warning_level": 2,
-        "conflict_count": 0,
-        "strike_count": 87,
-        "eq_level": "HIG",
-        "fl_level": "MED",
-        "score_in_danger": 0,
-        "score_travel": 3.0,
-        "score_conflict": 0.6387029398050803,
-        "score_natural": 1.0,
-        "total_score": 4.64,
-        "threat_level": "medium",
-        "threat_label": "mittel",
-        "threat_color": "#fdae61"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          48.8358333333,
-          32.0186111111
-        ]
-      },
-      "properties": {
-        "site_id": 1315,
-        "name": "Shushtar Historical Hydraulic System",
-        "country_iso2": "IR",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1315",
-        "in_danger": false,
-        "warning_level": 2,
-        "conflict_count": 0,
-        "strike_count": 76,
+        "strike_count": 10,
         "eq_level": "MED",
         "fl_level": "HIG",
         "score_in_danger": 0,
         "score_travel": 3.0,
-        "score_conflict": 0.6196543632607024,
+        "score_conflict": 0.48006220297801605,
         "score_natural": 1.0,
-        "total_score": 4.62,
-        "threat_level": "medium",
-        "threat_label": "mittel",
-        "threat_color": "#fdae61"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          55.169,
-          37.2580277778
-        ]
-      },
-      "properties": {
-        "site_id": 1398,
-        "name": "Gonbad-e Qābus",
-        "country_iso2": "IR",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1398",
-        "in_danger": false,
-        "warning_level": 2,
-        "conflict_count": 0,
-        "strike_count": 39,
-        "eq_level": "MED",
-        "fl_level": "HIG",
-        "score_in_danger": 0,
-        "score_travel": 3.0,
-        "score_conflict": 0.5262275878621191,
-        "score_natural": 1.0,
-        "total_score": 4.53,
+        "total_score": 4.48,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -1593,14 +1376,14 @@
         "in_danger": false,
         "warning_level": 2,
         "conflict_count": 0,
-        "strike_count": 359,
+        "strike_count": 40,
         "eq_level": "MED",
         "fl_level": "MED",
         "score_in_danger": 0,
         "score_travel": 3.0,
-        "score_conflict": 0.8396669950602951,
+        "score_conflict": 0.7434626555559326,
         "score_natural": 0.6666666666666666,
-        "total_score": 4.51,
+        "total_score": 4.41,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -1611,27 +1394,27 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          34.9680555556,
-          32.6686111111
+          47.4386111111,
+          30.7391666667
         ]
       },
       "properties": {
-        "site_id": 1393,
-        "name": "Sites of Human Evolution at Mount Carmel: The Nahal Me’arot / Wadi el-Mughara Caves",
-        "country_iso2": "IL",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1393",
+        "site_id": 1481,
+        "name": "The Ahwar of Southern Iraq: Refuge of Biodiversity and the Relict Landscape of the Mesopotamian Cities",
+        "country_iso2": "IQ",
+        "category": "Mixed",
+        "http_url": "https://whc.unesco.org/en/list/1481",
         "in_danger": false,
-        "warning_level": 1,
-        "conflict_count": 4,
-        "strike_count": 2489,
-        "eq_level": "MED",
+        "warning_level": 2,
+        "conflict_count": 0,
+        "strike_count": 6,
+        "eq_level": "LOW",
         "fl_level": "HIG",
         "score_in_danger": 0,
-        "score_travel": 1.5,
-        "score_conflict": 2.0047132276533794,
+        "score_travel": 3.0,
+        "score_conflict": 0.38957410840657797,
         "score_natural": 1.0,
-        "total_score": 4.5,
+        "total_score": 4.39,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -1642,27 +1425,27 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          34.9872777777,
-          32.8145944444
+          48.2913888889,
+          38.2486111111
         ]
       },
       "properties": {
-        "site_id": 1220,
-        "name": "Bahá’i Holy Places in Haifa and the Western Galilee",
-        "country_iso2": "IL",
+        "site_id": 1345,
+        "name": "Sheikh Safi al-din Khānegāh and Shrine Ensemble in Ardabil",
+        "country_iso2": "IR",
         "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1220",
+        "http_url": "https://whc.unesco.org/en/list/1345",
         "in_danger": false,
-        "warning_level": 1,
-        "conflict_count": 4,
-        "strike_count": 2264,
-        "eq_level": "MED",
-        "fl_level": "HIG",
+        "warning_level": 2,
+        "conflict_count": 1,
+        "strike_count": 0,
+        "eq_level": "HIG",
+        "fl_level": "VLO",
         "score_in_danger": 0,
-        "score_travel": 1.5,
-        "score_conflict": 1.991202909002135,
+        "score_travel": 3.0,
+        "score_conflict": 0.3829428963960536,
         "score_natural": 1.0,
-        "total_score": 4.49,
+        "total_score": 4.38,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -1686,14 +1469,14 @@
         "in_danger": false,
         "warning_level": 2,
         "conflict_count": 0,
-        "strike_count": 302,
+        "strike_count": 33,
         "eq_level": "MED",
         "fl_level": "NDA",
         "score_in_danger": 0,
         "score_travel": 3.0,
-        "score_conflict": 0.8150778222309962,
+        "score_conflict": 0.705982626157958,
         "score_natural": 0.6666666666666666,
-        "total_score": 4.48,
+        "total_score": 4.37,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -1704,58 +1487,27 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          45.5727777778,
-          38.9752777778
+          48.8358333333,
+          32.0186111111
         ]
       },
       "properties": {
-        "site_id": 1262,
-        "name": "Armenian Monastic Ensembles of Iran",
+        "site_id": 1315,
+        "name": "Shushtar Historical Hydraulic System",
         "country_iso2": "IR",
         "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1262",
+        "http_url": "https://whc.unesco.org/en/list/1315",
         "in_danger": false,
         "warning_level": 2,
         "conflict_count": 0,
-        "strike_count": 202,
-        "eq_level": "MED",
-        "fl_level": "LOW",
-        "score_in_danger": 0,
-        "score_travel": 3.0,
-        "score_conflict": 0.7579417004390383,
-        "score_natural": 0.6666666666666666,
-        "total_score": 4.42,
-        "threat_level": "medium",
-        "threat_label": "mittel",
-        "threat_color": "#fdae61"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          53.2733333333,
-          12.1236111111
-        ]
-      },
-      "properties": {
-        "site_id": 1263,
-        "name": "Socotra Archipelago",
-        "country_iso2": "YE",
-        "category": "Natural",
-        "http_url": "https://whc.unesco.org/en/list/1263",
-        "in_danger": false,
-        "warning_level": 2,
-        "conflict_count": 0,
-        "strike_count": 13,
+        "strike_count": 4,
         "eq_level": "MED",
         "fl_level": "HIG",
         "score_in_danger": 0,
         "score_travel": 3.0,
-        "score_conflict": 0.37646791934187973,
+        "score_conflict": 0.32221186578252237,
         "score_natural": 1.0,
-        "total_score": 4.38,
+        "total_score": 4.32,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -1766,151 +1518,58 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          46.1365138889,
-          34.9462916666
+          34.9872777777,
+          32.8145944444
         ]
       },
       "properties": {
-        "site_id": 1647,
-        "name": "Cultural Landscape of Hawraman/Uramanat",
-        "country_iso2": "IR",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1647",
-        "in_danger": false,
-        "warning_level": 2,
-        "conflict_count": 0,
-        "strike_count": 144,
-        "eq_level": "MED",
-        "fl_level": "VLO",
-        "score_in_danger": 0,
-        "score_travel": 3.0,
-        "score_conflict": 0.7099431210161489,
-        "score_natural": 0.6666666666666666,
-        "total_score": 4.38,
-        "threat_level": "medium",
-        "threat_label": "mittel",
-        "threat_color": "#fdae61"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          61.3277777778,
-          30.5938888889
-        ]
-      },
-      "properties": {
-        "site_id": 1456,
-        "name": "Shahr-i Sokhta",
-        "country_iso2": "IR",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1456",
-        "in_danger": false,
-        "warning_level": 2,
-        "conflict_count": 0,
-        "strike_count": 104,
-        "eq_level": "MED",
-        "fl_level": "MED",
-        "score_in_danger": 0,
-        "score_travel": 3.0,
-        "score_conflict": 0.6638987149168292,
-        "score_natural": 0.6666666666666666,
-        "total_score": 4.33,
-        "threat_level": "medium",
-        "threat_label": "mittel",
-        "threat_color": "#fdae61"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          58.3666666667,
-          29.11683
-        ]
-      },
-      "properties": {
-        "site_id": 1208,
-        "name": "Bam and its Cultural Landscape",
-        "country_iso2": "IR",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1208",
-        "in_danger": false,
-        "warning_level": 2,
-        "conflict_count": 0,
-        "strike_count": 6,
-        "eq_level": "HIG",
-        "fl_level": "LOW",
-        "score_in_danger": 0,
-        "score_travel": 3.0,
-        "score_conflict": 0.2775887953703154,
-        "score_natural": 1.0,
-        "total_score": 4.28,
-        "threat_level": "medium",
-        "threat_label": "mittel",
-        "threat_color": "#fdae61"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          58.3986111111,
-          29.0894444444
-        ]
-      },
-      "properties": {
-        "site_id": 1506,
-        "name": "The Persian Qanat",
-        "country_iso2": "IR",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1506",
-        "in_danger": false,
-        "warning_level": 2,
-        "conflict_count": 0,
-        "strike_count": 6,
-        "eq_level": "HIG",
-        "fl_level": "LOW",
-        "score_in_danger": 0,
-        "score_travel": 3.0,
-        "score_conflict": 0.2775887953703154,
-        "score_natural": 1.0,
-        "total_score": 4.28,
-        "threat_level": "medium",
-        "threat_label": "mittel",
-        "threat_color": "#fdae61"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          34.8408333333,
-          31.2447222222
-        ]
-      },
-      "properties": {
-        "site_id": 1108,
-        "name": "Biblical Tels - Megiddo, Hazor, Beer Sheba",
+        "site_id": 1220,
+        "name": "Bahá’i Holy Places in Haifa and the Western Galilee",
         "country_iso2": "IL",
         "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1108",
+        "http_url": "https://whc.unesco.org/en/list/1220",
         "in_danger": false,
         "warning_level": 1,
-        "conflict_count": 6,
-        "strike_count": 1393,
+        "conflict_count": 4,
+        "strike_count": 97,
         "eq_level": "MED",
-        "fl_level": "VLO",
+        "fl_level": "HIG",
         "score_in_danger": 0,
         "score_travel": 1.5,
-        "score_conflict": 2.107850542893911,
-        "score_natural": 0.6666666666666666,
-        "total_score": 4.27,
+        "score_conflict": 1.8070831840183164,
+        "score_natural": 1.0,
+        "total_score": 4.31,
+        "threat_level": "medium",
+        "threat_label": "mittel",
+        "threat_color": "#fdae61"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          44.4208333333,
+          32.5419694444
+        ]
+      },
+      "properties": {
+        "site_id": 278,
+        "name": "Babylon",
+        "country_iso2": "IQ",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/278",
+        "in_danger": false,
+        "warning_level": 2,
+        "conflict_count": 0,
+        "strike_count": 3,
+        "eq_level": "LOW",
+        "fl_level": "HIG",
+        "score_in_danger": 0,
+        "score_travel": 3.0,
+        "score_conflict": 0.27753819465124563,
+        "score_natural": 1.0,
+        "total_score": 4.28,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -1934,7 +1593,7 @@
         "in_danger": false,
         "warning_level": 1,
         "conflict_count": 8,
-        "strike_count": 4738,
+        "strike_count": 617,
         "eq_level": "LOW",
         "fl_level": "LOW",
         "score_in_danger": 0,
@@ -1952,27 +1611,27 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          47.4366666666,
-          34.3883333333
+          34.9680555556,
+          32.6686111111
         ]
       },
       "properties": {
-        "site_id": 1222,
-        "name": "Bisotun",
-        "country_iso2": "IR",
+        "site_id": 1393,
+        "name": "Sites of Human Evolution at Mount Carmel: The Nahal Me’arot / Wadi el-Mughara Caves",
+        "country_iso2": "IL",
         "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1222",
+        "http_url": "https://whc.unesco.org/en/list/1393",
         "in_danger": false,
-        "warning_level": 2,
-        "conflict_count": 0,
-        "strike_count": 35,
+        "warning_level": 1,
+        "conflict_count": 4,
+        "strike_count": 69,
         "eq_level": "MED",
-        "fl_level": "MED",
+        "fl_level": "HIG",
         "score_in_danger": 0,
-        "score_travel": 3.0,
-        "score_conflict": 0.5111976551413047,
-        "score_natural": 0.6666666666666666,
-        "total_score": 4.18,
+        "score_travel": 1.5,
+        "score_conflict": 1.739720941394261,
+        "score_natural": 1.0,
+        "total_score": 4.24,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -1983,27 +1642,120 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          52.5325416667,
-          28.8521472222
+          34.8408333333,
+          31.2447222222
         ]
       },
       "properties": {
-        "site_id": 1568,
-        "name": "Sassanid Archaeological Landscape of Fars Region",
+        "site_id": 1108,
+        "name": "Biblical Tels - Megiddo, Hazor, Beer Sheba",
+        "country_iso2": "IL",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1108",
+        "in_danger": false,
+        "warning_level": 1,
+        "conflict_count": 6,
+        "strike_count": 138,
+        "eq_level": "MED",
+        "fl_level": "VLO",
+        "score_in_danger": 0,
+        "score_travel": 1.5,
+        "score_conflict": 2.0629456516405984,
+        "score_natural": 0.6666666666666666,
+        "total_score": 4.23,
+        "threat_level": "medium",
+        "threat_label": "mittel",
+        "threat_color": "#fdae61"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          52.89028,
+          29.93444
+        ]
+      },
+      "properties": {
+        "site_id": 114,
+        "name": "Persepolis",
         "country_iso2": "IR",
         "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1568",
+        "http_url": "https://whc.unesco.org/en/list/114",
         "in_danger": false,
         "warning_level": 2,
         "conflict_count": 0,
-        "strike_count": 30,
+        "strike_count": 2,
+        "eq_level": "HIG",
+        "fl_level": "MED",
+        "score_in_danger": 0,
+        "score_travel": 3.0,
+        "score_conflict": 0.2199438155200367,
+        "score_natural": 1.0,
+        "total_score": 4.22,
+        "threat_level": "medium",
+        "threat_label": "mittel",
+        "threat_color": "#fdae61"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          55.169,
+          37.2580277778
+        ]
+      },
+      "properties": {
+        "site_id": 1398,
+        "name": "Gonbad-e Qābus",
+        "country_iso2": "IR",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1398",
+        "in_danger": false,
+        "warning_level": 2,
+        "conflict_count": 0,
+        "strike_count": 2,
+        "eq_level": "MED",
+        "fl_level": "HIG",
+        "score_in_danger": 0,
+        "score_travel": 3.0,
+        "score_conflict": 0.2199438155200367,
+        "score_natural": 1.0,
+        "total_score": 4.22,
+        "threat_level": "medium",
+        "threat_label": "mittel",
+        "threat_color": "#fdae61"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          45.5727777778,
+          38.9752777778
+        ]
+      },
+      "properties": {
+        "site_id": 1262,
+        "name": "Armenian Monastic Ensembles of Iran",
+        "country_iso2": "IR",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1262",
+        "in_danger": false,
+        "warning_level": 2,
+        "conflict_count": 0,
+        "strike_count": 10,
         "eq_level": "MED",
         "fl_level": "LOW",
         "score_in_danger": 0,
         "score_travel": 3.0,
-        "score_conflict": 0.48986659115421083,
+        "score_conflict": 0.48006220297801605,
         "score_natural": 0.6666666666666666,
-        "total_score": 4.16,
+        "total_score": 4.15,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -2014,27 +1766,89 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          53.39375,
-          36.0988305555
+          54.3759722223,
+          27.1985
         ]
       },
       "properties": {
-        "site_id": 1584,
-        "name": "Hyrcanian Forests",
+        "site_id": 1668,
+        "name": "The Persian Caravanserai",
         "country_iso2": "IR",
-        "category": "Natural",
-        "http_url": "https://whc.unesco.org/en/list/1584",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1668",
         "in_danger": false,
         "warning_level": 2,
         "conflict_count": 0,
-        "strike_count": 19,
+        "strike_count": 1,
+        "eq_level": "HIG",
+        "fl_level": "LOW",
+        "score_in_danger": 0,
+        "score_travel": 3.0,
+        "score_conflict": 0.13876909732562281,
+        "score_natural": 1.0,
+        "total_score": 4.14,
+        "threat_level": "medium",
+        "threat_label": "mittel",
+        "threat_color": "#fdae61"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          46.1365138889,
+          34.9462916666
+        ]
+      },
+      "properties": {
+        "site_id": 1647,
+        "name": "Cultural Landscape of Hawraman/Uramanat",
+        "country_iso2": "IR",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1647",
+        "in_danger": false,
+        "warning_level": 2,
+        "conflict_count": 0,
+        "strike_count": 6,
+        "eq_level": "MED",
+        "fl_level": "VLO",
+        "score_in_danger": 0,
+        "score_travel": 3.0,
+        "score_conflict": 0.38957410840657797,
+        "score_natural": 0.6666666666666666,
+        "total_score": 4.06,
+        "threat_level": "medium",
+        "threat_label": "mittel",
+        "threat_color": "#fdae61"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          61.3277777778,
+          30.5938888889
+        ]
+      },
+      "properties": {
+        "site_id": 1456,
+        "name": "Shahr-i Sokhta",
+        "country_iso2": "IR",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1456",
+        "in_danger": false,
+        "warning_level": 2,
+        "conflict_count": 0,
+        "strike_count": 5,
         "eq_level": "MED",
         "fl_level": "MED",
         "score_in_danger": 0,
         "score_travel": 3.0,
-        "score_conflict": 0.4273484638905547,
+        "score_conflict": 0.3587129128456595,
         "score_natural": 0.6666666666666666,
-        "total_score": 4.09,
+        "total_score": 4.03,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -2058,14 +1872,14 @@
         "in_danger": false,
         "warning_level": 1,
         "conflict_count": 1,
-        "strike_count": 4377,
+        "strike_count": 275,
         "eq_level": "LOW",
         "fl_level": "HIG",
         "score_in_danger": 0,
         "score_travel": 1.5,
-        "score_conflict": 1.5789903408370414,
+        "score_conflict": 1.5081555159058961,
         "score_natural": 1.0,
-        "total_score": 4.08,
+        "total_score": 4.01,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -2089,14 +1903,76 @@
         "in_danger": false,
         "warning_level": 1,
         "conflict_count": 1,
-        "strike_count": 4644,
+        "strike_count": 279,
         "eq_level": "LOW",
         "fl_level": "HIG",
         "score_in_danger": 0,
         "score_travel": 1.5,
-        "score_conflict": 1.582942896396054,
+        "score_conflict": 1.5110361625620223,
         "score_natural": 1.0,
-        "total_score": 4.08,
+        "total_score": 4.01,
+        "threat_level": "medium",
+        "threat_label": "mittel",
+        "threat_color": "#fdae61"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          58.3666666667,
+          29.11683
+        ]
+      },
+      "properties": {
+        "site_id": 1208,
+        "name": "Bam and its Cultural Landscape",
+        "country_iso2": "IR",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1208",
+        "in_danger": false,
+        "warning_level": 2,
+        "conflict_count": 0,
+        "strike_count": 0,
+        "eq_level": "HIG",
+        "fl_level": "LOW",
+        "score_in_danger": 0,
+        "score_travel": 3.0,
+        "score_conflict": 0.0,
+        "score_natural": 1.0,
+        "total_score": 4.0,
+        "threat_level": "medium",
+        "threat_label": "mittel",
+        "threat_color": "#fdae61"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          53.2733333333,
+          12.1236111111
+        ]
+      },
+      "properties": {
+        "site_id": 1263,
+        "name": "Socotra Archipelago",
+        "country_iso2": "YE",
+        "category": "Natural",
+        "http_url": "https://whc.unesco.org/en/list/1263",
+        "in_danger": false,
+        "warning_level": 2,
+        "conflict_count": 0,
+        "strike_count": 0,
+        "eq_level": "MED",
+        "fl_level": "HIG",
+        "score_in_danger": 0,
+        "score_travel": 3.0,
+        "score_conflict": 0.0,
+        "score_natural": 1.0,
+        "total_score": 4.0,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -2138,6 +2014,99 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          58.3986111111,
+          29.0894444444
+        ]
+      },
+      "properties": {
+        "site_id": 1506,
+        "name": "The Persian Qanat",
+        "country_iso2": "IR",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1506",
+        "in_danger": false,
+        "warning_level": 2,
+        "conflict_count": 0,
+        "strike_count": 0,
+        "eq_level": "HIG",
+        "fl_level": "LOW",
+        "score_in_danger": 0,
+        "score_travel": 3.0,
+        "score_conflict": 0.0,
+        "score_natural": 1.0,
+        "total_score": 4.0,
+        "threat_level": "medium",
+        "threat_label": "mittel",
+        "threat_color": "#fdae61"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          47.4366666666,
+          34.3883333333
+        ]
+      },
+      "properties": {
+        "site_id": 1222,
+        "name": "Bisotun",
+        "country_iso2": "IR",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1222",
+        "in_danger": false,
+        "warning_level": 2,
+        "conflict_count": 0,
+        "strike_count": 2,
+        "eq_level": "MED",
+        "fl_level": "MED",
+        "score_in_danger": 0,
+        "score_travel": 3.0,
+        "score_conflict": 0.2199438155200367,
+        "score_natural": 0.6666666666666666,
+        "total_score": 3.89,
+        "threat_level": "medium",
+        "threat_label": "mittel",
+        "threat_color": "#fdae61"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          53.39375,
+          36.0988305555
+        ]
+      },
+      "properties": {
+        "site_id": 1584,
+        "name": "Hyrcanian Forests",
+        "country_iso2": "IR",
+        "category": "Natural",
+        "http_url": "https://whc.unesco.org/en/list/1584",
+        "in_danger": false,
+        "warning_level": 2,
+        "conflict_count": 0,
+        "strike_count": 2,
+        "eq_level": "MED",
+        "fl_level": "MED",
+        "score_in_danger": 0,
+        "score_travel": 3.0,
+        "score_conflict": 0.2199438155200367,
+        "score_natural": 0.6666666666666666,
+        "total_score": 3.89,
+        "threat_level": "medium",
+        "threat_label": "mittel",
+        "threat_color": "#fdae61"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           47.235,
           36.60388889
         ]
@@ -2151,14 +2120,45 @@
         "in_danger": false,
         "warning_level": 2,
         "conflict_count": 0,
-        "strike_count": 7,
+        "strike_count": 0,
         "eq_level": "MED",
         "fl_level": "VLO",
         "score_in_danger": 0,
         "score_travel": 3.0,
-        "score_conflict": 0.2966373719146932,
+        "score_conflict": 0.0,
         "score_natural": 0.6666666666666666,
-        "total_score": 3.96,
+        "total_score": 3.67,
+        "threat_level": "medium",
+        "threat_label": "mittel",
+        "threat_color": "#fdae61"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          52.5325416667,
+          28.8521472222
+        ]
+      },
+      "properties": {
+        "site_id": 1568,
+        "name": "Sassanid Archaeological Landscape of Fars Region",
+        "country_iso2": "IR",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1568",
+        "in_danger": false,
+        "warning_level": 2,
+        "conflict_count": 0,
+        "strike_count": 0,
+        "eq_level": "MED",
+        "fl_level": "LOW",
+        "score_in_danger": 0,
+        "score_travel": 3.0,
+        "score_conflict": 0.0,
+        "score_natural": 0.6666666666666666,
+        "total_score": 3.67,
         "threat_level": "medium",
         "threat_label": "mittel",
         "threat_color": "#fdae61"
@@ -2182,17 +2182,17 @@
         "in_danger": false,
         "warning_level": 1,
         "conflict_count": 0,
-        "strike_count": 715,
+        "strike_count": 32,
         "eq_level": "MED",
         "fl_level": "VLO",
         "score_in_danger": 0,
         "score_travel": 1.5,
-        "score_conflict": 0.937751395963591,
+        "score_conflict": 0.7000060184980527,
         "score_natural": 0.6666666666666666,
-        "total_score": 3.1,
-        "threat_level": "medium",
-        "threat_label": "mittel",
-        "threat_color": "#fdae61"
+        "total_score": 2.87,
+        "threat_level": "low",
+        "threat_label": "niedrig",
+        "threat_color": "#1a9641"
       }
     },
     {
@@ -2213,17 +2213,17 @@
         "in_danger": false,
         "warning_level": 1,
         "conflict_count": 0,
-        "strike_count": 57,
+        "strike_count": 0,
         "eq_level": "LOW",
         "fl_level": "HIG",
         "score_in_danger": 0,
         "score_travel": 1.5,
-        "score_conflict": 0.5792320290402875,
+        "score_conflict": 0.0,
         "score_natural": 1.0,
-        "total_score": 3.08,
-        "threat_level": "medium",
-        "threat_label": "mittel",
-        "threat_color": "#fdae61"
+        "total_score": 2.5,
+        "threat_level": "low",
+        "threat_label": "niedrig",
+        "threat_color": "#1a9641"
       }
     },
     {
@@ -2244,14 +2244,14 @@
         "in_danger": false,
         "warning_level": 1,
         "conflict_count": 0,
-        "strike_count": 9,
+        "strike_count": 0,
         "eq_level": "MED",
         "fl_level": "HIG",
         "score_in_danger": 0,
         "score_travel": 1.5,
-        "score_conflict": 0.3284693399189903,
+        "score_conflict": 0.0,
         "score_natural": 1.0,
-        "total_score": 2.83,
+        "total_score": 2.5,
         "threat_level": "low",
         "threat_label": "niedrig",
         "threat_color": "#1a9641"
@@ -2275,45 +2275,14 @@
         "in_danger": false,
         "warning_level": 1,
         "conflict_count": 0,
-        "strike_count": 99,
+        "strike_count": 1,
         "eq_level": "VLO",
         "fl_level": "MED",
         "score_in_danger": 0,
         "score_travel": 1.5,
-        "score_conflict": 0.6569386798379806,
+        "score_conflict": 0.13876909732562281,
         "score_natural": 0.6666666666666666,
-        "total_score": 2.82,
-        "threat_level": "low",
-        "threat_label": "niedrig",
-        "threat_color": "#1a9641"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          33.97543,
-          28.55623
-        ]
-      },
-      "properties": {
-        "site_id": 954,
-        "name": "Saint Catherine Area",
-        "country_iso2": "EG",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/954",
-        "in_danger": false,
-        "warning_level": 1,
-        "conflict_count": 0,
-        "strike_count": 89,
-        "eq_level": "MED",
-        "fl_level": "VLO",
-        "score_in_danger": 0,
-        "score_travel": 1.5,
-        "score_conflict": 0.6419087471171662,
-        "score_natural": 0.6666666666666666,
-        "total_score": 2.81,
+        "total_score": 2.31,
         "threat_level": "low",
         "threat_label": "niedrig",
         "threat_color": "#1a9641"
@@ -2337,14 +2306,14 @@
         "in_danger": false,
         "warning_level": 1,
         "conflict_count": 0,
-        "strike_count": 51,
+        "strike_count": 1,
         "eq_level": "MED",
         "fl_level": "VLO",
         "score_in_danger": 0,
         "score_travel": 1.5,
-        "score_conflict": 0.5636544855825028,
+        "score_conflict": 0.13876909732562281,
         "score_natural": 0.6666666666666666,
-        "total_score": 2.73,
+        "total_score": 2.31,
         "threat_level": "low",
         "threat_label": "niedrig",
         "threat_color": "#1a9641"
@@ -2355,27 +2324,27 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          35.5527777778,
-          31.8372222222
+          33.97543,
+          28.55623
         ]
       },
       "properties": {
-        "site_id": 1446,
-        "name": "Baptism Site “Bethany Beyond the Jordan” (Al-Maghtas)",
-        "country_iso2": "JO",
+        "site_id": 954,
+        "name": "Saint Catherine Area",
+        "country_iso2": "EG",
         "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1446",
+        "http_url": "https://whc.unesco.org/en/list/954",
         "in_danger": false,
-        "warning_level": 0,
+        "warning_level": 1,
         "conflict_count": 0,
-        "strike_count": 1102,
-        "eq_level": "LOW",
-        "fl_level": "HIG",
+        "strike_count": 0,
+        "eq_level": "MED",
+        "fl_level": "VLO",
         "score_in_danger": 0,
-        "score_travel": 0.0,
-        "score_conflict": 0.999392770224913,
-        "score_natural": 1.0,
-        "total_score": 2.0,
+        "score_travel": 1.5,
+        "score_conflict": 0.0,
+        "score_natural": 0.6666666666666666,
+        "total_score": 2.17,
         "threat_level": "low",
         "threat_label": "niedrig",
         "threat_color": "#1a9641"
@@ -2399,14 +2368,14 @@
         "in_danger": false,
         "warning_level": 0,
         "conflict_count": 0,
-        "strike_count": 520,
+        "strike_count": 59,
         "eq_level": "LOW",
         "fl_level": "HIG",
         "score_in_danger": 0,
         "score_travel": 0.0,
-        "score_conflict": 0.892397893639207,
+        "score_conflict": 0.8196938759538046,
         "score_natural": 1.0,
-        "total_score": 1.89,
+        "total_score": 1.82,
         "threat_level": "low",
         "threat_label": "niedrig",
         "threat_color": "#1a9641"
@@ -2430,14 +2399,14 @@
         "in_danger": false,
         "warning_level": 0,
         "conflict_count": 0,
-        "strike_count": 581,
+        "strike_count": 135,
         "eq_level": "MED",
         "fl_level": "MED",
         "score_in_danger": 0,
         "score_travel": 0.0,
-        "score_conflict": 0.9081924276947935,
+        "score_conflict": 0.9835208208092037,
         "score_natural": 0.6666666666666666,
-        "total_score": 1.57,
+        "total_score": 1.65,
         "threat_level": "low",
         "threat_label": "niedrig",
         "threat_color": "#1a9641"
@@ -2448,275 +2417,27 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          57.30111,
-          22.96417
+          35.5527777778,
+          31.8372222222
         ]
       },
       "properties": {
-        "site_id": 433,
-        "name": "Bahla Fort",
-        "country_iso2": "OM",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/433",
-        "in_danger": false,
-        "warning_level": 0,
-        "conflict_count": 0,
-        "strike_count": 228,
-        "eq_level": "MED",
-        "fl_level": "LOW",
-        "score_in_danger": 0,
-        "score_travel": 0.0,
-        "score_conflict": 0.775133603201595,
-        "score_natural": 0.6666666666666666,
-        "total_score": 1.44,
-        "threat_level": "low",
-        "threat_label": "niedrig",
-        "threat_color": "#1a9641"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          35.44333,
-          30.33056
-        ]
-      },
-      "properties": {
-        "site_id": 326,
-        "name": "Petra",
+        "site_id": 1446,
+        "name": "Baptism Site “Bethany Beyond the Jordan” (Al-Maghtas)",
         "country_iso2": "JO",
         "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/326",
+        "http_url": "https://whc.unesco.org/en/list/1446",
         "in_danger": false,
         "warning_level": 0,
         "conflict_count": 0,
-        "strike_count": 17,
-        "eq_level": "MED",
+        "strike_count": 11,
+        "eq_level": "LOW",
         "fl_level": "HIG",
         "score_in_danger": 0,
         "score_travel": 0.0,
-        "score_conflict": 0.41231853116974027,
+        "score_conflict": 0.4974820101712823,
         "score_natural": 1.0,
-        "total_score": 1.41,
-        "threat_level": "low",
-        "threat_label": "niedrig",
-        "threat_color": "#1a9641"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          36.37,
-          32.3269444444
-        ]
-      },
-      "properties": {
-        "site_id": 1721,
-        "name": "Umm Al-Jimāl",
-        "country_iso2": "JO",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1721",
-        "in_danger": false,
-        "warning_level": 0,
-        "conflict_count": 1,
-        "strike_count": 104,
-        "eq_level": "LOW",
-        "fl_level": "LOW",
-        "score_in_danger": 0,
-        "score_travel": 0.0,
-        "score_conflict": 1.0468416113128827,
-        "score_natural": 0.3333333333333333,
-        "total_score": 1.38,
-        "threat_level": "low",
-        "threat_label": "niedrig",
-        "threat_color": "#1a9641"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          57.7666666667,
-          22.7333333333
-        ]
-      },
-      "properties": {
-        "site_id": 1207,
-        "name": "<i>Aflaj</i> Irrigation Systems of Oman",
-        "country_iso2": "OM",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1207",
-        "in_danger": false,
-        "warning_level": 0,
-        "conflict_count": 0,
-        "strike_count": 131,
-        "eq_level": "MED",
-        "fl_level": "LOW",
-        "score_in_danger": 0,
-        "score_travel": 0.0,
-        "score_conflict": 0.6965435194326038,
-        "score_natural": 0.6666666666666666,
-        "total_score": 1.36,
-        "threat_level": "low",
-        "threat_label": "niedrig",
-        "threat_color": "#1a9641"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          35.4338888889,
-          29.6397222222
-        ]
-      },
-      "properties": {
-        "site_id": 1377,
-        "name": "Wadi Rum Protected Area",
-        "country_iso2": "JO",
-        "category": "Mixed",
-        "http_url": "https://whc.unesco.org/en/list/1377",
-        "in_danger": false,
-        "warning_level": 0,
-        "conflict_count": 0,
-        "strike_count": 95,
-        "eq_level": "MED",
-        "fl_level": "LOW",
-        "score_in_danger": 0,
-        "score_travel": 0.0,
-        "score_conflict": 0.65111532345691,
-        "score_natural": 0.6666666666666666,
-        "total_score": 1.32,
-        "threat_level": "low",
-        "threat_label": "niedrig",
-        "threat_color": "#1a9641"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          55.8065833333,
-          25.0828055556
-        ]
-      },
-      "properties": {
-        "site_id": 1735,
-        "name": "Faya Palaeolandscape",
-        "country_iso2": "AE",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1735",
-        "in_danger": false,
-        "warning_level": 0,
-        "conflict_count": 0,
-        "strike_count": 70,
-        "eq_level": "MED",
-        "fl_level": "MED",
-        "score_in_danger": 0,
-        "score_travel": 0.0,
-        "score_conflict": 0.6080816078232746,
-        "score_natural": 0.6666666666666666,
-        "total_score": 1.27,
-        "threat_level": "low",
-        "threat_label": "niedrig",
-        "threat_color": "#1a9641"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          56.745,
-          23.26986
-        ]
-      },
-      "properties": {
-        "site_id": 434,
-        "name": "Archaeological Sites of Bat, Al-Khutm and Al-Ayn",
-        "country_iso2": "OM",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/434",
-        "in_danger": false,
-        "warning_level": 0,
-        "conflict_count": 0,
-        "strike_count": 61,
-        "eq_level": "MED",
-        "fl_level": "LOW",
-        "score_in_danger": 0,
-        "score_travel": 0.0,
-        "score_conflict": 0.5887457151257752,
-        "score_natural": 0.6666666666666666,
-        "total_score": 1.26,
-        "threat_level": "low",
-        "threat_label": "niedrig",
-        "threat_color": "#1a9641"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          37.955,
-          26.7836111111
-        ]
-      },
-      "properties": {
-        "site_id": 1293,
-        "name": "Hegra Archaeological Site (al-Hijr / Madā ͐ in Ṣāliḥ)",
-        "country_iso2": "SA",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1293",
-        "in_danger": false,
-        "warning_level": 0,
-        "conflict_count": 0,
-        "strike_count": 65,
-        "eq_level": "MED",
-        "fl_level": "MED",
-        "score_in_danger": 0,
-        "score_travel": 0.0,
-        "score_conflict": 0.5976643954610393,
-        "score_natural": 0.6666666666666666,
-        "total_score": 1.26,
-        "threat_level": "low",
-        "threat_label": "niedrig",
-        "threat_color": "#1a9641"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          55.80663,
-          24.067951
-        ]
-      },
-      "properties": {
-        "site_id": 1343,
-        "name": "Cultural Sites of Al Ain (Hafit, Hili, Bidaa Bint Saud and Oases Areas)",
-        "country_iso2": "AE",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1343",
-        "in_danger": false,
-        "warning_level": 0,
-        "conflict_count": 0,
-        "strike_count": 62,
-        "eq_level": "MED",
-        "fl_level": "MED",
-        "score_in_danger": 0,
-        "score_travel": 0.0,
-        "score_conflict": 0.5910282025684912,
-        "score_natural": 0.6666666666666666,
-        "total_score": 1.26,
+        "total_score": 1.5,
         "threat_level": "low",
         "threat_label": "niedrig",
         "threat_color": "#1a9641"
@@ -2740,76 +2461,14 @@
         "in_danger": false,
         "warning_level": 0,
         "conflict_count": 0,
-        "strike_count": 56,
+        "strike_count": 16,
         "eq_level": "LOW",
         "fl_level": "MED",
         "score_in_danger": 0,
         "score_travel": 0.0,
-        "score_conflict": 0.5767510548230956,
+        "score_conflict": 0.5672135288323352,
         "score_natural": 0.6666666666666666,
-        "total_score": 1.24,
-        "threat_level": "low",
-        "threat_label": "niedrig",
-        "threat_color": "#1a9641"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          49.5769166667,
-          25.368025
-        ]
-      },
-      "properties": {
-        "site_id": 1563,
-        "name": "Al-Ahsa Oasis, an Evolving Cultural Landscape",
-        "country_iso2": "SA",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1563",
-        "in_danger": false,
-        "warning_level": 0,
-        "conflict_count": 0,
-        "strike_count": 45,
-        "eq_level": "MED",
-        "fl_level": "MED",
-        "score_in_danger": 0,
-        "score_travel": 0.0,
-        "score_conflict": 0.5461649674175781,
-        "score_natural": 0.6666666666666666,
-        "total_score": 1.21,
-        "threat_level": "low",
-        "threat_label": "niedrig",
-        "threat_color": "#1a9641"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          54.05,
-          17.0166666667
-        ]
-      },
-      "properties": {
-        "site_id": 1010,
-        "name": "Land of Frankincense",
-        "country_iso2": "OM",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1010",
-        "in_danger": false,
-        "warning_level": 0,
-        "conflict_count": 0,
-        "strike_count": 427,
-        "eq_level": "LOW",
-        "fl_level": "LOW",
-        "score_in_danger": 0,
-        "score_travel": 0.0,
-        "score_conflict": 0.8643485978416966,
-        "score_natural": 0.3333333333333333,
-        "total_score": 1.2,
+        "total_score": 1.23,
         "threat_level": "low",
         "threat_label": "niedrig",
         "threat_color": "#1a9641"
@@ -2833,14 +2492,14 @@
         "in_danger": false,
         "warning_level": 0,
         "conflict_count": 0,
-        "strike_count": 416,
+        "strike_count": 42,
         "eq_level": "LOW",
         "fl_level": "LOW",
         "score_in_danger": 0,
         "score_travel": 0.0,
-        "score_conflict": 0.8606343604751774,
+        "score_conflict": 0.7529978618598523,
         "score_natural": 0.3333333333333333,
-        "total_score": 1.19,
+        "total_score": 1.09,
         "threat_level": "low",
         "threat_label": "niedrig",
         "threat_color": "#1a9641"
@@ -2851,25 +2510,25 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          59.3781111111,
-          22.6952222222
+          57.30111,
+          22.96417
         ]
       },
       "properties": {
-        "site_id": 1537,
-        "name": "Ancient City of Qalhat",
+        "site_id": 433,
+        "name": "Bahla Fort",
         "country_iso2": "OM",
         "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1537",
+        "http_url": "https://whc.unesco.org/en/list/433",
         "in_danger": false,
         "warning_level": 0,
         "conflict_count": 0,
-        "strike_count": 17,
+        "strike_count": 7,
         "eq_level": "MED",
         "fl_level": "LOW",
         "score_in_danger": 0,
         "score_travel": 0.0,
-        "score_conflict": 0.41231853116974027,
+        "score_conflict": 0.41630729197686844,
         "score_natural": 0.6666666666666666,
         "total_score": 1.08,
         "threat_level": "low",
@@ -2882,27 +2541,89 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          35.9166666667,
-          31.4833333333
+          35.44333,
+          30.33056
         ]
       },
       "properties": {
-        "site_id": 1093,
-        "name": "Um er-Rasas (Kastrom Mefa'a)",
+        "site_id": 326,
+        "name": "Petra",
         "country_iso2": "JO",
         "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1093",
+        "http_url": "https://whc.unesco.org/en/list/326",
         "in_danger": false,
         "warning_level": 0,
         "conflict_count": 0,
-        "strike_count": 81,
+        "strike_count": 0,
+        "eq_level": "MED",
+        "fl_level": "HIG",
+        "score_in_danger": 0,
+        "score_travel": 0.0,
+        "score_conflict": 0.0,
+        "score_natural": 1.0,
+        "total_score": 1.0,
+        "threat_level": "low",
+        "threat_label": "niedrig",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          36.37,
+          32.3269444444
+        ]
+      },
+      "properties": {
+        "site_id": 1721,
+        "name": "Umm Al-Jimāl",
+        "country_iso2": "JO",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1721",
+        "in_danger": false,
+        "warning_level": 0,
+        "conflict_count": 1,
+        "strike_count": 3,
         "eq_level": "LOW",
         "fl_level": "LOW",
         "score_in_danger": 0,
         "score_travel": 0.0,
-        "score_conflict": 0.6286291728202994,
+        "score_conflict": 0.6604810910472992,
         "score_natural": 0.3333333333333333,
-        "total_score": 0.96,
+        "total_score": 0.99,
+        "threat_level": "low",
+        "threat_label": "niedrig",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          54.05,
+          17.0166666667
+        ]
+      },
+      "properties": {
+        "site_id": 1010,
+        "name": "Land of Frankincense",
+        "country_iso2": "OM",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1010",
+        "in_danger": false,
+        "warning_level": 0,
+        "conflict_count": 0,
+        "strike_count": 23,
+        "eq_level": "LOW",
+        "fl_level": "LOW",
+        "score_in_danger": 0,
+        "score_travel": 0.0,
+        "score_conflict": 0.6362511074969053,
+        "score_natural": 0.3333333333333333,
+        "total_score": 0.97,
         "threat_level": "low",
         "threat_label": "niedrig",
         "threat_color": "#1a9641"
@@ -2926,14 +2647,14 @@
         "in_danger": false,
         "warning_level": 0,
         "conflict_count": 0,
-        "strike_count": 806,
+        "strike_count": 110,
         "eq_level": "VLO",
         "fl_level": "VLO",
         "score_in_danger": 0,
         "score_travel": 0.0,
-        "score_conflict": 0.9548188311781406,
+        "score_conflict": 0.9428549566282938,
         "score_natural": 0.0,
-        "total_score": 0.95,
+        "total_score": 0.94,
         "threat_level": "low",
         "threat_label": "niedrig",
         "threat_color": "#1a9641"
@@ -2957,14 +2678,14 @@
         "in_danger": false,
         "warning_level": 0,
         "conflict_count": 0,
-        "strike_count": 806,
+        "strike_count": 110,
         "eq_level": "NDA",
         "fl_level": "VLO",
         "score_in_danger": 0,
         "score_travel": 0.0,
-        "score_conflict": 0.9548188311781406,
+        "score_conflict": 0.9428549566282938,
         "score_natural": 0.0,
-        "total_score": 0.95,
+        "total_score": 0.94,
         "threat_level": "low",
         "threat_label": "niedrig",
         "threat_color": "#1a9641"
@@ -2988,14 +2709,200 @@
         "in_danger": false,
         "warning_level": 0,
         "conflict_count": 0,
-        "strike_count": 806,
+        "strike_count": 110,
         "eq_level": "VLO",
         "fl_level": "VLO",
         "score_in_danger": 0,
         "score_travel": 0.0,
-        "score_conflict": 0.9548188311781406,
+        "score_conflict": 0.9428549566282938,
         "score_natural": 0.0,
-        "total_score": 0.95,
+        "total_score": 0.94,
+        "threat_level": "low",
+        "threat_label": "niedrig",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          56.745,
+          23.26986
+        ]
+      },
+      "properties": {
+        "site_id": 434,
+        "name": "Archaeological Sites of Bat, Al-Khutm and Al-Ayn",
+        "country_iso2": "OM",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/434",
+        "in_danger": false,
+        "warning_level": 0,
+        "conflict_count": 0,
+        "strike_count": 2,
+        "eq_level": "MED",
+        "fl_level": "LOW",
+        "score_in_danger": 0,
+        "score_travel": 0.0,
+        "score_conflict": 0.2199438155200367,
+        "score_natural": 0.6666666666666666,
+        "total_score": 0.89,
+        "threat_level": "low",
+        "threat_label": "niedrig",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          57.7666666667,
+          22.7333333333
+        ]
+      },
+      "properties": {
+        "site_id": 1207,
+        "name": "<i>Aflaj</i> Irrigation Systems of Oman",
+        "country_iso2": "OM",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1207",
+        "in_danger": false,
+        "warning_level": 0,
+        "conflict_count": 0,
+        "strike_count": 1,
+        "eq_level": "MED",
+        "fl_level": "LOW",
+        "score_in_danger": 0,
+        "score_travel": 0.0,
+        "score_conflict": 0.13876909732562281,
+        "score_natural": 0.6666666666666666,
+        "total_score": 0.81,
+        "threat_level": "low",
+        "threat_label": "niedrig",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          55.80663,
+          24.067951
+        ]
+      },
+      "properties": {
+        "site_id": 1343,
+        "name": "Cultural Sites of Al Ain (Hafit, Hili, Bidaa Bint Saud and Oases Areas)",
+        "country_iso2": "AE",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1343",
+        "in_danger": false,
+        "warning_level": 0,
+        "conflict_count": 0,
+        "strike_count": 1,
+        "eq_level": "MED",
+        "fl_level": "MED",
+        "score_in_danger": 0,
+        "score_travel": 0.0,
+        "score_conflict": 0.13876909732562281,
+        "score_natural": 0.6666666666666666,
+        "total_score": 0.81,
+        "threat_level": "low",
+        "threat_label": "niedrig",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          55.8065833333,
+          25.0828055556
+        ]
+      },
+      "properties": {
+        "site_id": 1735,
+        "name": "Faya Palaeolandscape",
+        "country_iso2": "AE",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1735",
+        "in_danger": false,
+        "warning_level": 0,
+        "conflict_count": 0,
+        "strike_count": 1,
+        "eq_level": "MED",
+        "fl_level": "MED",
+        "score_in_danger": 0,
+        "score_travel": 0.0,
+        "score_conflict": 0.13876909732562281,
+        "score_natural": 0.6666666666666666,
+        "total_score": 0.81,
+        "threat_level": "low",
+        "threat_label": "niedrig",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          37.955,
+          26.7836111111
+        ]
+      },
+      "properties": {
+        "site_id": 1293,
+        "name": "Hegra Archaeological Site (al-Hijr / Madā ͐ in Ṣāliḥ)",
+        "country_iso2": "SA",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1293",
+        "in_danger": false,
+        "warning_level": 0,
+        "conflict_count": 0,
+        "strike_count": 0,
+        "eq_level": "MED",
+        "fl_level": "MED",
+        "score_in_danger": 0,
+        "score_travel": 0.0,
+        "score_conflict": 0.0,
+        "score_natural": 0.6666666666666666,
+        "total_score": 0.67,
+        "threat_level": "low",
+        "threat_label": "niedrig",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          35.4338888889,
+          29.6397222222
+        ]
+      },
+      "properties": {
+        "site_id": 1377,
+        "name": "Wadi Rum Protected Area",
+        "country_iso2": "JO",
+        "category": "Mixed",
+        "http_url": "https://whc.unesco.org/en/list/1377",
+        "in_danger": false,
+        "warning_level": 0,
+        "conflict_count": 0,
+        "strike_count": 0,
+        "eq_level": "MED",
+        "fl_level": "LOW",
+        "score_in_danger": 0,
+        "score_travel": 0.0,
+        "score_conflict": 0.0,
+        "score_natural": 0.6666666666666666,
+        "total_score": 0.67,
         "threat_level": "low",
         "threat_label": "niedrig",
         "threat_color": "#1a9641"
@@ -3016,6 +2923,68 @@
         "country_iso2": "SA",
         "category": "Cultural",
         "http_url": "https://whc.unesco.org/en/list/1472",
+        "in_danger": false,
+        "warning_level": 0,
+        "conflict_count": 0,
+        "strike_count": 0,
+        "eq_level": "MED",
+        "fl_level": "MED",
+        "score_in_danger": 0,
+        "score_travel": 0.0,
+        "score_conflict": 0.0,
+        "score_natural": 0.6666666666666666,
+        "total_score": 0.67,
+        "threat_level": "low",
+        "threat_label": "niedrig",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          59.3781111111,
+          22.6952222222
+        ]
+      },
+      "properties": {
+        "site_id": 1537,
+        "name": "Ancient City of Qalhat",
+        "country_iso2": "OM",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1537",
+        "in_danger": false,
+        "warning_level": 0,
+        "conflict_count": 0,
+        "strike_count": 0,
+        "eq_level": "MED",
+        "fl_level": "LOW",
+        "score_in_danger": 0,
+        "score_travel": 0.0,
+        "score_conflict": 0.0,
+        "score_natural": 0.6666666666666666,
+        "total_score": 0.67,
+        "threat_level": "low",
+        "threat_label": "niedrig",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          49.5769166667,
+          25.368025
+        ]
+      },
+      "properties": {
+        "site_id": 1563,
+        "name": "Al-Ahsa Oasis, an Evolving Cultural Landscape",
+        "country_iso2": "SA",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1563",
         "in_danger": false,
         "warning_level": 0,
         "conflict_count": 0,
@@ -3099,27 +3068,27 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          51.0297222222,
-          25.9780555556
+          35.9166666667,
+          31.4833333333
         ]
       },
       "properties": {
-        "site_id": 1402,
-        "name": "Al Zubarah Archaeological Site",
-        "country_iso2": "QA",
+        "site_id": 1093,
+        "name": "Um er-Rasas (Kastrom Mefa'a)",
+        "country_iso2": "JO",
         "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1402",
+        "http_url": "https://whc.unesco.org/en/list/1093",
         "in_danger": false,
         "warning_level": 0,
         "conflict_count": 0,
-        "strike_count": 43,
-        "eq_level": "VLO",
-        "fl_level": "VLO",
+        "strike_count": 3,
+        "eq_level": "LOW",
+        "fl_level": "LOW",
         "score_in_danger": 0,
         "score_travel": 0.0,
-        "score_conflict": 0.5398238158335158,
-        "score_natural": 0.0,
-        "total_score": 0.54,
+        "score_conflict": 0.27753819465124563,
+        "score_natural": 0.3333333333333333,
+        "total_score": 0.61,
         "threat_level": "low",
         "threat_label": "niedrig",
         "threat_color": "#1a9641"
@@ -3151,6 +3120,37 @@
         "score_conflict": 0.0,
         "score_natural": 0.3333333333333333,
         "total_score": 0.33,
+        "threat_level": "low",
+        "threat_label": "niedrig",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          51.0297222222,
+          25.9780555556
+        ]
+      },
+      "properties": {
+        "site_id": 1402,
+        "name": "Al Zubarah Archaeological Site",
+        "country_iso2": "QA",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1402",
+        "in_danger": false,
+        "warning_level": 0,
+        "conflict_count": 0,
+        "strike_count": 4,
+        "eq_level": "VLO",
+        "fl_level": "VLO",
+        "score_in_danger": 0,
+        "score_travel": 0.0,
+        "score_conflict": 0.32221186578252237,
+        "score_natural": 0.0,
+        "total_score": 0.32,
         "threat_level": "low",
         "threat_label": "niedrig",
         "threat_color": "#1a9641"

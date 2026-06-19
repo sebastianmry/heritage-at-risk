@@ -4,9 +4,9 @@ import '../theme.dart';
 
 /// Threat classes as assigned by the pipeline in `threat_level`.
 enum ThreatLevel {
-  high('high', 'High (7-10)', AppColors.threatHigh),
-  medium('medium', 'Medium (3-6)', AppColors.threatMedium),
-  low('low', 'Low (0-3)', AppColors.threatLow);
+  high('high', 'High', AppColors.threatHigh),
+  medium('medium', 'Medium', AppColors.threatMedium),
+  low('low', 'Low', AppColors.threatLow);
 
   const ThreatLevel(this.key, this.label, this.color);
 
@@ -22,6 +22,7 @@ enum ThreatLevel {
 class ThreatLegend extends StatelessWidget {
   const ThreatLegend({
     super.key,
+    required this.conflictMode,
     required this.activeLevels,
     required this.showPleiades,
     required this.showDensity,
@@ -40,6 +41,7 @@ class ThreatLegend extends StatelessWidget {
     required this.onToggleStrikes,
   });
 
+  final bool conflictMode;
   final Set<String> activeLevels;
   final bool showPleiades;
   final bool showDensity;
@@ -74,72 +76,85 @@ class ThreatLegend extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Threat level',
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: theme.colorScheme.outline,
+              // Threat view: the full legend (class filter + context layers).
+              // Conflict view: only the three conflict layers (the explanatory
+              // panel at the top already describes what they mean).
+              if (!conflictMode) ...[
+                Text(
+                  'Threat level',
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: theme.colorScheme.outline,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 6),
-              for (final level in ThreatLevel.values)
+                const SizedBox(height: 6),
+                for (final level in ThreatLevel.values)
+                  _LegendToggle(
+                    color: level.color,
+                    label: level.label,
+                    active: activeLevels.contains(level.key),
+                    onTap: () => onToggleLevel(level),
+                  ),
+                const SizedBox(height: 8),
+                Divider(height: 1, color: theme.colorScheme.outlineVariant),
+                const SizedBox(height: 8),
+                Text(
+                  'Context',
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: theme.colorScheme.outline,
+                  ),
+                ),
+                const SizedBox(height: 6),
                 _LegendToggle(
-                  color: level.color,
-                  label: level.label,
-                  active: activeLevels.contains(level.key),
-                  onTap: () => onToggleLevel(level),
+                  color: AppColors.pleiades,
+                  label: 'Ancient places',
+                  active: showPleiades,
+                  onTap: () => onTogglePleiades(!showPleiades),
                 ),
-              const SizedBox(height: 8),
-              Divider(height: 1, color: theme.colorScheme.outlineVariant),
-              const SizedBox(height: 8),
-              Text(
-                'Context',
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: theme.colorScheme.outline,
+                _LegendToggle(
+                  color: const Color(0xFFE9852F),
+                  label: 'Heritage density',
+                  active: showDensity,
+                  onTap: () => onToggleDensity(!showDensity),
                 ),
-              ),
-              const SizedBox(height: 6),
-              _LegendToggle(
-                color: AppColors.pleiades,
-                label: 'Ancient places (Pleiades)',
-                active: showPleiades,
-                onTap: () => onTogglePleiades(!showPleiades),
-              ),
-              _LegendToggle(
-                color: const Color(0xFFE9852F),
-                label: 'Heritage & old town density',
-                active: showDensity,
-                onTap: () => onToggleDensity(!showDensity),
-              ),
-              _LegendToggle(
-                color: AppColors.buildingWarmLight,
-                label: 'Buildings (high zoom)',
-                active: showBuildings,
-                onTap: () => onToggleBuildings(!showBuildings),
-              ),
-              _LegendToggle(
-                color: const Color(0xFF0FB5C9),
-                label: '3D models',
-                active: showModels3d,
-                onTap: () => onToggleModels3d(!showModels3d),
-              ),
-              _LegendToggle(
-                color: const Color(0xFFD85A30),
-                label: 'Conflict radius (30 km)',
-                active: showRadius,
-                onTap: () => onToggleRadius(!showRadius),
-              ),
-              _LegendToggle(
-                color: const Color(0xFFB2182B),
-                label: 'Conflict events (UCDP)',
-                active: showEvents,
-                onTap: () => onToggleEvents(!showEvents),
-              ),
-              _LegendToggle(
-                color: const Color(0xFFF4640A),
-                label: 'Strike coverage (GDELT)',
-                active: showStrikes,
-                onTap: () => onToggleStrikes(!showStrikes),
-              ),
+                _LegendToggle(
+                  color: AppColors.buildingWarmLight,
+                  label: 'Buildings',
+                  active: showBuildings,
+                  onTap: () => onToggleBuildings(!showBuildings),
+                ),
+                _LegendToggle(
+                  color: const Color(0xFF0FB5C9),
+                  label: '3D models',
+                  active: showModels3d,
+                  onTap: () => onToggleModels3d(!showModels3d),
+                ),
+              ] else ...[
+                Text(
+                  'Conflict layers',
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: theme.colorScheme.outline,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                _LegendToggle(
+                  color: const Color(0xFFD85A30),
+                  label: 'Conflict radius',
+                  active: showRadius,
+                  onTap: () => onToggleRadius(!showRadius),
+                ),
+                _LegendToggle(
+                  color: const Color(0xFFB2182B),
+                  label: 'Conflict events',
+                  active: showEvents,
+                  onTap: () => onToggleEvents(!showEvents),
+                ),
+                _LegendToggle(
+                  color: const Color(0xFFF4640A),
+                  label: 'Strike coverage',
+                  active: showStrikes,
+                  onTap: () => onToggleStrikes(!showStrikes),
+                ),
+              ],
             ],
           ),
         ),

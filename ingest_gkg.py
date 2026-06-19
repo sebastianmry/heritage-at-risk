@@ -8,10 +8,11 @@ erwaehnungen je Nachrichtenartikel.
 
 GKG ist INDIKATIV, nicht behoerdlich-vollstaendig: es zaehlt Medien-Erwaehnungen,
 geokodiert nur orts-/stadtgenau und ist verrauscht (Dubletten, Falschtreffer).
-Eine Zeile qualifiziert als Strike-Erwaehnung, wenn ihre THEMES eine
-config.STRIKE_THEMES-Marke enthalten ODER ihre Quell-URL ein
-config.STRIKE_URL_KEYWORD traegt; aus den LOCATIONS werden dann alle Punkte in
-der REGION_BBOX als einzelne Erwaehnungen uebernommen (process.py zaehlt sie spaeter
+Eine Zeile qualifiziert als Strike-Erwaehnung nur, wenn ihre THEMES eine
+config.STRIKE_THEMES-Marke enthalten UND ihre Quell-URL ein
+config.STRIKE_URL_KEYWORD traegt (verengt auf echte Einschlag-Berichterstattung,
+haelt Diplomatie-/Nachrichtenhubs heraus); aus den LOCATIONS werden dann alle Punkte
+in der REGION_BBOX als einzelne Erwaehnungen uebernommen (process.py zaehlt sie spaeter
 raeumlich je Site, wie die UCDP-Events).
 
 Robust und resumebar: je Tag entsteht ein kleines, gefiltertes Cache-Parquet
@@ -84,7 +85,13 @@ def _parse_day(zip_path: Path) -> gpd.GeoDataFrame:
     url_pattern = "|".join(re.escape(keyword) for keyword in config.STRIKE_URL_KEYWORDS)
     theme_hit = source_df["THEMES"].str.contains(theme_pattern, regex=True, na=False)
     url_hit = source_df["SOURCEURLS"].str.lower().str.contains(url_pattern, regex=True, na=False)
-    qualifying = source_df.loc[theme_hit | url_hit]
+    # UND-Logik (nicht ODER): ein Artikel zaehlt nur, wenn er ein explizites
+    # Einschlag-Wort in der URL traegt UND konflikt-thematisch ist. Das verengt auf
+    # echte Einschlag-Berichterstattung und entfernt zwei Rauschquellen: reine
+    # Diplomatie-/Dateline-Hubs (Kairo, Muscat: kein Einschlag-Wort) und Nicht-
+    # Konflikt-Nutzung der Woerter ("drone photography", "rocket launch", "missile
+    # defense deal": kein Konflikt-Thema).
+    qualifying = source_df.loc[theme_hit & url_hit]
     if qualifying.empty:
         return _empty_strikes()
 
