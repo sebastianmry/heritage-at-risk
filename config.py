@@ -57,6 +57,7 @@ DUCKDB_PATH: Path = INTERIM_DIR / "heritage.duckdb"
 SITES_GEOJSON_PATH: Path = ARTIFACTS_DIR / "sites.geojson"
 CONFLICT_RADIUS_GEOJSON_PATH: Path = ARTIFACTS_DIR / "conflict_radius.geojson"
 UCDP_EVENTS_GEOJSON_PATH: Path = ARTIFACTS_DIR / "ucdp_events.geojson"
+GKG_STRIKES_GEOJSON_PATH: Path = ARTIFACTS_DIR / "gkg_strikes.geojson"
 BASEMAP_PMTILES_PATH: Path = ARTIFACTS_DIR / "basemap.pmtiles"
 
 # ---------------------------------------------------------------------------
@@ -164,6 +165,49 @@ UCDP_VIOLENCE_TYPES: dict[int, str] = {
     3: "one-sided violence",
 }
 
+# GDELT GKG 1.0: offener, tokenfreier Global-Knowledge-Graph-Tagesfeed. Ergaenzt
+# UCDP GED um den Einschlag-Aspekt, den UCDP bewusst NICHT erfasst: nicht-toedliche
+# bzw. abgefangene Luftschlaege/Drohnen/Raketen (UCDP-Schwelle >= 1 Todesopfer).
+# GKG ist verrauscht (Medien-Erwaehnungen, nur orts-/stadtgenau geokodiert), also
+# ein INDIKATIVER Layer, kein behoerdlich-vollstaendiger Datensatz (PROJECT_CONTEXT.md).
+# Eine Datei je Tag (~365 fuer das Jahresfenster), tab-getrennt, mit Kopfzeile.
+GKG_DAILY_URL_TEMPLATE: str = "http://data.gdeltproject.org/gkg/{date}.gkg.csv.zip"
+
+# Rollendes Einschlag-Fenster, analog zum Konflikt-Fenster (aktuelle Lage, nicht
+# Historie). Eigene Konstante, falls Strikes spaeter ein anderes Fenster brauchen.
+STRIKE_LOOKBACK_MONTHS: int = 12
+
+# GKG-Themen, die einen Konfliktbezug markieren (GKG-1.0-Taxonomie). EINE von zwei
+# UND-Bedingungen: ein Artikel qualifiziert nur, wenn seine THEMES eine dieser Marken
+# enthalten UND seine URL ein STRIKE_URL_KEYWORD traegt (ingest_gkg._parse_day). So
+# fallen Nicht-Konflikt-Nutzungen der Einschlag-Woerter ("drone photography",
+# "rocket launch") heraus.
+STRIKE_THEMES: tuple[str, ...] = (
+    "ARMEDCONFLICT",
+    "TAX_TERROR",
+    "TERROR",
+    "KILL",
+    "SIEGE",
+    "BLOCKADE",
+)
+
+# GKG-Location-Typen, die fuer die Radius-Zaehlung granular genug sind. GKG kodiert
+# je Ort einen Typ: 1=Land (Zentroid), 2=US-Bundesstaat, 3=US-Stadt, 4=Weltstadt,
+# 5=ADM1-Provinz. Fuer den 30-km-Site-Radius taugen nur STADTGENAUE Orte (3/4);
+# Laender-Zentroide (Type 1) liegen auf dem geografischen Mittelpunkt und sind
+# reines Rauschen, Provinz-Zentroide (Type 5) sind zu grob (Fehltreffer im Radius).
+STRIKE_LOCATION_TYPES: tuple[str, ...] = ("3", "4")
+
+# Explizite Einschlag-Woerter, die in der Artikel-URL stehen muessen (GKG 1.0 liefert
+# keinen Volltext, aber die URL-Slugs tragen oft die Schlagzeile). Zweite UND-Bedingung
+# neben STRIKE_THEMES. Kleinschreibung, Substring-Match gegen die SOURCEURL. Das ist der
+# Filter, der Diplomatie-/Nachrichtenhubs (Kairo, Muscat) heraushaelt: deren
+# Konflikt-Berichterstattung traegt selten ein konkretes Einschlag-Wort.
+STRIKE_URL_KEYWORDS: tuple[str, ...] = (
+    "airstrike", "air-strike", "drone", "missile", "rocket",
+    "shelling", "bombard", "bombing", "intercept",
+)
+
 # Zeitfenster der Konflikt-Ereignisse: rollendes Fenster der juengsten
 # CONFLICT_LOOKBACK_MONTHS Monate (Start = erster Tag des Monats vor N Monaten,
 # inklusive, YYYY-MM-DD). Der Threat Score soll die AKTUELLE Gefaehrdung zeigen,
@@ -189,6 +233,7 @@ def _conflict_start_date(months: int) -> str:
 
 
 CONFLICT_START_DATE: str = _conflict_start_date(CONFLICT_LOOKBACK_MONTHS)
+STRIKE_START_DATE: str = _conflict_start_date(STRIKE_LOOKBACK_MONTHS)
 
 # Auswaertiges Amt: Reise- und Sicherheitshinweise als Laender-Gefaehrdungsindikator.
 # Die OpenData-API liefert je Land vier Bool-Flags, keine fertige Zahlenskala.
@@ -283,6 +328,28 @@ CONFLICT_RADIUS_KM: float = 30.0
 # "25+ toedliche Ereignisse in 30 km ueber 12 Monate = maximale lokale Konflikt-
 # Exposition" (datenverankert, mit Fenster/Radius nachzuziehen, revidierbar).
 CONFLICT_EVENTS_FOR_FULL_SCORE: int = 25
+
+# Kombinierte Konflikt-Komponente (UCDP GED + GDELT-GKG-Einschlaege). Beide Quellen
+# zaehlen Punkte im CONFLICT_RADIUS_KM je Site, werden aber EINZELN log-skaliert auf
+# [0,1] (jede mit eigenem Saettigungs-Schwellwert, da ihre Mengenskalen voellig
+# verschieden sind: UCDP toedlich/duenn, GKG verrauscht/dicht). Die beiden Subscores
+# werden UCDP-verankert gemischt, dann mit SCORE_WEIGHT_CONFLICT skaliert:
+#   conflict_factor = CONFLICT_UCDP_BLEND * ucdp_sub + (1-CONFLICT_UCDP_BLEND) * strike_sub
+# So bleibt das saubere, peer-reviewte UCDP-Signal der Anker, und GKG hebt gezielt die
+# Sites, die UCDP verpasst (nicht-toedliche/abgefangene Einschlaege), ohne dass das
+# Medien-Rauschen die Basis dominiert.
+#
+# Einheit der GKG-Seite sind ORT-TAGE (ein Treffer je Ort je Tag, in ingest_gkg.py
+# dedupliziert), NICHT Roh-Erwaehnungen: das entfernt den Medien-Megafon-Bias
+# (Roh-Erwaehnungen waren ~17x mehr; ein Einschlag mit 500 Quellen zaehlte sonst 500x).
+# STRIKE_DAYS_FOR_FULL_SCORE am p90 der aktiven Sites kalibriert (wie
+# CONFLICT_EVENTS_FOR_FULL_SCORE). Datenverankert 2026-06-19 am 12-Monats-Lauf
+# (384 Tage, 14.006 Ort-Tage) mit dem VERENGTEN Filter (Strike-Keyword UND
+# Konflikt-Thema, siehe STRIKE_THEMES/STRIKE_URL_KEYWORDS): p90 der 81 aktiven Sites
+# ~ 406 Ort-Tage im 30-km-Radius -> Deckel 400. (Der fruehere breite Filter ergab
+# 4.500, war aber von Diplomatie-/Nachrichtenhubs wie Kairo aufgeblaeht.)
+CONFLICT_UCDP_BLEND: float = 0.6
+STRIKE_DAYS_FOR_FULL_SCORE: int = 400
 
 # ---------------------------------------------------------------------------
 # Darstellung: farbcodierte Threat-Level (gruen, gelb, rot)

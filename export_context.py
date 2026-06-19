@@ -72,6 +72,51 @@ def _norm_name(s: str) -> str:
     return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9]+", " ", s)).strip()
 
 
+# Platzhalter-Titel, die Pleiades fuer unbenannte/ungeklaerte Orte vergibt; raus.
+_PLACEHOLDER_TITLES = re.compile(r"^(unknown|untitled|unnamed)\b", re.I)
+
+
+def _ascii_fold_title(title: str) -> str:
+    """Diakritika folden, ABER Gross-/Kleinschreibung und Wortgrenzen erhalten.
+
+    Anders als _norm_name (das fuer den Vergleich kleinschreibt und zerlegt) bleibt
+    der Name lesbar: "Arbela" aus "Arbela", "Abu Fanduwa" aus "Abu Fanduwa",
+    "Al-Hilah" aus "Al-Hilah". Nicht zerlegbare Sonderzeichen (Ayn/Hamza-Modifier)
+    werden danach als Nicht-ASCII verworfen.
+    """
+    decomposed = unicodedata.normalize("NFKD", title)
+    folded = "".join(c for c in decomposed if not unicodedata.combining(c))
+    ascii_only = folded.encode("ascii", "ignore").decode("ascii")
+    return re.sub(r"\s+", " ", ascii_only).strip()
+
+
+# Pleiades-Ortstyp-Slugs auf lesbare Labels. Was hier fehlt, wird generisch
+# aufgehuebscht (Bindestriche zu Leerzeichen, Erstbuchstabe gross).
+_TYPE_LABELS: dict[str, str] = {
+    "archive-repository": "Archive/Repository",
+    "architecturalcomplex": "Architectural complex",
+    "settlement-modern": "Modern settlement",
+    "production": "Production site",
+    "urban": "Urban area",
+    "findspot": "Find spot",
+    "water-inland": "Inland water",
+    "water-open": "Open water",
+}
+
+
+def _clean_types(raw_types: str) -> str:
+    """Pleiades-Typ-Slugs lesbar machen: Zahlen-Suffix weg, 'unlocated' raus, mappen."""
+    labels: list[str] = []
+    for token in re.split(r"[;,]", raw_types):
+        slug = re.sub(r"-\d+$", "", token.strip().lower())  # Disambiguierungs-Zahl weg
+        if not slug or slug == "unlocated":
+            continue
+        label = _TYPE_LABELS.get(slug) or slug.replace("-", " ").replace("_", " ").capitalize()
+        if label not in labels:
+            labels.append(label)
+    return ", ".join(labels)
+
+
 def _unesco_name_candidates(name: str) -> set[str]:
     """Kern-Ortsnamen einer UNESCO-Site (Geruest weg, an / : und 'and' gesplittet)."""
     name = re.sub(r"\(.*?\)", " ", name)
@@ -118,8 +163,8 @@ def _point_feature(lon: float, lat: float, properties: dict[str, object]) -> dic
     }
 
 
-def export_pleiades(con: duckdb.DuckDBPyConnection) -> tuple[int, int]:
-    """Pleiades-Kontext schreiben; gibt (geschriebene, als Dublette verworfene) zurueck."""
+def export_pleiades(con: duckdb.DuckDBPyConnection) -> tuple[int, int, int]:
+    """Pleiades-Kontext schreiben; gibt (geschriebene, Namens-Dubletten, Platzhalter) zurueck."""
     radius_m = CONTEXT_NEAR_SITES_KM * 1000.0
     # Je Pleiades-Punkt im Kontext-Umkreis: zusaetzlich die Namen der UNESCO-Sites
     # im engen Dedup-Umkreis (fuer den Namens-Identitaetstest in Python).
@@ -142,13 +187,22 @@ def export_pleiades(con: duckdb.DuckDBPyConnection) -> tuple[int, int]:
     """).fetchall()
     features: list[dict[str, object]] = []
     dropped = 0
+    dropped_placeholder = 0
     for title, types, url, lon, lat, near_names in rows:
         if near_names and any(_same_place(name, title or "") for name in near_names):
             dropped += 1  # Namens-Dublette einer UNESCO-Site, nur diese faellt raus
             continue
-        features.append(_point_feature(lon, lat, {"title": title or "", "types": types or "", "url": url or ""}))
+        clean_title = _ascii_fold_title(title or "")
+        if not clean_title or _PLACEHOLDER_TITLES.match(clean_title):
+            dropped_placeholder += 1  # unbenannter/ungeklaerter Pleiades-Ort
+            continue
+        features.append(_point_feature(lon, lat, {
+            "title": clean_title,
+            "types": _clean_types(types or ""),
+            "url": url or "",
+        }))
     written = _write_geojson(PLEIADES_GEOJSON, features, layer="pleiades")
-    return written, dropped
+    return written, dropped, dropped_placeholder
 
 
 def run() -> None:
@@ -164,12 +218,12 @@ def run() -> None:
         con.execute(f"""CREATE TEMP TABLE _sites AS
             SELECT name, longitude AS lon, latitude AS lat FROM read_parquet('{SITES_PARQUET.as_posix()}')
             WHERE longitude IS NOT NULL AND latitude IS NOT NULL""")
-        n_pleiades, n_dropped = export_pleiades(con)
+        n_pleiades, n_dropped, n_placeholder = export_pleiades(con)
     finally:
         con.close()
 
     print(f"export_context: {n_pleiades} Pleiades-Orte -> {PLEIADES_GEOJSON.name} "
-          f"({n_dropped} Namens-Dubletten von UNESCO-Sites verworfen)")
+          f"({n_dropped} Namens-Dubletten von UNESCO-Sites, {n_placeholder} Platzhalter verworfen)")
 
 
 def main() -> None:

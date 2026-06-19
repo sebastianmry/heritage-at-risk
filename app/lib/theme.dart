@@ -17,6 +17,10 @@ class AppColors {
   static const Color sandstoneDark = Color(0xFF5E4A2A);
   static const Color accent = Color(0xFFFFC400);
 
+  /// Sandstone as a hex string for MapLibre paint (plain site markers in the
+  /// conflict view, where the threat ramp is intentionally not used).
+  static const String sandstoneHex = '#7E6238';
+
   /// Cream foreground used on the sandstone chrome (app bar, sheet headers).
   static const Color chromeOnColor = Color(0xFFF5ECD8);
 

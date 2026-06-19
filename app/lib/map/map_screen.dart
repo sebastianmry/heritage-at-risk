@@ -8,18 +8,33 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 
 import '../basemap.dart';
 import '../theme.dart';
+import 'info_sheet.dart';
 import 'model_3d_sheet.dart';
 import 'pleiades_sheet.dart';
 import 'site_detail_sheet.dart';
 import 'site_list_screen.dart';
 import 'threat_legend.dart';
 
+/// The two views of the map, switched by a segmented button at the top.
+///
+/// Both share ONE MapLibre instance (one GL context); switching only toggles
+/// which layer set and which explanatory panel are shown. Two live maps would
+/// be memory-heavy and crash-prone on Android, so we deliberately reuse one.
+enum MapMode {
+  /// Threat score per site plus heritage context (Pleiades, density, 3D).
+  threat,
+
+  /// Only the conflict data: UCDP events, GKG strike coverage, the 30 km radius.
+  conflict,
+}
+
 /// Main view: the threat map of the MENA region.
 ///
 /// Reads the bundled pipeline artefacts and stacks them as MapLibre layers over
 /// a monochrome CARTO basemap: the scored sites as an inverted traffic-light
 /// ramp (on top), ancient places and building density as progressive context
-/// (below). Context layers appear only when zooming in.
+/// (below). Context layers appear only when zooming in. A segmented button
+/// switches to a conflict-only view of the same map.
 class MapScreen extends StatefulWidget {
   const MapScreen({
     super.key,
@@ -37,6 +52,7 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   static const String _sitesSource = 'sites';
   static const String _sitesLayer = 'sites-circles';
+  static const String _sitesPlainLayer = 'sites-plain-circles';
   static const String _pleiadesSource = 'pleiades';
   static const String _pleiadesLayer = 'pleiades-circles';
   static const String _densitySource = 'density';
@@ -47,6 +63,8 @@ class _MapScreenState extends State<MapScreen> {
   static const String _radiusLayer = 'conflict-radius-line';
   static const String _eventsSource = 'ucdp-events';
   static const String _eventsLayer = 'ucdp-events-circles';
+  static const String _strikesSource = 'gkg-strikes';
+  static const String _strikesLayer = 'gkg-strikes-circles';
 
   MapLibreMapController? _controller;
 
@@ -56,6 +74,9 @@ class _MapScreenState extends State<MapScreen> {
   Map<String, dynamic>? _models3dGeojson;
   Map<String, dynamic>? _radiusGeojson;
   Map<String, dynamic>? _eventsGeojson;
+  Map<String, dynamic>? _strikesGeojson;
+
+  MapMode _mode = MapMode.threat;
 
   final Set<String> _activeLevels = {'high', 'medium', 'low'};
   bool _showPleiades = true;
@@ -64,6 +85,7 @@ class _MapScreenState extends State<MapScreen> {
   bool _showModels3d = true;
   bool _showRadius = false;
   bool _showEvents = false;
+  bool _showStrikes = false;
   int _siteCount = 0;
   int _inDangerCount = 0;
 
@@ -90,6 +112,7 @@ class _MapScreenState extends State<MapScreen> {
     _models3dGeojson ??= await _loadGeojson('assets/data/heritage_3d.geojson');
     _radiusGeojson ??= await _loadGeojson('assets/data/conflict_radius.geojson');
     _eventsGeojson ??= await _loadGeojson('assets/data/ucdp_events.geojson');
+    _strikesGeojson ??= await _loadGeojson('assets/data/gkg_strikes.geojson');
     final features = (_sitesGeojson!['features'] as List?) ?? const [];
     final count = features.length;
     final inDanger = features
@@ -243,6 +266,36 @@ class _MapScreenState extends State<MapScreen> {
       enableInteraction: false,
     );
 
+    // GDELT-GKG strike coverage as deep-orange dots, aggregated per place and
+    // sized by coverage-days (radius by 'days', one hit per place per day, media
+    // megaphone removed). Distinct hue from the UCDP crimson: this is the noisier,
+    // media-based signal of (also non-lethal) strikes that UCDP misses, blended
+    // into the conflict component. Off by default, non-interactive (taps belong
+    // to the sites).
+    await controller.addGeoJsonSource(_strikesSource, _strikesGeojson!);
+    await controller.addCircleLayer(
+      _strikesSource,
+      _strikesLayer,
+      const CircleLayerProperties(
+        circleColor: '#F4640A',
+        circleRadius: [
+          'interpolate',
+          ['linear'],
+          ['get', 'days'],
+          1,
+          2.0,
+          60,
+          6.0,
+          360,
+          12.0,
+        ],
+        circleOpacity: 0.5,
+        circleStrokeColor: '#9C3D00',
+        circleStrokeWidth: 0.4,
+      ),
+      enableInteraction: false,
+    );
+
     // The scored sites as the threat hero (on top). Colour from the data,
     // radius additionally by score; white stroke for contrast.
     await controller.addGeoJsonSource(_sitesSource, _sitesGeojson!);
@@ -266,6 +319,23 @@ class _MapScreenState extends State<MapScreen> {
         circleStrokeColor: '#ffffff',
         circleStrokeWidth: 1.4,
       ),
+    );
+
+    // Plain site markers for the conflict view: same locations, but a neutral
+    // sandstone dot WITHOUT the threat ramp (the conflict view is about the
+    // conflict data, not the score). Small and non-interactive; only a location
+    // reference. Shown only in conflict mode (see _applyModeVisibility).
+    await controller.addCircleLayer(
+      _sitesSource,
+      _sitesPlainLayer,
+      CircleLayerProperties(
+        circleColor: AppColors.sandstoneHex,
+        circleRadius: 4.0,
+        circleOpacity: 0.9,
+        circleStrokeColor: '#ffffff',
+        circleStrokeWidth: 1.2,
+      ),
+      enableInteraction: false,
     );
 
     // 3D-model markers on top: a cyan fill with a white ring (matching the
@@ -295,11 +365,14 @@ class _MapScreenState extends State<MapScreen> {
     );
 
     await _applyThreatFilter();
+    await controller.setLayerVisibility(_sitesLayer, _mode == MapMode.threat);
+    await controller.setLayerVisibility(_sitesPlainLayer, _mode == MapMode.conflict);
     await controller.setLayerVisibility(_pleiadesLayer, _showPleiades);
     await controller.setLayerVisibility(_densityLayer, _showDensity);
     await controller.setLayerVisibility(_models3dLayer, _showModels3d);
     await controller.setLayerVisibility(_radiusLayer, _showRadius);
     await controller.setLayerVisibility(_eventsLayer, _showEvents);
+    await controller.setLayerVisibility(_strikesLayer, _showStrikes);
     await _styleBasemapBuildings();
   }
 
@@ -443,6 +516,50 @@ class _MapScreenState extends State<MapScreen> {
     _controller?.setLayerVisibility(_eventsLayer, show);
   }
 
+  void _toggleStrikes(bool show) {
+    setState(() => _showStrikes = show);
+    _controller?.setLayerVisibility(_strikesLayer, show);
+  }
+
+  /// Switch between the threat and conflict views. Resets each view's layer set
+  /// to its sensible default (the user can still toggle within a view), then
+  /// applies the visibilities to the single shared map.
+  void _setMode(MapMode mode) {
+    if (mode == _mode) return;
+    setState(() {
+      _mode = mode;
+      final conflict = mode == MapMode.conflict;
+      // Conflict view: only the three conflict layers; heritage context off.
+      _showRadius = conflict;
+      _showEvents = conflict;
+      _showStrikes = conflict;
+      _showPleiades = !conflict;
+      _showDensity = !conflict;
+      _showBuildings = !conflict;
+      _showModels3d = !conflict;
+    });
+    _applyModeVisibility();
+  }
+
+  /// Apply the current mode's layer visibilities to the map. The scored sites
+  /// belong to the threat view; the radius outlines already show where the sites
+  /// are in the conflict view, so no marker context is lost.
+  Future<void> _applyModeVisibility() async {
+    final controller = _controller;
+    if (controller == null) return;
+    await controller.setLayerVisibility(_sitesLayer, _mode == MapMode.threat);
+    await controller.setLayerVisibility(_sitesPlainLayer, _mode == MapMode.conflict);
+    await controller.setLayerVisibility(_pleiadesLayer, _showPleiades);
+    await controller.setLayerVisibility(_densityLayer, _showDensity);
+    await controller.setLayerVisibility(_models3dLayer, _showModels3d);
+    await controller.setLayerVisibility(_radiusLayer, _showRadius);
+    await controller.setLayerVisibility(_eventsLayer, _showEvents);
+    await controller.setLayerVisibility(_strikesLayer, _showStrikes);
+    for (final id in _buildingLayerIds) {
+      await controller.setLayerVisibility(id, _showBuildings);
+    }
+  }
+
   /// Foreground locate: request permission, get the current position, recentre
   /// the camera, show the location dot, and report the nearest scored site.
   Future<void> _locateMe() async {
@@ -525,6 +642,16 @@ class _MapScreenState extends State<MapScreen> {
         title: const Text('Heritage at Risk'),
         actions: [
           IconButton(
+            tooltip: 'About this map',
+            icon: const Icon(Icons.info_outline),
+            onPressed: () => showModalBottomSheet<void>(
+              context: context,
+              showDragHandle: false,
+              isScrollControlled: true,
+              builder: (_) => const InfoSheet(),
+            ),
+          ),
+          IconButton(
             tooltip: 'Sites by country',
             icon: const Icon(Icons.format_list_bulleted),
             onPressed: () => Navigator.of(context).push(
@@ -562,15 +689,25 @@ class _MapScreenState extends State<MapScreen> {
             top: 12,
             left: 12,
             right: 12,
-            child: _ContextPanel(
-              siteCount: _siteCount,
-              inDangerCount: _inDangerCount,
+            child: Column(
+              children: [
+                _ModeSwitch(mode: _mode, onChanged: _setMode),
+                const SizedBox(height: 8),
+                if (_mode == MapMode.threat)
+                  _ContextPanel(
+                    siteCount: _siteCount,
+                    inDangerCount: _inDangerCount,
+                  )
+                else
+                  const _ConflictInfoPanel(),
+              ],
             ),
           ),
           Positioned(
             left: 12,
             bottom: 24,
             child: ThreatLegend(
+              conflictMode: _mode == MapMode.conflict,
               activeLevels: _activeLevels,
               showPleiades: _showPleiades,
               showDensity: _showDensity,
@@ -578,6 +715,7 @@ class _MapScreenState extends State<MapScreen> {
               showModels3d: _showModels3d,
               showRadius: _showRadius,
               showEvents: _showEvents,
+              showStrikes: _showStrikes,
               onToggleLevel: _toggleLevel,
               onTogglePleiades: _togglePleiades,
               onToggleDensity: _toggleDensity,
@@ -585,6 +723,7 @@ class _MapScreenState extends State<MapScreen> {
               onToggleModels3d: _toggleModels3d,
               onToggleRadius: _toggleRadius,
               onToggleEvents: _toggleEvents,
+              onToggleStrikes: _toggleStrikes,
             ),
           ),
           if (_nearest != null)
@@ -733,9 +872,85 @@ class _ContextPanel extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              'Conflict data: UCDP GED (Uppsala)',
+              'Conflict data: UCDP GED (Uppsala) + GDELT GKG (strikes)',
               style: theme.textTheme.labelSmall?.copyWith(
                 color: theme.colorScheme.outline,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Segmented switch between the threat and conflict views (one shared map).
+class _ModeSwitch extends StatelessWidget {
+  const _ModeSwitch({required this.mode, required this.onChanged});
+
+  final MapMode mode;
+  final ValueChanged<MapMode> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      elevation: 3,
+      color: theme.colorScheme.surface.withValues(alpha: 0.94),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(4),
+        child: SegmentedButton<MapMode>(
+          segments: const [
+            ButtonSegment(
+              value: MapMode.threat,
+              label: Text('Threat'),
+              icon: Icon(Icons.shield_outlined, size: 18),
+            ),
+            ButtonSegment(
+              value: MapMode.conflict,
+              label: Text('Conflict'),
+              icon: Icon(Icons.crisis_alert_outlined, size: 18),
+            ),
+          ],
+          selected: {mode},
+          onSelectionChanged: (selection) => onChanged(selection.first),
+          showSelectedIcon: false,
+          style: const ButtonStyle(visualDensity: VisualDensity.compact),
+        ),
+      ),
+    );
+  }
+}
+
+/// Compact one-line heading for the conflict view. The detail (what each layer
+/// means, how they feed the score) lives in the legend and the info button, so
+/// this panel stays small and leaves the map room.
+class _ConflictInfoPanel extends StatelessWidget {
+  const _ConflictInfoPanel();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      elevation: 3,
+      color: theme.colorScheme.surface.withValues(alpha: 0.94),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+        child: Row(
+          children: [
+            Icon(
+              Icons.crisis_alert_outlined,
+              size: 16,
+              color: theme.colorScheme.outline,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Conflict near sites: lethal events (UCDP) + strike coverage '
+                '(GDELT), 30 km. Tap ⓘ for detail.',
+                style: theme.textTheme.bodySmall,
               ),
             ),
           ],
