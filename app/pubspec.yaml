@@ -77,7 +77,6 @@ flutter:
     - assets/data/building_density.geojson
     - assets/data/heritage_3d.geojson
     - assets/data/ucdp_events.geojson
-    - assets/data/gkg_strikes.geojson
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

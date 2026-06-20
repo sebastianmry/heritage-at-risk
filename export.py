@@ -36,7 +36,7 @@ SCORES_TABLE: str = "site_scores"
 # Darstellungshilfen. Bewusst explizit statt SELECT *, damit das App-Schema stabil bleibt.
 FEATURE_COLUMNS: tuple[str, ...] = (
     "site_id", "name", "country_iso2", "category", "http_url",
-    "in_danger", "warning_level", "conflict_count", "strike_count", "eq_level", "fl_level",
+    "in_danger", "warning_level", "conflict_count", "eq_level", "fl_level",
     "score_in_danger", "score_travel", "score_conflict", "score_natural",
     "total_score", "threat_level",
 )
@@ -53,8 +53,8 @@ def _metadata(*, site_count: int, conflict_available: bool) -> dict[str, object]
             "in_danger": {"weight": config.SCORE_WEIGHT_UNESCO_IN_DANGER, "source": "UNESCO World Heritage Centre"},
             "travel_warning": {"weight": config.SCORE_WEIGHT_TRAVEL_WARNING, "source": "Auswaertiges Amt"},
             "conflict": {"weight": config.SCORE_WEIGHT_CONFLICT,
-                         "source": "UCDP GED (Uppsala Conflict Data Program) + GDELT GKG (Einschlag-Erwaehnungen)",
-                         "method": f"log-skalierte Subscores, UCDP-verankert gemischt ({config.CONFLICT_UCDP_BLEND:.0%} UCDP / {1 - config.CONFLICT_UCDP_BLEND:.0%} GKG)",
+                         "source": "UCDP GED (Uppsala Conflict Data Program)",
+                         "method": "log-skalierter Subscore toedlicher Ereignisse im Radius",
                          "radius_km": config.CONFLICT_RADIUS_KM},
             "natural_hazard": {"weight": config.SCORE_WEIGHT_NATURAL_HAZARD,
                                "source": "ThinkHazard! (World Bank GFDRR)",
