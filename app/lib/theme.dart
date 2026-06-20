@@ -35,10 +35,11 @@ class AppColors {
 
   // Warm tint for the basemap buildings (ember logic per theme, from the map
   // prototype). Exposed as Color (legend swatch) and Hex (MapLibre paint).
-  static const Color buildingWarmLight = Color(0xFFD9B878);
-  static const Color buildingWarmDark = Color(0xFF6B5836);
-  static const String buildingWarmLightHex = '#D9B878';
-  static const String buildingWarmDarkHex = '#6B5836';
+  // Match the app's sandstone theme colour, per request.
+  static const Color buildingWarmLight = sandstone;
+  static const Color buildingWarmDark = sandstoneDark;
+  static const String buildingWarmLightHex = sandstoneHex;
+  static const String buildingWarmDarkHex = '#5E4A2A';
 
   /// Threat colour for a pipeline `threat_level` key.
   static Color forThreatLevel(String level) {

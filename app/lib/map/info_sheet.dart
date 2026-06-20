@@ -43,7 +43,7 @@ class InfoSheet extends StatelessWidget {
             const SizedBox(height: 8),
             const _MetaRow('In-danger status', 'UNESCO World Heritage Centre', '×3'),
             const _MetaRow('Travel advisory', 'German Federal Foreign Office', '×3'),
-            const _MetaRow('Conflict & strikes', 'UCDP GED + GDELT GKG, within 30 km', '×3'),
+            const _MetaRow('Conflict', 'UCDP GED, within 30 km', '×3'),
             const _MetaRow('Natural hazard', 'ThinkHazard! (World Bank), quake/flood', '×1'),
             const SizedBox(height: 12),
 
@@ -59,7 +59,7 @@ class InfoSheet extends StatelessWidget {
                 'Pleiades gazetteer of antiquity (context, no score)'),
             const _LayerRow(Color(0xFFE9852F), 'Heritage & old town density',
                 'OpenStreetMap historic sites and buildings'),
-            const _LayerRow(Color(0xFFE3C28C), 'Buildings',
+            const _LayerRow(Color(0xFF7E6238), 'Buildings',
                 'Provider basemap footprints, shown at high zoom'),
             const _LayerRow(Color(0xFF0FB5C9), '3D models',
                 'Public laser scans / photogrammetry (CyArk, Sketchfab)'),
@@ -67,10 +67,6 @@ class InfoSheet extends StatelessWidget {
                 'The 30 km area scored around each site'),
             const _LayerRow(Color(0xFFB2182B), 'Conflict events',
                 'UCDP GED: verified lethal events (≥1 death)'),
-            const _LayerRow(Color(0xFFF4640A), 'Strike coverage',
-                'GDELT GKG: media-reported strikes, also non-lethal / intercepted. '
-                'Counted as place-days, filtered to explicit strike reporting — '
-                'broader than UCDP but noisier.'),
             const SizedBox(height: 12),
 
             _SectionTitle('Data & licence'),
