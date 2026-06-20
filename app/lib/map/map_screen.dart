@@ -9,6 +9,7 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 import '../basemap.dart';
 import '../theme.dart';
 import 'info_sheet.dart';
+import 'conflict_overview_sheet.dart';
 import 'model_3d_sheet.dart';
 import 'pleiades_sheet.dart';
 import 'site_detail_sheet.dart';
@@ -24,7 +25,7 @@ enum MapMode {
   /// Threat score per site plus heritage context (Pleiades, density, 3D).
   threat,
 
-  /// Only the conflict data: UCDP events, GKG strike coverage, the 30 km radius.
+  /// Only the conflict data: UCDP events and the 30 km radius.
   conflict,
 }
 
@@ -63,8 +64,6 @@ class _MapScreenState extends State<MapScreen> {
   static const String _radiusLayer = 'conflict-radius-line';
   static const String _eventsSource = 'ucdp-events';
   static const String _eventsLayer = 'ucdp-events-circles';
-  static const String _strikesSource = 'gkg-strikes';
-  static const String _strikesLayer = 'gkg-strikes-circles';
 
   MapLibreMapController? _controller;
 
@@ -74,7 +73,6 @@ class _MapScreenState extends State<MapScreen> {
   Map<String, dynamic>? _models3dGeojson;
   Map<String, dynamic>? _radiusGeojson;
   Map<String, dynamic>? _eventsGeojson;
-  Map<String, dynamic>? _strikesGeojson;
 
   MapMode _mode = MapMode.threat;
 
@@ -85,9 +83,13 @@ class _MapScreenState extends State<MapScreen> {
   bool _showModels3d = true;
   bool _showRadius = false;
   bool _showEvents = false;
-  bool _showStrikes = false;
+  // Whether the info panel below the mode switch is expanded (the switch itself
+  // always stays visible so the user can change views).
+  bool _topInfoExpanded = true;
   int _siteCount = 0;
   int _inDangerCount = 0;
+  int _totalConflictEvents = 0;
+  int _conflictSiteCount = 0;
 
   /// Foreground location: the device-location dot is shown once the user grants
   /// permission via the locate button. Off until then (no passive tracking).
@@ -112,16 +114,25 @@ class _MapScreenState extends State<MapScreen> {
     _models3dGeojson ??= await _loadGeojson('assets/data/heritage_3d.geojson');
     _radiusGeojson ??= await _loadGeojson('assets/data/conflict_radius.geojson');
     _eventsGeojson ??= await _loadGeojson('assets/data/ucdp_events.geojson');
-    _strikesGeojson ??= await _loadGeojson('assets/data/gkg_strikes.geojson');
     final features = (_sitesGeojson!['features'] as List?) ?? const [];
     final count = features.length;
     final inDanger = features
         .where((f) => (f as Map)['properties']?['in_danger'] == true)
         .length;
-    if (mounted && (count != _siteCount || inDanger != _inDangerCount)) {
+    // Conflict overview tallies: total georeferenced UCDP events near sites and
+    // how many sites have at least one event in their radius.
+    final totalEvents = ((_eventsGeojson?['features'] as List?) ?? const []).length;
+    final conflictSites = features
+        .where((f) => ((f as Map)['properties']?['conflict_count'] ?? 0) is num
+            ? ((f['properties']['conflict_count'] ?? 0) as num) > 0
+            : false)
+        .length;
+    if (mounted) {
       setState(() {
         _siteCount = count;
         _inDangerCount = inDanger;
+        _totalConflictEvents = totalEvents;
+        _conflictSiteCount = conflictSites;
       });
     }
   }
@@ -231,69 +242,10 @@ class _MapScreenState extends State<MapScreen> {
       _radiusLayer,
       const LineLayerProperties(
         lineColor: '#D85A30',
-        lineWidth: 1.2,
-        lineOpacity: 0.55,
+        lineWidth: 1.5,
+        lineOpacity: 0.7,
         lineDasharray: [2, 2],
       ),
-    );
-
-    // UCDP conflict events as small crimson dots (below the markers): the raw
-    // georeferenced events that the conflict component counts per site (only the
-    // ones within the 30 km site radius are exported, so layer == scored events).
-    // One flat colour (violence type stays in the data but is not encoded here).
-    // Dense, so off by default and non-interactive (taps belong to the sites).
-    await controller.addGeoJsonSource(_eventsSource, _eventsGeojson!);
-    await controller.addCircleLayer(
-      _eventsSource,
-      _eventsLayer,
-      const CircleLayerProperties(
-        circleColor: '#B2182B',
-        circleRadius: [
-          'interpolate',
-          ['linear'],
-          ['zoom'],
-          4,
-          1.8,
-          9,
-          3.5,
-          13,
-          5.5,
-        ],
-        circleOpacity: 0.55,
-        circleStrokeColor: '#7F0E1E',
-        circleStrokeWidth: 0.4,
-      ),
-      enableInteraction: false,
-    );
-
-    // GDELT-GKG strike coverage as deep-orange dots, aggregated per place and
-    // sized by coverage-days (radius by 'days', one hit per place per day, media
-    // megaphone removed). Distinct hue from the UCDP crimson: this is the noisier,
-    // media-based signal of (also non-lethal) strikes that UCDP misses, blended
-    // into the conflict component. Off by default, non-interactive (taps belong
-    // to the sites).
-    await controller.addGeoJsonSource(_strikesSource, _strikesGeojson!);
-    await controller.addCircleLayer(
-      _strikesSource,
-      _strikesLayer,
-      const CircleLayerProperties(
-        circleColor: '#F4640A',
-        circleRadius: [
-          'interpolate',
-          ['linear'],
-          ['get', 'days'],
-          1,
-          2.0,
-          60,
-          6.0,
-          360,
-          12.0,
-        ],
-        circleOpacity: 0.5,
-        circleStrokeColor: '#9C3D00',
-        circleStrokeWidth: 0.4,
-      ),
-      enableInteraction: false,
     );
 
     // The scored sites as the threat hero (on top). Colour from the data,
@@ -338,6 +290,35 @@ class _MapScreenState extends State<MapScreen> {
       enableInteraction: false,
     );
 
+    // UCDP conflict events as bold crimson dots. Added AFTER the site markers so
+    // in the conflict view they sit ABOVE the (plain) sites — the conflict data
+    // is the hero there. Larger and more opaque at low zoom so the pattern reads
+    // in the overview. Off by default in threat view, non-interactive (taps
+    // belong to the sites).
+    await controller.addGeoJsonSource(_eventsSource, _eventsGeojson!);
+    await controller.addCircleLayer(
+      _eventsSource,
+      _eventsLayer,
+      const CircleLayerProperties(
+        circleColor: '#D7191C',
+        circleRadius: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          4,
+          4.5,
+          9,
+          6.5,
+          13,
+          8.0,
+        ],
+        circleOpacity: 0.88,
+        circleStrokeColor: '#7F0E1E',
+        circleStrokeWidth: 0.9,
+      ),
+      enableInteraction: false,
+    );
+
     // 3D-model markers on top: a cyan fill with a white ring (matching the
     // sites' white stroke), set apart from the threat ramp and Pleiades by
     // colour. Interactive (tap opens the sheet).
@@ -372,7 +353,6 @@ class _MapScreenState extends State<MapScreen> {
     await controller.setLayerVisibility(_models3dLayer, _showModels3d);
     await controller.setLayerVisibility(_radiusLayer, _showRadius);
     await controller.setLayerVisibility(_eventsLayer, _showEvents);
-    await controller.setLayerVisibility(_strikesLayer, _showStrikes);
     await _styleBasemapBuildings();
   }
 
@@ -516,9 +496,34 @@ class _MapScreenState extends State<MapScreen> {
     _controller?.setLayerVisibility(_eventsLayer, show);
   }
 
-  void _toggleStrikes(bool show) {
-    setState(() => _showStrikes = show);
-    _controller?.setLayerVisibility(_strikesLayer, show);
+  /// Open the conflict overview: total events and the per-site breakdown,
+  /// sorted by event count. Reads the already-loaded site scores.
+  void _showConflictOverview() {
+    final features = (_sitesGeojson?['features'] as List?) ?? const [];
+    final sites = <ConflictSiteTally>[];
+    for (final f in features) {
+      final props = (f as Map)['properties'] as Map? ?? const {};
+      final count = (props['conflict_count'] ?? 0);
+      final events = count is num ? count.toInt() : 0;
+      if (events <= 0) continue;
+      sites.add(ConflictSiteTally(
+        name: '${props['name'] ?? '—'}',
+        countryIso2: '${props['country_iso2'] ?? ''}',
+        events: events,
+        threatLevel: '${props['threat_level'] ?? ''}',
+      ));
+    }
+    sites.sort((a, b) => b.events.compareTo(a.events));
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (_) => ConflictOverviewSheet(
+        totalEvents: _totalConflictEvents,
+        siteCount: _conflictSiteCount,
+        sites: sites,
+      ),
+    );
   }
 
   /// Switch between the threat and conflict views. Resets each view's layer set
@@ -529,10 +534,9 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {
       _mode = mode;
       final conflict = mode == MapMode.conflict;
-      // Conflict view: only the three conflict layers; heritage context off.
+      // Conflict view: only the conflict layers; heritage context off.
       _showRadius = conflict;
       _showEvents = conflict;
-      _showStrikes = conflict;
       _showPleiades = !conflict;
       _showDensity = !conflict;
       _showBuildings = !conflict;
@@ -554,7 +558,6 @@ class _MapScreenState extends State<MapScreen> {
     await controller.setLayerVisibility(_models3dLayer, _showModels3d);
     await controller.setLayerVisibility(_radiusLayer, _showRadius);
     await controller.setLayerVisibility(_eventsLayer, _showEvents);
-    await controller.setLayerVisibility(_strikesLayer, _showStrikes);
     for (final id in _buildingLayerIds) {
       await controller.setLayerVisibility(id, _showBuildings);
     }
@@ -691,15 +694,32 @@ class _MapScreenState extends State<MapScreen> {
             right: 12,
             child: Column(
               children: [
-                _ModeSwitch(mode: _mode, onChanged: _setMode),
-                const SizedBox(height: 8),
-                if (_mode == MapMode.threat)
-                  _ContextPanel(
-                    siteCount: _siteCount,
-                    inDangerCount: _inDangerCount,
-                  )
-                else
-                  const _ConflictInfoPanel(),
+                Row(
+                  children: [
+                    Expanded(child: _ModeSwitch(mode: _mode, onChanged: _setMode)),
+                    const SizedBox(width: 8),
+                    _PanelCollapseButton(
+                      expanded: _topInfoExpanded,
+                      onTap: () => setState(
+                        () => _topInfoExpanded = !_topInfoExpanded,
+                      ),
+                    ),
+                  ],
+                ),
+                if (_topInfoExpanded) ...[
+                  const SizedBox(height: 8),
+                  if (_mode == MapMode.threat)
+                    _ContextPanel(
+                      siteCount: _siteCount,
+                      inDangerCount: _inDangerCount,
+                    )
+                  else
+                    _ConflictInfoPanel(
+                      eventCount: _totalConflictEvents,
+                      siteCount: _conflictSiteCount,
+                      onShowOverview: _showConflictOverview,
+                    ),
+                ],
               ],
             ),
           ),
@@ -715,7 +735,6 @@ class _MapScreenState extends State<MapScreen> {
               showModels3d: _showModels3d,
               showRadius: _showRadius,
               showEvents: _showEvents,
-              showStrikes: _showStrikes,
               onToggleLevel: _toggleLevel,
               onTogglePleiades: _togglePleiades,
               onToggleDensity: _toggleDensity,
@@ -723,7 +742,6 @@ class _MapScreenState extends State<MapScreen> {
               onToggleModels3d: _toggleModels3d,
               onToggleRadius: _toggleRadius,
               onToggleEvents: _toggleEvents,
-              onToggleStrikes: _toggleStrikes,
             ),
           ),
           if (_nearest != null)
@@ -872,7 +890,7 @@ class _ContextPanel extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              'Conflict data: UCDP GED (Uppsala) + GDELT GKG (strikes)',
+              'Conflict data: UCDP GED (Uppsala)',
               style: theme.textTheme.labelSmall?.copyWith(
                 color: theme.colorScheme.outline,
               ),
@@ -927,7 +945,63 @@ class _ModeSwitch extends StatelessWidget {
 /// means, how they feed the score) lives in the legend and the info button, so
 /// this panel stays small and leaves the map room.
 class _ConflictInfoPanel extends StatelessWidget {
-  const _ConflictInfoPanel();
+  const _ConflictInfoPanel({
+    required this.eventCount,
+    required this.siteCount,
+    required this.onShowOverview,
+  });
+
+  final int eventCount;
+  final int siteCount;
+  final VoidCallback onShowOverview;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final tally = eventCount > 0
+        ? '$eventCount lethal events (UCDP) near $siteCount sites, 30 km.'
+        : 'Lethal conflict events (UCDP), within 30 km of each site.';
+    return Card(
+      elevation: 3,
+      color: theme.colorScheme.surface.withValues(alpha: 0.94),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: InkWell(
+        onTap: onShowOverview,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 8, 8, 8),
+          child: Row(
+            children: [
+              Icon(
+                Icons.crisis_alert_outlined,
+                size: 16,
+                color: theme.colorScheme.outline,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(tally, style: theme.textTheme.bodySmall),
+              ),
+              const SizedBox(width: 4),
+              Icon(
+                Icons.bar_chart_rounded,
+                size: 18,
+                color: theme.colorScheme.primary,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Small square card with a chevron that folds the top info panel away,
+/// leaving only the mode switch. Mirrors the legend's collapse affordance.
+class _PanelCollapseButton extends StatelessWidget {
+  const _PanelCollapseButton({required this.expanded, required this.onTap});
+
+  final bool expanded;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -936,24 +1010,16 @@ class _ConflictInfoPanel extends StatelessWidget {
       elevation: 3,
       color: theme.colorScheme.surface.withValues(alpha: 0.94),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-        child: Row(
-          children: [
-            Icon(
-              Icons.crisis_alert_outlined,
-              size: 16,
-              color: theme.colorScheme.outline,
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                'Conflict near sites: lethal events (UCDP) + strike coverage '
-                '(GDELT), 30 km. Tap ⓘ for detail.',
-                style: theme.textTheme.bodySmall,
-              ),
-            ),
-          ],
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Icon(
+            expanded ? Icons.expand_less : Icons.expand_more,
+            size: 20,
+            color: theme.colorScheme.outline,
+          ),
         ),
       ),
     );
