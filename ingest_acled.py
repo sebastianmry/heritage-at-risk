@@ -15,10 +15,12 @@ Auth ueber OAuth2 Password-Grant (config.ACLED_OAUTH_URL): username/password aus
 auf das Konflikt-Fenster (config.CONFLICT_START_DATE bis CONFLICT_END_DATE, also
 36 bis 12 Monate zurueck - der punktgenau verfuegbare Bereich der Research-Stufe).
 
-Die Ausgabe teilt bewusst das Spalten-Schema von ingest_ucdp.py
+Die Ausgabe teilt das Kern-Spalten-Schema von ingest_ucdp.py
 (event_id, event_date, violence_type, country, deaths, latitude, longitude,
 geometry), damit process.py / export_events.py drop-in umgestellt werden koennen.
-ACLED event_type -> violence_type, fatalities -> deaths.
+ACLED event_type -> violence_type, fatalities -> deaths. Zusaetzlich (ACLED-only,
+fuer Karte und Popup): sub_event_type (Treffertyp), civilian_targeting,
+geo_precision, location, admin1, notes, source.
 
 Input:  config.ACLED_OAUTH_URL (Token), config.ACLED_API_URL (read)
 Output: RAW_DIR/acled/acled_events.parquet (GeoParquet, Punktgeometrie)
@@ -39,10 +41,16 @@ import ingest_common
 ACLED_DIR: Path = config.RAW_DIR / "acled"
 EVENTS_PARQUET: Path = ACLED_DIR / "acled_events.parquet"
 
-# Schlanke Feldauswahl ueber den ACLED-Parameter `fields` (pipe-getrennt): nur
-# was Filter (Geometrie, Datum, Typ, ISO) und Kontext-Label brauchen.
+# Feldauswahl ueber den ACLED-Parameter `fields` (pipe-getrennt): Filterfelder
+# (Geometrie, Datum, Typ, ISO) plus Kontext-Attribute fuer Karte und Popup.
+# sub_event_type = der eigentliche Treffertyp (Air/drone strike, Shelling, IED ...),
+# civilian_targeting = Flag gegen Zivilisten, geo_precision = Koordinatenguete
+# (1 exakt ... 3 Provinz-Zentroid), location/admin1 = Ortslabel, notes = Freitext,
+# source = Herkunft der Meldung.
 ACLED_FIELDS: str = "|".join(
-    ("event_id_cnty", "event_date", "event_type", "country", "iso", "latitude", "longitude", "fatalities")
+    ("event_id_cnty", "event_date", "event_type", "sub_event_type", "country", "iso",
+     "latitude", "longitude", "fatalities", "civilian_targeting", "geo_precision",
+     "location", "admin1", "notes", "source")
 )
 
 
@@ -130,8 +138,9 @@ def _filter_to_scope(source_df: pd.DataFrame) -> pd.DataFrame:
 
 def build_events(scoped_df: pd.DataFrame) -> gpd.GeoDataFrame:
     """Baut die getypte Punktebene (WGS84) im UCDP-kompatiblen Event-Schema."""
-    columns = ["event_id", "event_date", "violence_type", "country",
-               "deaths", "latitude", "longitude", "geometry"]
+    columns = ["event_id", "event_date", "violence_type", "sub_event_type", "country",
+               "deaths", "civilian_targeting", "geo_precision", "location", "admin1",
+               "notes", "source", "latitude", "longitude", "geometry"]
     if scoped_df.empty:
         return gpd.GeoDataFrame(columns=columns, geometry="geometry", crs="EPSG:4326")
 
@@ -140,8 +149,15 @@ def build_events(scoped_df: pd.DataFrame) -> gpd.GeoDataFrame:
             "event_id": scoped_df["event_id_cnty"].astype(str),
             "event_date": pd.to_datetime(scoped_df["event_date"], errors="coerce"),
             "violence_type": scoped_df["event_type"].fillna(""),
+            "sub_event_type": scoped_df["sub_event_type"].fillna(""),
             "country": scoped_df["country"].fillna(""),
             "deaths": pd.to_numeric(scoped_df["fatalities"], errors="coerce").fillna(0).astype("int64"),
+            "civilian_targeting": scoped_df["civilian_targeting"].fillna(""),
+            "geo_precision": pd.to_numeric(scoped_df["geo_precision"], errors="coerce").fillna(0).astype("int64"),
+            "location": scoped_df["location"].fillna(""),
+            "admin1": scoped_df["admin1"].fillna(""),
+            "notes": scoped_df["notes"].fillna(""),
+            "source": scoped_df["source"].fillna(""),
             "latitude": pd.to_numeric(scoped_df["latitude"], errors="coerce"),
             "longitude": pd.to_numeric(scoped_df["longitude"], errors="coerce"),
         }

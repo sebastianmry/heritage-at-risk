@@ -56,7 +56,7 @@ DUCKDB_PATH: Path = INTERIM_DIR / "heritage.duckdb"
 # Ausgabe-Artefakte, die die App liest (Stufe 3, Export)
 SITES_GEOJSON_PATH: Path = ARTIFACTS_DIR / "sites.geojson"
 CONFLICT_RADIUS_GEOJSON_PATH: Path = ARTIFACTS_DIR / "conflict_radius.geojson"
-UCDP_EVENTS_GEOJSON_PATH: Path = ARTIFACTS_DIR / "ucdp_events.geojson"
+CONFLICT_EVENTS_GEOJSON_PATH: Path = ARTIFACTS_DIR / "conflict_events.geojson"
 BASEMAP_PMTILES_PATH: Path = ARTIFACTS_DIR / "basemap.pmtiles"
 
 # ---------------------------------------------------------------------------

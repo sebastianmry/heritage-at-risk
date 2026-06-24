@@ -216,13 +216,61 @@ class _LegendBody extends StatelessWidget {
                   onTap: () => legend.onToggleRadius(!legend.showRadius),
                 ),
                 _LegendToggle(
-                  color: const Color(0xFFD7191C),
+                  color: AppColors.eventYear2024,
                   label: 'Conflict events',
                   active: legend.showEvents,
                   onTap: () => legend.onToggleEvents(!legend.showEvents),
                 ),
+                // Year key for the event dots (sequential red ramp, newer =
+                // darker). Dimmed while the events layer is hidden.
+                if (legend.showEvents) const _LegendYearRamp(),
               ],
             ],
+    );
+  }
+}
+
+/// Year colour key for the conflict-event dots: a row of three swatches with
+/// their years, indented under the "Conflict events" toggle. Mirrors the
+/// sequential ramp painted on the map (AppColors.eventYear*).
+class _LegendYearRamp extends StatelessWidget {
+  const _LegendYearRamp();
+
+  static const List<(Color, String)> _years = [
+    (AppColors.eventYear2023, '2023'),
+    (AppColors.eventYear2024, '2024'),
+    (AppColors.eventYear2025, '2025'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(left: 19, top: 2, bottom: 2),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (final (color, label) in _years) ...[
+            Container(
+              width: 9,
+              height: 9,
+              decoration: BoxDecoration(
+                color: color,
+                border: Border.all(color: Colors.white, width: 1.0),
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: 3),
+            Text(
+              label,
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.colorScheme.outline,
+              ),
+            ),
+            const SizedBox(width: 9),
+          ],
+        ],
+      ),
     );
   }
 }

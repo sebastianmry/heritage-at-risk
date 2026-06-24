@@ -25,7 +25,7 @@ enum MapMode {
   /// Threat score per site plus heritage context (Pleiades, density, 3D).
   threat,
 
-  /// Only the conflict data: UCDP events and the 30 km radius.
+  /// Only the conflict data: ACLED events and the 30 km radius.
   conflict,
 }
 
@@ -62,8 +62,8 @@ class _MapScreenState extends State<MapScreen> {
   static const String _models3dLayer = 'models3d-circles';
   static const String _radiusSource = 'conflict-radius';
   static const String _radiusLayer = 'conflict-radius-line';
-  static const String _eventsSource = 'ucdp-events';
-  static const String _eventsLayer = 'ucdp-events-circles';
+  static const String _eventsSource = 'conflict-events';
+  static const String _eventsLayer = 'conflict-events-circles';
 
   MapLibreMapController? _controller;
 
@@ -113,13 +113,13 @@ class _MapScreenState extends State<MapScreen> {
     );
     _models3dGeojson ??= await _loadGeojson('assets/data/heritage_3d.geojson');
     _radiusGeojson ??= await _loadGeojson('assets/data/conflict_radius.geojson');
-    _eventsGeojson ??= await _loadGeojson('assets/data/ucdp_events.geojson');
+    _eventsGeojson ??= await _loadGeojson('assets/data/conflict_events.geojson');
     final features = (_sitesGeojson!['features'] as List?) ?? const [];
     final count = features.length;
     final inDanger = features
         .where((f) => (f as Map)['properties']?['in_danger'] == true)
         .length;
-    // Conflict overview tallies: total georeferenced UCDP events near sites and
+    // Conflict overview tallies: total georeferenced ACLED events near sites and
     // how many sites have at least one event in their radius.
     final totalEvents = ((_eventsGeojson?['features'] as List?) ?? const []).length;
     final conflictSites = features
@@ -234,7 +234,7 @@ class _MapScreenState extends State<MapScreen> {
     );
 
     // Conflict-evaluation radius per site (below the markers): dashed outlines of
-    // the geographic circle in which the conflict component counts UCDP events.
+    // the geographic circle in which the conflict component counts ACLED events.
     // Off by default; a transparency overlay the user can toggle on.
     await controller.addGeoJsonSource(_radiusSource, _radiusGeojson!);
     await controller.addLineLayer(
@@ -290,17 +290,28 @@ class _MapScreenState extends State<MapScreen> {
       enableInteraction: false,
     );
 
-    // UCDP conflict events as bold crimson dots. Added AFTER the site markers so
-    // in the conflict view they sit ABOVE the (plain) sites — the conflict data
-    // is the hero there. Larger and more opaque at low zoom so the pattern reads
-    // in the overview. Off by default in threat view, non-interactive (taps
-    // belong to the sites).
+    // ACLED conflict events as bold dots, coloured by event year (sequential red
+    // ramp, newer = more intense; see AppColors.eventYear*). Added AFTER the site
+    // markers so in the conflict view they sit ABOVE the (plain) sites — the
+    // conflict data is the hero there. Larger and more opaque at low zoom so the
+    // pattern reads in the overview. Off by default in threat view,
+    // non-interactive (taps belong to the sites).
     await controller.addGeoJsonSource(_eventsSource, _eventsGeojson!);
     await controller.addCircleLayer(
       _eventsSource,
       _eventsLayer,
       const CircleLayerProperties(
-        circleColor: '#D7191C',
+        circleColor: [
+          'match',
+          ['get', 'year'],
+          2023,
+          AppColors.eventYear2023Hex,
+          2024,
+          AppColors.eventYear2024Hex,
+          2025,
+          AppColors.eventYear2025Hex,
+          AppColors.eventYearOtherHex,
+        ],
         circleRadius: [
           'interpolate',
           ['linear'],
@@ -313,7 +324,7 @@ class _MapScreenState extends State<MapScreen> {
           8.0,
         ],
         circleOpacity: 0.88,
-        circleStrokeColor: '#7F0E1E',
+        circleStrokeColor: AppColors.eventStrokeHex,
         circleStrokeWidth: 0.9,
       ),
       enableInteraction: false,
@@ -890,7 +901,7 @@ class _ContextPanel extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              'Conflict data: UCDP GED (Uppsala)',
+              'Conflict data: ACLED (acleddata.com)',
               style: theme.textTheme.labelSmall?.copyWith(
                 color: theme.colorScheme.outline,
               ),
@@ -959,8 +970,8 @@ class _ConflictInfoPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final tally = eventCount > 0
-        ? '$eventCount lethal events (UCDP) near $siteCount sites, 30 km.'
-        : 'Lethal conflict events (UCDP), within 30 km of each site.';
+        ? '$eventCount conflict events (ACLED) near $siteCount sites, 30 km.'
+        : 'Conflict events (ACLED), within 30 km of each site.';
     return Card(
       elevation: 3,
       color: theme.colorScheme.surface.withValues(alpha: 0.94),

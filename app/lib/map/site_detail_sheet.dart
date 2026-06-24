@@ -129,7 +129,7 @@ class SiteDetailSheet extends StatelessWidget {
               Divider(color: theme.colorScheme.outlineVariant, height: 1),
               const SizedBox(height: 10),
               Text(
-                'Sources: UNESCO WHC · German Federal Foreign Office · UCDP GED (Uppsala) · ThinkHazard! (World Bank)',
+                'Sources: UNESCO WHC · German Federal Foreign Office · ACLED · ThinkHazard! (World Bank)',
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: theme.colorScheme.outline,
                 ),
