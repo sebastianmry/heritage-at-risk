@@ -292,7 +292,12 @@ class _LegendToggle extends StatelessWidget {
               height: 11,
               decoration: BoxDecoration(
                 color: active ? color : Colors.transparent,
-                border: Border.all(color: color, width: 1.5),
+                // Active dots get the same white ring as the map markers (and the
+                // conflict-view legend); inactive stay hollow with a coloured ring.
+                border: Border.all(
+                  color: active ? Colors.white : color,
+                  width: active ? 1.2 : 1.5,
+                ),
                 shape: BoxShape.circle,
               ),
             ),
