@@ -10,9 +10,13 @@ import '../theme.dart';
 /// reconstruction). For non-WHS icons (e.g. Old City of Mosul) it makes clear
 /// the site is not part of the scored UNESCO set.
 class Model3DSheet extends StatelessWidget {
-  const Model3DSheet({super.key, required this.properties});
+  const Model3DSheet({super.key, required this.properties, this.onRoute});
 
   final Map<String, dynamic> properties;
+
+  /// Called when the user asks for directions to this monument (intra-site
+  /// routing). Null hides the button.
+  final VoidCallback? onRoute;
 
   static const Color _accent = Color(0xFF0FB5C9);
 
@@ -124,6 +128,17 @@ class Model3DSheet extends StatelessWidget {
                     label: const Text('View 3D model'),
                   ),
                 ),
+              if (onRoute != null) ...[
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.tonalIcon(
+                    onPressed: onRoute,
+                    icon: const Icon(Icons.directions_outlined, size: 18),
+                    label: const Text('Route here'),
+                  ),
+                ),
+              ],
             ],
           ),
         ),

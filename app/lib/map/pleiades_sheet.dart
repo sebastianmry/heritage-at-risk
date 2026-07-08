@@ -9,9 +9,13 @@ import '../theme.dart';
 /// type and the source URL. The URL can be copied (no in-app browser, to keep
 /// the app dependency-free).
 class PleiadesSheet extends StatelessWidget {
-  const PleiadesSheet({super.key, required this.properties});
+  const PleiadesSheet({super.key, required this.properties, this.onRoute});
 
   final Map<String, dynamic> properties;
+
+  /// Called when the user asks for walking/driving directions to this place
+  /// (intra-site routing to individual monuments). Null hides the button.
+  final VoidCallback? onRoute;
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +78,17 @@ class PleiadesSheet extends StatelessWidget {
                   color: theme.colorScheme.outline,
                 ),
               ),
+              if (onRoute != null) ...[
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.tonalIcon(
+                    onPressed: onRoute,
+                    icon: const Icon(Icons.directions_outlined, size: 18),
+                    label: const Text('Route here'),
+                  ),
+                ),
+              ],
               if (url.isNotEmpty) ...[
                 const SizedBox(height: 14),
                 Divider(color: theme.colorScheme.outlineVariant, height: 1),

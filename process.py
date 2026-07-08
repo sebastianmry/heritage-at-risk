@@ -6,7 +6,7 @@ config.SCORE_MAX) aus vier unabhaengigen Komponenten:
 
   1. UNESCO In-Danger-Flag   (Gewicht 3, binaer)        reference/unesco_in_danger.csv
   2. Reisewarnstufe 0-2      (Gewicht 3, linear)        Auswaertiges Amt (CSV)
-  3. Konflikt               (Gewicht 3, log-skaliert)   ACLED im CONFLICT_RADIUS_KM
+  3. Konflikt               (Gewicht 3, log-skaliert)   UCDP GED im CONFLICT_RADIUS_KM
   4. Naturgefahr EQ+FL       (Gewicht 2, Stufen)        ThinkHazard! (reference/natural_hazard.csv)
 
 Die Naturgefahr nimmt das Maximum aus Erdbeben- und Flusshochwasser-Stufe je Site
@@ -16,18 +16,18 @@ EINER der beiden Gefahren stark ausgesetzt ist. Diese Komponente loest die
 WMF-Watch-Liste ab, die in der Region strukturell nie eine WHS flaggte
 (PROJECT_CONTEXT.md, Bewusst verworfene Ansaetze).
 
-Die Konflikt-Komponente zaehlt die ACLED-Konfliktereignisse im geografischen
+Die Konflikt-Komponente zaehlt die UCDP-GED-Konfliktereignisse im geografischen
 Radius je Site (ST_Distance_Sphere auf ST_Point(lon, lat), latitude/longitude statt
-WKB), log-skaliert auf [0,1] und mit dem Konflikt-Gewicht skaliert. ACLED erfasst
-auch nicht-toedliche Treffer, die UCDP (Schwelle >= 1 Toter) verpasst.
+WKB), log-skaliert auf [0,1] und mit dem Konflikt-Gewicht skaliert. Bekannte
+Grenze: UCDP zaehlt nur Ereignisse mit >= 1 Todesopfer (PROJECT_CONTEXT).
 
-Quellen-tolerant: fehlt acled_events.parquet, zaehlt der Konflikt-Anteil fuer alle
+Quellen-tolerant: fehlt ucdp_events.parquet, zaehlt der Konflikt-Anteil fuer alle
 Sites 0. Der Rest rechnet durch. Sobald die Datei existiert, faellt sie ohne
 Codeaenderung ein.
 
 Input:  RAW_DIR/unesco/unesco_sites.parquet, reference/unesco_in_danger.csv,
         RAW_DIR/auswaertiges_amt/travel_warning_levels.csv, reference/natural_hazard.csv,
-        optional RAW_DIR/acled/acled_events.parquet
+        optional RAW_DIR/ucdp/ucdp_events.parquet
 Output: Tabelle site_scores in config.DUCKDB_PATH
 """
 
@@ -43,7 +43,7 @@ import ingest_common
 
 UNESCO_SITES_PARQUET: Path = config.RAW_DIR / "unesco" / "unesco_sites.parquet"
 AA_WARNINGS_CSV: Path = config.RAW_DIR / "auswaertiges_amt" / "travel_warning_levels.csv"
-CONFLICT_EVENTS_PARQUET: Path = config.RAW_DIR / "acled" / "acled_events.parquet"
+CONFLICT_EVENTS_PARQUET: Path = config.RAW_DIR / "ucdp" / "ucdp_events.parquet"
 
 SCORES_TABLE: str = "site_scores"
 
@@ -157,8 +157,8 @@ def _report(con: duckdb.DuckDBPyConnection, *, conflict_available: bool) -> None
     total = con.execute(f"SELECT COUNT(*) FROM {SCORES_TABLE}").fetchone()[0]
     print(f"process: {total} Sites bewertet, Score 0 bis {config.SCORE_MAX} -> Tabelle {SCORES_TABLE}")
     if not conflict_available:
-        print("  Hinweis: kein acled_events.parquet, Konflikt-Komponente fuer alle Sites 0 "
-              "(zuerst ingest_acled.py laufen lassen, siehe PROJECT_CONTEXT.md).")
+        print("  Hinweis: kein ucdp_events.parquet, Konflikt-Komponente fuer alle Sites 0 "
+              "(zuerst ingest_ucdp.py laufen lassen, siehe PROJECT_CONTEXT.md).")
 
     by_level = con.execute(
         f"SELECT threat_level, COUNT(*) FROM {SCORES_TABLE} GROUP BY threat_level ORDER BY MIN(total_score)"
@@ -175,7 +175,7 @@ def _report(con: duckdb.DuckDBPyConnection, *, conflict_available: bool) -> None
         with_conflict, max_count = con.execute(
             f"SELECT COUNT(*) FILTER (WHERE conflict_count > 0), MAX(conflict_count) FROM {SCORES_TABLE}"
         ).fetchone()
-        print(f"  Konflikt (ACLED): {with_conflict} Sites mit Ereignissen im "
+        print(f"  Konflikt (UCDP GED): {with_conflict} Sites mit Ereignissen im "
               f"{config.CONFLICT_RADIUS_KM:.0f}-km-Radius, max {max_count} je Site.")
 
     top = con.execute(

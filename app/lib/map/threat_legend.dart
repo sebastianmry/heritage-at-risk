@@ -216,13 +216,13 @@ class _LegendBody extends StatelessWidget {
                   onTap: () => legend.onToggleRadius(!legend.showRadius),
                 ),
                 _LegendToggle(
-                  color: AppColors.eventYear2024,
+                  color: AppColors.eventYearCurrent,
                   label: 'Conflict events',
                   active: legend.showEvents,
                   onTap: () => legend.onToggleEvents(!legend.showEvents),
                 ),
-                // Year key for the event dots (sequential red ramp, newer =
-                // darker). Dimmed while the events layer is hidden.
+                // Year key for the event dots (two-step red ramp, current
+                // year darker). Shown only while the events layer is on.
                 if (legend.showEvents) const _LegendYearRamp(),
               ],
             ],
@@ -230,27 +230,27 @@ class _LegendBody extends StatelessWidget {
   }
 }
 
-/// Year colour key for the conflict-event dots: a row of three swatches with
-/// their years, indented under the "Conflict events" toggle. Mirrors the
-/// sequential ramp painted on the map (AppColors.eventYear*).
+/// Year colour key for the conflict-event dots: one swatch per calendar year
+/// of the rolling 12-month window (previous year light, current year dark),
+/// indented under the "Conflict events" toggle. Mirrors the ramp painted on
+/// the map (AppColors.eventYear*).
 class _LegendYearRamp extends StatelessWidget {
   const _LegendYearRamp();
-
-  static const List<(Color, String)> _years = [
-    (AppColors.eventYear2023, '2023'),
-    (AppColors.eventYear2024, '2024'),
-    (AppColors.eventYear2025, '2025'),
-  ];
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final year = DateTime.now().year;
+    final years = <(Color, String)>[
+      (AppColors.eventYearPrevious, '${year - 1}'),
+      (AppColors.eventYearCurrent, '$year'),
+    ];
     return Padding(
       padding: const EdgeInsets.only(left: 19, top: 2, bottom: 2),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          for (final (color, label) in _years) ...[
+          for (final (color, label) in years) ...[
             Container(
               width: 9,
               height: 9,

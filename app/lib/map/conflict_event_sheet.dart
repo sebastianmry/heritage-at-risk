@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../theme.dart';
 
-/// Compact bottom sheet for a single tapped ACLED conflict event.
+/// Compact bottom sheet for a single tapped UCDP conflict event.
 ///
-/// Shows the event type and date, plus the fatality count and whether civilians
-/// were targeted. The data comes from the conflict-events GeoJSON (deliberately
-/// slim: date/year/sub_event_type/deaths/civilian_targeting).
+/// Shows the GED violence category and date plus the best fatality estimate.
+/// The data comes from the conflict-events GeoJSON (deliberately slim:
+/// date/year/violence_type/deaths).
 class ConflictEventSheet extends StatelessWidget {
   const ConflictEventSheet({super.key, required this.properties});
 
@@ -20,35 +20,23 @@ class ConflictEventSheet extends StatelessWidget {
     return int.tryParse('${value ?? 0}') ?? 0;
   }
 
-  bool _bool(String key) {
-    final value = properties[key];
-    if (value is bool) return value;
-    return '$value'.toLowerCase() == 'true';
-  }
+  /// Dot colour matches the map's year ramp (current year = dark red).
+  Color _yearColor(int year) => year == DateTime.now().year
+      ? AppColors.eventYearCurrent
+      : AppColors.eventYearPrevious;
 
-  /// Dot colour matches the map's year ramp (newer = more intense red).
-  Color _yearColor(int year) {
-    switch (year) {
-      case 2023:
-        return AppColors.eventYear2023;
-      case 2024:
-        return AppColors.eventYear2024;
-      case 2025:
-        return AppColors.eventYear2025;
-      default:
-        return AppColors.eventYear2024;
-    }
+  /// GED category as a readable title ("state-based conflict" -> capitalised).
+  String get _title {
+    final type = _str('violence_type');
+    if (type.isEmpty) return 'Conflict event';
+    return type[0].toUpperCase() + type.substring(1);
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final type = _str('sub_event_type').isEmpty
-        ? 'Conflict event'
-        : _str('sub_event_type');
     final date = _str('date');
     final deaths = _int('deaths');
-    final civilians = _bool('civilian_targeting');
     final dotColor = _yearColor(_int('year'));
 
     return SafeArea(
@@ -83,20 +71,16 @@ class ConflictEventSheet extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Text(type, style: theme.textTheme.titleMedium),
+                  child: Text(_title, style: theme.textTheme.titleMedium),
                 ),
               ],
             ),
             const SizedBox(height: 14),
             _Row(label: 'Date', value: date.isEmpty ? '—' : date),
-            _Row(label: 'Fatalities', value: '$deaths'),
-            _Row(
-              label: 'Civilian targeting',
-              value: civilians ? 'Yes' : 'No',
-            ),
+            _Row(label: 'Fatalities (best estimate)', value: '$deaths'),
             const SizedBox(height: 14),
             Text(
-              'Source: ACLED (Armed Conflict Location & Event Data)',
+              'Source: UCDP GED (Uppsala Conflict Data Program), CC BY 4.0',
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.outline,
               ),

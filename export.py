@@ -53,7 +53,7 @@ def _metadata(*, site_count: int, conflict_available: bool) -> dict[str, object]
             "in_danger": {"weight": config.SCORE_WEIGHT_UNESCO_IN_DANGER, "source": "UNESCO World Heritage Centre"},
             "travel_warning": {"weight": config.SCORE_WEIGHT_TRAVEL_WARNING, "source": "Auswaertiges Amt"},
             "conflict": {"weight": config.SCORE_WEIGHT_CONFLICT,
-                         "source": "ACLED (Armed Conflict Location & Event Data)",
+                         "source": "UCDP GED (Uppsala Conflict Data Program)",
                          "method": "log-skalierter Subscore der Konfliktereignisse im Radius",
                          "radius_km": config.CONFLICT_RADIUS_KM},
             "natural_hazard": {"weight": config.SCORE_WEIGHT_NATURAL_HAZARD,
@@ -71,7 +71,7 @@ def _metadata(*, site_count: int, conflict_available: bool) -> dict[str, object]
         "notes": (
             f"Threat Score 0 bis {config.SCORE_MAX} aus vier gewichteten Quellen. "
             + ("" if conflict_available
-               else "Konflikt-Komponente aktuell 0 (acled_events.parquet fehlt, siehe PROJECT_CONTEXT.md). ")
+               else "Konflikt-Komponente aktuell 0 (ucdp_events.parquet fehlt, siehe PROJECT_CONTEXT.md). ")
             + "Gefaehrdung ist nicht nur farblich, sondern auch ueber threat_level/Label kodiert (Accessibility)."
         ),
     }

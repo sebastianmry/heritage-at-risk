@@ -27,7 +27,7 @@ enum MapMode {
   /// Threat score per site plus heritage context (Pleiades, density, 3D).
   threat,
 
-  /// Only the conflict data: ACLED events and the 30 km radius.
+  /// Only the conflict data: UCDP events and the 30 km radius.
   conflict,
 }
 
@@ -135,7 +135,7 @@ class _MapScreenState extends State<MapScreen> {
     final inDanger = features
         .where((f) => (f as Map)['properties']?['in_danger'] == true)
         .length;
-    // Conflict overview tallies: total georeferenced ACLED events near sites and
+    // Conflict overview tallies: total georeferenced UCDP events near sites and
     // how many sites have at least one event in their radius.
     final totalEvents = ((_eventsGeojson?['features'] as List?) ?? const []).length;
     final conflictSites = features
@@ -250,7 +250,7 @@ class _MapScreenState extends State<MapScreen> {
     );
 
     // Conflict-evaluation radius per site (below the markers): dashed outlines of
-    // the geographic circle in which the conflict component counts ACLED events.
+    // the geographic circle in which the conflict component counts UCDP events.
     // Off by default; a transparency overlay the user can toggle on.
     await controller.addGeoJsonSource(_radiusSource, _radiusGeojson!);
     await controller.addLineLayer(
@@ -262,6 +262,10 @@ class _MapScreenState extends State<MapScreen> {
         lineOpacity: 0.7,
         lineDasharray: [2, 2],
       ),
+      // Non-interactive: an interactive line layer swallows nearby taps
+      // (feature#onTap fires instead of map#onMapClick), which blocked the
+      // conflict-event tap sheet anywhere near a radius outline.
+      enableInteraction: false,
     );
 
     // Route line (ORS directions) below the markers: white casing plus a strong
@@ -355,27 +359,24 @@ class _MapScreenState extends State<MapScreen> {
       enableInteraction: false,
     );
 
-    // ACLED conflict events as bold dots, coloured by event year (sequential red
-    // ramp, newer = more intense; see AppColors.eventYear*). Added AFTER the site
-    // markers so in the conflict view they sit ABOVE the (plain) sites — the
-    // conflict data is the hero there. Larger and more opaque at low zoom so the
-    // pattern reads in the overview. Off by default in threat view,
-    // non-interactive (taps belong to the sites).
+    // UCDP conflict events as bold dots, coloured by event year (two-step red
+    // ramp: current year dark, previous year lighter; the rolling 12-month
+    // window spans exactly these two). Added AFTER the site markers so in the
+    // conflict view they sit ABOVE the (plain) sites — the conflict data is the
+    // hero there. Larger and more opaque at low zoom so the pattern reads in
+    // the overview. Off by default in threat view, non-interactive (taps run
+    // via _onMapClick).
     await controller.addGeoJsonSource(_eventsSource, _eventsGeojson!);
     await controller.addCircleLayer(
       _eventsSource,
       _eventsLayer,
-      const CircleLayerProperties(
+      CircleLayerProperties(
         circleColor: [
           'match',
           ['get', 'year'],
-          2023,
-          AppColors.eventYear2023Hex,
-          2024,
-          AppColors.eventYear2024Hex,
-          2025,
-          AppColors.eventYear2025Hex,
-          AppColors.eventYearOtherHex,
+          DateTime.now().year,
+          AppColors.eventYearCurrentHex,
+          AppColors.eventYearPreviousHex,
         ],
         circleRadius: [
           'interpolate',
@@ -499,20 +500,32 @@ class _MapScreenState extends State<MapScreen> {
   /// Generic map tap (fires only when no interactive feature was hit). Used to
   /// pick up the non-interactive conflict-event dots: we query just a small rect
   /// around the tap against the events layer, so there is no per-gesture cost.
-  void _onMapClick(Point<double> point, LatLng latLng) {
-    if (!_showEvents) return;
-    _showDetailAt(point, _eventsLayer);
+  ///
+  /// The screen point is deliberately re-derived from the geographic coordinate
+  /// via toScreenLocation: the point delivered by onMapClick is not in the same
+  /// pixel space as queryRenderedFeaturesInRect on Android (logical vs physical
+  /// pixels), which made event taps miss on the device.
+  Future<void> _onMapClick(Point<double> point, LatLng latLng) async {
+    final controller = _controller;
+    if (!_showEvents || controller == null) return;
+    final screen = await controller.toScreenLocation(latLng);
+    await _showDetailAt(
+      Point(screen.x.toDouble(), screen.y.toDouble()),
+      _eventsLayer,
+    );
   }
 
   Future<void> _showDetailAt(Point<double> point, String layerId) async {
     final controller = _controller;
     if (controller == null) return;
     // Small rectangle around the tap (tolerance instead of a single pixel) on
-    // the given layer; coordinates are in device pixels.
+    // the given layer. Coordinates are physical device pixels, so the finger
+    // tolerance (~16 logical px) is scaled by the device pixel ratio.
+    final tolerance = 16.0 * MediaQuery.of(context).devicePixelRatio;
     final rect = Rect.fromCenter(
       center: Offset(point.x, point.y),
-      width: 30,
-      height: 30,
+      width: tolerance,
+      height: tolerance,
     );
     final features = await controller.queryRenderedFeaturesInRect(rect, [
       layerId,
@@ -521,38 +534,50 @@ class _MapScreenState extends State<MapScreen> {
     final feature = _extractFeature(features.first);
     final properties = _extractProperties(feature);
     if (properties == null) return;
-    // Site coordinates for the "Route here" action (from the tapped feature's
-    // point geometry; the sheet itself only sees properties).
+    // Target coordinates for the "Route here" action (from the tapped
+    // feature's point geometry; the sheets themselves only see properties).
+    // Routable: scored sites, Pleiades places and 3D-model markers — the
+    // latter two make intra-site walking routes possible (e.g. from the
+    // Palmyra entrance to a single monument). Conflict events are not
+    // navigation targets.
     final coords =
         ((feature?['geometry'] as Map?)?['coordinates'] as List?) ?? const [];
-    final target = layerId == _sitesLayer && coords.length >= 2
+    final nameKey = layerId == _pleiadesLayer ? 'title' : 'name';
+    final target = layerId != _eventsLayer && coords.length >= 2
         ? _RouteTarget(
-            name: '${properties['name'] ?? 'Site'}',
+            name: '${properties[nameKey] ?? 'Destination'}',
             lat: (coords[1] as num).toDouble(),
             lon: (coords[0] as num).toDouble(),
           )
         : null;
+    void Function()? onRoute(BuildContext sheetContext) => target == null
+        ? null
+        : () {
+            Navigator.of(sheetContext).pop();
+            _routeToSite(target, _route?.profile ?? RouteProfile.drive);
+          };
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: false,
       builder: (sheetContext) {
         if (layerId == _pleiadesLayer) {
-          return PleiadesSheet(properties: properties);
+          return PleiadesSheet(
+            properties: properties,
+            onRoute: onRoute(sheetContext),
+          );
         }
         if (layerId == _models3dLayer) {
-          return Model3DSheet(properties: properties);
+          return Model3DSheet(
+            properties: properties,
+            onRoute: onRoute(sheetContext),
+          );
         }
         if (layerId == _eventsLayer) {
           return ConflictEventSheet(properties: properties);
         }
         return SiteDetailSheet(
           properties: properties,
-          onRoute: target == null
-              ? null
-              : () {
-                  Navigator.of(sheetContext).pop();
-                  _routeToSite(target, _route?.profile ?? RouteProfile.drive);
-                },
+          onRoute: onRoute(sheetContext),
         );
       },
     );
@@ -1335,8 +1360,8 @@ class _ConflictInfoPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final tally = eventCount > 0
-        ? '$eventCount conflict events (ACLED) near $siteCount sites, 30 km.'
-        : 'Conflict events (ACLED), within 30 km of each site.';
+        ? '$eventCount conflict events (UCDP) near $siteCount sites, 30 km.'
+        : 'Conflict events (UCDP), within 30 km of each site.';
     return Card(
       elevation: 3,
       color: theme.colorScheme.surface.withValues(alpha: 0.94),
