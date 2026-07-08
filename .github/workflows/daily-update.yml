@@ -1,0 +1,75 @@
+# Taeglicher Daten-Refresh (Plan aus PROJECT_CONTEXT / ci-daily-update-plan):
+# zieht nur die zeitkritischen, leichten Quellen neu (AA-Reisewarnung + ACLED,
+# dazu das kleine UNESCO-Inventar, weil der Runner fluechtig ist und process.py
+# es braucht), rechnet Score und Exporte neu und committet NUR die aggregierten
+# Artefakte. ACLED-Rohevents bleiben unter DATA_DIR und verlassen den Runner
+# nie (Research-Lizenz, Repo privat). Schwere Quellen (OSM-PBFs, Pleiades,
+# Naturgefahr) bleiben statisch und werden manuell neu gebaut.
+#
+# Benoetigte Repo-Secrets: ACLED_API_EMAIL, ACLED_API_PASSWORD.
+# Hinweis: export.py stempelt das Laufdatum in die Metadaten, der Job erzeugt
+# daher taeglich einen Commit (dokumentiert zugleich die Datenfrische).
+name: Daily data update
+
+on:
+  schedule:
+    - cron: "30 4 * * *" # 04:30 UTC, nach dem ACLED-Wochenrhythmus unkritisch
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    env:
+      DATA_DIR: ${{ runner.temp }}/heritage_data
+      ACLED_API_EMAIL: ${{ secrets.ACLED_API_EMAIL }}
+      ACLED_API_PASSWORD: ${{ secrets.ACLED_API_PASSWORD }}
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Pipeline-Abhaengigkeiten installieren
+        run: pip install -r requirements-pipeline.txt
+
+      - name: Ingest der zeitkritischen Quellen
+        run: |
+          python ingest_unesco.py --refresh
+          python ingest_aa.py --refresh
+          python ingest_acled.py --refresh
+
+      - name: Score rechnen und Artefakte exportieren
+        run: |
+          python process.py --recompute
+          python export.py
+          python export_events.py
+          python export_radius.py
+
+      - name: Artefakte in die App-Assets spiegeln
+        run: |
+          cp artifacts/sites.geojson app/assets/data/sites.geojson
+          cp artifacts/conflict_events.geojson app/assets/data/conflict_events.geojson
+          cp artifacts/conflict_radius.geojson app/assets/data/conflict_radius.geojson
+
+      - name: Geaenderte Artefakte committen
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add artifacts/sites.geojson artifacts/conflict_events.geojson \
+                  artifacts/conflict_radius.geojson app/assets/data/
+          if git diff --cached --quiet; then
+            echo "Keine Datenaenderung, kein Commit."
+          else
+            git commit -m "Daten-Update: AA + ACLED refresh ($(date -u +%F))"
+            git push
+          fi
