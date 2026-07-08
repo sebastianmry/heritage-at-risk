@@ -9,6 +9,7 @@ import 'package:maplibre_gl/maplibre_gl.dart';
 import '../basemap.dart';
 import '../theme.dart';
 import 'info_sheet.dart';
+import 'conflict_event_sheet.dart';
 import 'conflict_overview_sheet.dart';
 import 'model_3d_sheet.dart';
 import 'pleiades_sheet.dart';
@@ -327,6 +328,9 @@ class _MapScreenState extends State<MapScreen> {
         circleStrokeColor: AppColors.eventStrokeHex,
         circleStrokeWidth: 0.9,
       ),
+      // Non-interactive on purpose: with ~41k points, registering this layer for
+      // MapLibre's per-gesture hit test froze the UI thread. We handle event taps
+      // cheaply in _onMapClick instead (a small queryRenderedFeatures rect).
       enableInteraction: false,
     );
 
@@ -428,6 +432,14 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
+  /// Generic map tap (fires only when no interactive feature was hit). Used to
+  /// pick up the non-interactive conflict-event dots: we query just a small rect
+  /// around the tap against the events layer, so there is no per-gesture cost.
+  void _onMapClick(Point<double> point, LatLng latLng) {
+    if (!_showEvents) return;
+    _showDetailAt(point, _eventsLayer);
+  }
+
   Future<void> _showDetailAt(Point<double> point, String layerId) async {
     final controller = _controller;
     if (controller == null) return;
@@ -453,6 +465,9 @@ class _MapScreenState extends State<MapScreen> {
         }
         if (layerId == _models3dLayer) {
           return Model3DSheet(properties: properties);
+        }
+        if (layerId == _eventsLayer) {
+          return ConflictEventSheet(properties: properties);
         }
         return SiteDetailSheet(properties: properties);
       },
@@ -534,6 +549,20 @@ class _MapScreenState extends State<MapScreen> {
         siteCount: _conflictSiteCount,
         sites: sites,
       ),
+    );
+  }
+
+  /// Open the country list; if the user taps a row, recentre the map on that
+  /// site so the list works as a text index into the map.
+  Future<void> _openSiteList() async {
+    final target = await Navigator.of(context).push<({double lat, double lon})>(
+      MaterialPageRoute<({double lat, double lon})>(
+        builder: (_) => const SiteListScreen(),
+      ),
+    );
+    if (target == null) return;
+    await _controller?.animateCamera(
+      CameraUpdate.newLatLngZoom(LatLng(target.lat, target.lon), 9.5),
     );
   }
 
@@ -668,9 +697,7 @@ class _MapScreenState extends State<MapScreen> {
           IconButton(
             tooltip: 'Sites by country',
             icon: const Icon(Icons.format_list_bulleted),
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(builder: (_) => const SiteListScreen()),
-            ),
+            onPressed: _openSiteList,
           ),
           IconButton(
             tooltip: widget.isDark ? 'Light theme' : 'Dark theme',
@@ -695,6 +722,7 @@ class _MapScreenState extends State<MapScreen> {
               _controller = controller;
               controller.onFeatureTapped.add(_onFeatureTapped);
             },
+            onMapClick: _onMapClick,
             onStyleLoadedCallback: _onStyleLoaded,
             compassEnabled: true,
             myLocationEnabled: _myLocationEnabled,
@@ -895,16 +923,8 @@ class _ContextPanel extends StatelessWidget {
               ),
             const SizedBox(height: 2),
             Text(
-              'Weighted threat score per site in the MENA region, from four '
-              'sources: in-danger status, travel advisory, conflict, natural hazard.',
+              'Weighted threat score per site. Tap ⓘ for sources and method.',
               style: theme.textTheme.bodySmall,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Conflict data: ACLED (acleddata.com)',
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: theme.colorScheme.outline,
-              ),
             ),
           ],
         ),

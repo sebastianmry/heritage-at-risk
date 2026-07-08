@@ -6,8 +6,8 @@ Karte legt. So wird das raeumliche Konfliktmuster sichtbar, das die Konflikt-
 Score-Komponente je Site zaehlt (Methodik-Transparenz, ergaenzt den
 30-km-Auswerteradius aus export_radius.py).
 
-Jedes Feature traegt `year` (aus event_date) fuer die jahrweise Einfaerbung in
-der App sowie `sub_event_type` (Treffertyp), `deaths` und `civilian_targeting`.
+Jedes Feature traegt `date` (event_date) + `year` fuer die jahrweise Einfaerbung
+in der App sowie `sub_event_type` (Treffertyp), `deaths` und `civilian_targeting`.
 Bewusst schlank gehalten (Koordinaten auf 5 Nachkommastellen gerundet, keine
 redundante violence_type, kein notes/location), damit das gebuendelte Asset
 klein bleibt; die Vollattribute liegen nur im acled-Parquet.
@@ -94,6 +94,7 @@ def run() -> None:
             # location/notes/admin1/source/geo_precision bleiben nur im Parquet
             # (acled_events.parquet) fuer Analysen, nicht im Bundle.
             "properties": {
+                "date": str(pd.Timestamp(row.event_date).date()),
                 "year": int(pd.Timestamp(row.event_date).year),
                 "sub_event_type": row.sub_event_type,
                 "deaths": int(row.deaths),
