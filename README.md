@@ -35,7 +35,7 @@ threat axis, the fourth the natural hazard. The weights live centrally in
 |---|---|---|
 | In-danger flag | UNESCO World Heritage Centre | 3 |
 | Travel advisory level (0 to 2) | German Federal Foreign Office | 3 |
-| Conflict events within 30 km (log-scaled) | ACLED (DuckDB `ST_Distance`) | 3 |
+| Conflict events within 30 km (log-scaled) | UCDP GED (DuckDB `ST_Distance`) | 3 |
 | Natural hazard (earthquake + river flood) | ThinkHazard! (World Bank GFDRR) | 1 |
 
 The threat is never encoded by colour alone. The app and the artefacts always
@@ -47,19 +47,22 @@ matches exactly what the score counts.
 
 - **UNESCO World Heritage Centre:** site list and the official *In Danger* flag.
 - **German Federal Foreign Office:** travel advisory level (0 to 2) per country.
-- **ACLED (Armed Conflict Location & Event Data):** geocoded conflict events,
-  counted within 30 km. Includes non-lethal strikes (intercepted drones and
-  missiles, shelling, explosions without fatalities). Used under an academic
-  *Research*-tier licence over a rolling 36-to-12-month window (event-level data
-  is released only after a 12-month embargo at this tier).
+- **UCDP GED (Uppsala Conflict Data Program):** geocoded conflict events,
+  counted within 30 km over a rolling 12-month window. The yearly GED release
+  plus the monthly candidate dataset keep the data 4 to 6 weeks behind real
+  time, so the score reflects the current situation. Openly licensed (CC BY
+  4.0), peer-reviewed and citable. Known limit: only events with at least one
+  fatality are recorded; non-lethal strikes (intercepted drones, shelling
+  without deaths) are missed.
 - **ThinkHazard! / World Bank GFDRR:** earthquake and river-flood hazard per site.
 - **Pleiades:** ancient places as historical context.
 - **OpenStreetMap:** building footprints for the density heatmap.
 
-ACLED's *Research* licence permits academic use only and forbids public
-redistribution, so this repository is **private** and used solely for the course
-submission. Raw ACLED events are git-ignored and never committed; only the derived
-threat score is used. All other sources are openly licensed.
+All sources are openly licensed and redistributable. (An ACLED *Research*-tier
+integration was evaluated in June 2026 and deliberately rolled back: its
+12-month embargo on event-level data would have made the "current threat"
+claim stale, and its licence would have forced the repository private. The
+comparison is documented in `PROJECT_CONTEXT.md`.)
 
 ## Pipeline
 
@@ -77,10 +80,10 @@ committed. See `PROJECT_CONTEXT.md` (in German) for the detailed, dated project
 log and methodology.
 
 A GitHub Actions workflow (`.github/workflows/daily-update.yml`) refreshes the
-time-critical sources daily (travel advisories and ACLED, plus the small UNESCO
-inventory), recomputes the score and commits only the aggregated artefacts; raw
-ACLED events never leave the ephemeral runner. The heavy OSM and Pleiades
-context layers stay static and are rebuilt manually.
+time-critical sources daily (travel advisories and UCDP conflict events, plus
+the small UNESCO inventory), recomputes the score and commits only the derived
+artefacts. No secrets are required; all sources are token-free. The heavy OSM
+and Pleiades context layers stay static and are rebuilt manually.
 
 ## App
 

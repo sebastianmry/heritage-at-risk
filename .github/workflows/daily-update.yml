@@ -1,19 +1,21 @@
 # Taeglicher Daten-Refresh (Plan aus PROJECT_CONTEXT / ci-daily-update-plan):
-# zieht nur die zeitkritischen, leichten Quellen neu (AA-Reisewarnung + ACLED,
+# zieht nur die zeitkritischen, leichten Quellen neu (AA-Reisewarnung + UCDP,
 # dazu das kleine UNESCO-Inventar, weil der Runner fluechtig ist und process.py
-# es braucht), rechnet Score und Exporte neu und committet NUR die aggregierten
-# Artefakte. ACLED-Rohevents bleiben unter DATA_DIR und verlassen den Runner
-# nie (Research-Lizenz, Repo privat). Schwere Quellen (OSM-PBFs, Pleiades,
-# Naturgefahr) bleiben statisch und werden manuell neu gebaut.
+# es braucht), rechnet Score und Exporte neu und committet NUR die abgeleiteten
+# Artefakte. UCDP GED ist CC BY 4.0 und tokenfrei, der Job braucht KEINE
+# Secrets. Schwere Quellen (OSM-PBFs, Pleiades, Naturgefahr) bleiben statisch
+# und werden manuell neu gebaut.
 #
-# Benoetigte Repo-Secrets: ACLED_API_EMAIL, ACLED_API_PASSWORD.
-# Hinweis: export.py stempelt das Laufdatum in die Metadaten, der Job erzeugt
-# daher taeglich einen Commit (dokumentiert zugleich die Datenfrische).
+# Hinweise: Der monatliche UCDP-Candidate haengt an einer versionierten URL
+# (config.UCDP_CANDIDATE_CSV_URL, z. B. GEDEvent_v26_0_5.csv) und ist beim
+# neuen Release hochzuziehen. export.py stempelt das Laufdatum in die
+# Metadaten, der Job erzeugt daher taeglich einen Commit (dokumentiert
+# zugleich die Datenfrische).
 name: Daily data update
 
 on:
   schedule:
-    - cron: "30 4 * * *" # 04:30 UTC, nach dem ACLED-Wochenrhythmus unkritisch
+    - cron: "30 4 * * *" # 04:30 UTC
   workflow_dispatch: {}
 
 permissions:
@@ -28,8 +30,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DATA_DIR: ${{ runner.temp }}/heritage_data
-      ACLED_API_EMAIL: ${{ secrets.ACLED_API_EMAIL }}
-      ACLED_API_PASSWORD: ${{ secrets.ACLED_API_PASSWORD }}
       PYTHONUTF8: "1"
     steps:
       - uses: actions/checkout@v4
@@ -46,7 +46,7 @@ jobs:
         run: |
           python ingest_unesco.py --refresh
           python ingest_aa.py --refresh
-          python ingest_acled.py --refresh
+          python ingest_ucdp.py --refresh
 
       - name: Score rechnen und Artefakte exportieren
         run: |

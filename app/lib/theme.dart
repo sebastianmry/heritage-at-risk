@@ -33,18 +33,16 @@ class AppColors {
   // Pleiades context, deliberately outside the threat ramp (indigo).
   static const Color pleiades = Color(0xFF5B4FC4);
 
-  // Sequential single-hue red ramp for the ACLED conflict events, keyed on the
+  // Sequential single-hue red ramp for the UCDP conflict events, keyed on the
   // event year so the layer reads "recent activity is hotter" (newer = more
-  // intense). ColorBrewer Reds (3 of the 5-class); colourblind-safe and distinct
-  // from the diverging threat ramp. Exposed as Color (legend swatch) and Hex
-  // (MapLibre paint). Years outside this set fall back to eventYearOtherHex.
-  static const Color eventYear2023 = Color(0xFFFCAE91);
-  static const Color eventYear2024 = Color(0xFFFB6A4A);
-  static const Color eventYear2025 = Color(0xFFA50F15);
-  static const String eventYear2023Hex = '#FCAE91';
-  static const String eventYear2024Hex = '#FB6A4A';
-  static const String eventYear2025Hex = '#A50F15';
-  static const String eventYearOtherHex = '#D7191C';
+  // intense). The rolling 12-month window spans exactly two calendar years,
+  // hence two steps: previous year mid-red, current year dark red (ColorBrewer
+  // Reds; colourblind-safe and distinct from the diverging threat ramp).
+  // Exposed as Color (legend swatch) and Hex (MapLibre paint).
+  static const Color eventYearPrevious = Color(0xFFFB6A4A);
+  static const Color eventYearCurrent = Color(0xFFA50F15);
+  static const String eventYearPreviousHex = '#FB6A4A';
+  static const String eventYearCurrentHex = '#A50F15';
   static const String eventStrokeHex = '#7F0E1E';
 
   // Warm tint for the basemap buildings (ember logic per theme, from the map

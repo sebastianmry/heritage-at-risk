@@ -43,7 +43,7 @@ class InfoSheet extends StatelessWidget {
             const SizedBox(height: 8),
             const _MetaRow('In-danger status', 'UNESCO World Heritage Centre', '×3'),
             const _MetaRow('Travel advisory', 'German Federal Foreign Office', '×3'),
-            const _MetaRow('Conflict', 'ACLED, within 30 km', '×3'),
+            const _MetaRow('Conflict', 'UCDP GED, within 30 km', '×3'),
             const _MetaRow('Natural hazard', 'ThinkHazard! (World Bank), quake/flood', '×1'),
             const SizedBox(height: 12),
 
@@ -66,18 +66,18 @@ class InfoSheet extends StatelessWidget {
             const _LayerRow(Color(0xFFD85A30), 'Conflict radius',
                 'The 30 km area scored around each site'),
             const _LayerRow(Color(0xFFFB6A4A), 'Conflict events',
-                'ACLED events, coloured by year (2023 light → 2025 dark)'),
+                'UCDP GED events, coloured by year (current year dark red)'),
             const _LayerRow(Color(0xFF2166AC), 'Route',
                 'Directions to a site (openrouteservice.org)'),
             const SizedBox(height: 12),
 
             _SectionTitle('Data & licence'),
             Text(
-              'Conflict window: a rolling 36–12 months back (ACLED Research tier '
-              'provides georeferenced events up to 12 months ago). Sources are '
-              'used under their own licences; this is a derived artefact for an '
-              'academic project (BHT Berlin). The score is indicative, not an '
-              'official risk assessment.',
+              'Conflict window: the last 12 months (UCDP GED plus the monthly '
+              'candidate release, ~4–6 weeks behind real time; only events with '
+              'at least one fatality). All sources are openly licensed; this is '
+              'a derived artefact for an academic project (BHT Berlin). The '
+              'score is indicative, not an official risk assessment.',
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.outline,
               ),

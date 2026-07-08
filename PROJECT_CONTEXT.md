@@ -469,6 +469,47 @@ VLO/LOW/MED/HIG je Site, ueber `config.NATURAL_HAZARD_LEVEL_SCORES` (0 / 1/3 / 2
   und Detail-Sheet/Verteilung am Pixel verifizieren. Datengrenze: ThinkHazard-Flusshochwasser bewertet die
   Jemen-Lehm-WHS (Shibam/Zabid) niedrig (river flood, nicht Sturzflut); bewusst ehrlich uebernommen.
 
+**Konfliktquelle FINAL zurueck auf UCDP GED + Intra-Site-Routing (2026-07-08, zweite Session,
+Nutzer-Entscheid).** Grund fuer den Rueckwechsel von ACLED: (1) **Aktualitaet** - die ACLED-Research-Stufe
+gibt Event-Level erst nach 12-Monats-Embargo frei, der Score beschrieb also die Lage von vor ueber einem
+Jahr; UCDP GED + monatlicher Candidate liegen nur ~4-6 Wochen zurueck, der Score traegt wieder die
+LAUFENDE Lage. (2) **Lizenz** - UCDP ist CC BY 4.0, das Repo kann wieder OEFFENTLICH werden und der
+CI-Tagesjob braucht keine Secrets mehr. Die UCDP-Luecke (nur Events mit >= 1 Toten) ist bewusst
+akzeptiert und in README/Info-Sheet dokumentiert; das ACLED-Intermezzo bleibt als dokumentierter
+Quellenvergleich in der History.
+- **Pipeline:** config (UCDP-Kommentar, Candidate-URL v26_0_4 -> **v26_0_5**, Fenster 36-12 -> **12-0
+  Monate**, Deckel 1000 -> **25**), ACLED-Block + ingest_acled.py GELOESCHT, .env.example ohne
+  ACLED-Creds. process.py/export.py/export_events.py auf ucdp_events.parquet; Event-Properties jetzt
+  date/year/violence_type/deaths. Lauf 2026-07-08: **2.513 Events ab 2025-07-01** (GED 2.200 +
+  Candidate 313), davon **1.780 im 30-km-Siteradius** (2025: 1.606, 2026: 174). Kalibrierung geprueft:
+  aktive Sites 37, Median 5, **p90 = 20,4** -> Deckel 25 bleibt. **Verteilung low 34 / medium 45 /
+  high 21**; Top: Bosra 9.47, Saint Hilarion/Gaza 9.33, Battir 9.18, Damaskus 8.95, Marib (YE) 8.87.
+- **App:** Alle ACLED-Labels auf UCDP GED (info_sheet inkl. Fenster-Text, conflict_overview, site_detail,
+  map_screen, event sheet mit violence_type + "Fatalities (best estimate)", ohne civilian_targeting).
+  **Jahresrampe von 3 auf 2 Klassen:** das rollende 12-Monats-Fenster spannt genau zwei Kalenderjahre;
+  `AppColors.eventYearPrevious/Current` (#FB6A4A/#A50F15), Match-Expression + Legende dynamisch auf
+  `DateTime.now().year` (kein jaehrliches Nachpflegen).
+- **Intra-Site-Routing:** "Route here" jetzt auch im Pleiades- und im 3D-Modell-Sheet (Ziel-Koordinaten
+  aus der Feature-Geometrie, gemeinsame onRoute-Fabrik in _showDetailAt). Damit Fussrouten innerhalb
+  grosser Staetten zu einzelnen Monumenten. Kein Auto-Profil (Nutzer-Entscheid), Events sind keine Ziele.
+- **CI-Tagesjob** auf ingest_ucdp.py umgestellt, Secrets-Zeilen raus (tokenfrei), Hinweis auf die
+  versionierte Candidate-URL.
+- **Geraetetest per adb (NEU: Claude testet selbst am angeschlossenen Pixel, Screenshots via screencap):**
+  Threat-Ansicht (100 Sites/19 in danger), Konflikt-Ansicht ("1780 conflict events (UCDP)", Zwei-Jahres-
+  Legende 2025/2026), Site-Sheet (Ancient Villages 8.5, UCDP-Events-Zeile, neue Hazard-Labels, Route-
+  Button) und der Routing-Fallback ohne Key (SnackBar mit dart-define-Hinweis) VERIFIZIERT. Dabei
+  **zwei echte Tap-Bugs gefunden + gefixt:** (1) Der Event-Tap-Pfad nutzte den onMapClick-Punkt direkt
+  fuers queryRenderedFeaturesInRect; robuster ist toScreenLocation(latLng) (garantiert derselbe
+  Pixel-Raum), Toleranz-Rect skaliert jetzt mit devicePixelRatio. (2) **Root cause per Logcat:** die
+  gestrichelte **Radius-Linien-Ebene war interaktiv** (addLineLayer-Default) und schluckte Taps in
+  Site-Naehe (feature#onTap ohne Handler unterdrueckt map#onMapClick) -> enableInteraction: false.
+  **OFFEN: Event-Tap mit dem Fix am Geraet nachtesten** (Pixel war zum Schluss gesperrt; Fix-APK ist
+  schon installiert).
+- **WICHTIG fuers Veroeffentlichen:** Die Git-HISTORY enthaelt noch ACLED-abgeleitete
+  conflict_events.geojson-Staende (Commits 825bab9..fd7dd33). Vor einem Public-Schalten entweder
+  History bereinigen (filter-repo/squash) oder ein frisches oeffentliches Repo vom aktuellen Stand
+  aufsetzen. Entscheidung liegt bei Sebastian.
+
 **Routing-Komponente v1 + Event-Sheet + Abgabe-Politur (2026-07-08, `flutter analyze` sauber, Tests
 gruen, Debug-APK gebaut, am Geraet NOCH NICHT verifiziert).** Autonome Session vor der Abgabe:
 - **Routing (README-Plan umgesetzt, Prof-Schwerpunkt):** Neues `app/lib/map/route_service.dart` spricht die
