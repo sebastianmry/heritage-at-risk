@@ -84,16 +84,19 @@ traffic-light ramp (high = red), 3D site markers and Pleiades ancient places as
 context, a warm building-density heatmap, and the basemap building footprints
 tinted warm at high zoom. Sites and Pleiades places are tappable for a detail
 sheet; the legend filters threat classes and toggles the context layers, and a
-country-filtered list view ranks the sites by score. Foreground geolocation
-centres the map on the user. A light/dark switch drives both the UI theme and the
-basemap.
+country-filtered list view ranks the sites by score and jumps back to the map.
+Foreground geolocation centres the map on the user and reports the nearest site.
+From there or from any site's detail sheet, **Route here** requests a live route
+(drive or walk) from the user's position to the site via the OpenRouteService
+directions API and draws it on the map with distance and duration. A light/dark
+switch drives both the UI theme and the basemap.
 
 | Building block | Choice |
 |---|---|
 | Framework | Flutter (stable) + Dart 3 |
 | Map engine | MapLibre Native (`maplibre_gl`) |
 | Location | `geolocator` (foreground) |
-| Routing | OpenRouteService via a proxy (planned) |
+| Routing | OpenRouteService directions API (key injected at build time, never in code) |
 | State | Riverpod |
 
 ## Build
@@ -104,8 +107,15 @@ The app builds with the Android toolchain (Flutter 3.44, JDK 21, Android SDK 36)
 ```sh
 cd app
 flutter pub get
-flutter build apk --debug
+flutter build apk --debug --dart-define=ORS_API_KEY=<your key>
 ```
+
+The OpenRouteService key comes from [openrouteservice.org/sign-up](https://openrouteservice.org/sign-up)
+(free tier) and is injected at build time via `--dart-define`; it is never part
+of the source or the repository. Without a key the app still builds and runs,
+only the routing action explains how to enable it. On Windows,
+`build_app.bat` in the repository root reads `OPENROUTESERVICE_API_KEY` from
+`.env` and passes it automatically.
 
 ## Tech Stack
 

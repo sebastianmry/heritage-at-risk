@@ -8,16 +8,20 @@ import '../theme.dart';
 /// advisory, conflict, natural hazard) with raw value and contribution. Threat
 /// is encoded redundantly through colour, label and number (accessibility).
 class SiteDetailSheet extends StatelessWidget {
-  const SiteDetailSheet({super.key, required this.properties});
+  const SiteDetailSheet({super.key, required this.properties, this.onRoute});
 
   final Map<String, dynamic> properties;
 
-  /// Short labels for ThinkHazard! hazard levels (VLO/LOW/MED/HIG/NDA).
+  /// Called when the user asks for directions to this site (closes the sheet
+  /// and starts the routing flow on the map). Null hides the button.
+  final VoidCallback? onRoute;
+
+  /// Plain-language labels for ThinkHazard! hazard levels (VLO/LOW/MED/HIG/NDA).
   static const Map<String, String> _hazardLevels = {
-    'VLO': 'V.low',
-    'LOW': 'Low',
-    'MED': 'Med',
-    'HIG': 'High',
+    'VLO': 'very low',
+    'LOW': 'low',
+    'MED': 'medium',
+    'HIG': 'high',
     'NDA': '—',
   };
 
@@ -121,10 +125,22 @@ class SiteDetailSheet extends StatelessWidget {
               ),
               _ComponentRow(
                 color: const Color(0xFF7E57C2),
-                title: 'Natural hazard (quake/flood)',
-                value: 'EQ ${_hazard('eq_level')} · FL ${_hazard('fl_level')}',
+                title: 'Natural hazard',
+                value:
+                    'Earthquake ${_hazard('eq_level')} · Flood ${_hazard('fl_level')}',
                 contribution: _num('score_natural').toDouble(),
               ),
+              if (onRoute != null) ...[
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.tonalIcon(
+                    onPressed: onRoute,
+                    icon: const Icon(Icons.directions_outlined, size: 18),
+                    label: const Text('Route here'),
+                  ),
+                ),
+              ],
               const SizedBox(height: 14),
               Divider(color: theme.colorScheme.outlineVariant, height: 1),
               const SizedBox(height: 10),

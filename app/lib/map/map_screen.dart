@@ -13,6 +13,7 @@ import 'conflict_event_sheet.dart';
 import 'conflict_overview_sheet.dart';
 import 'model_3d_sheet.dart';
 import 'pleiades_sheet.dart';
+import 'route_service.dart';
 import 'site_detail_sheet.dart';
 import 'site_list_screen.dart';
 import 'threat_legend.dart';
@@ -65,6 +66,14 @@ class _MapScreenState extends State<MapScreen> {
   static const String _radiusLayer = 'conflict-radius-line';
   static const String _eventsSource = 'conflict-events';
   static const String _eventsLayer = 'conflict-events-circles';
+  static const String _routeSource = 'route';
+  static const String _routeCasingLayer = 'route-casing';
+  static const String _routeLayer = 'route-line';
+
+  static const Map<String, dynamic> _emptyGeojson = {
+    'type': 'FeatureCollection',
+    'features': <dynamic>[],
+  };
 
   MapLibreMapController? _controller;
 
@@ -97,6 +106,12 @@ class _MapScreenState extends State<MapScreen> {
   bool _myLocationEnabled = false;
   bool _locating = false;
   _NearestSite? _nearest;
+
+  /// Active route (ORS directions): result, destination and busy flag. The
+  /// destination is kept so the profile switch can re-request the same route.
+  RouteResult? _route;
+  _RouteTarget? _routeTarget;
+  bool _routingBusy = false;
 
   /// Building layers of the provider basemap (resolved from the style at runtime).
   final Set<String> _buildingLayerIds = {};
@@ -247,6 +262,55 @@ class _MapScreenState extends State<MapScreen> {
         lineOpacity: 0.7,
         lineDasharray: [2, 2],
       ),
+    );
+
+    // Route line (ORS directions) below the markers: white casing plus a strong
+    // blue line, deliberately outside both the threat ramp and the event reds.
+    // The source starts empty and is filled when the user requests a route; it
+    // survives a style reload (theme switch) via the kept _route state.
+    await controller.addGeoJsonSource(
+      _routeSource,
+      _route?.toGeojson() ?? _emptyGeojson,
+    );
+    await controller.addLineLayer(
+      _routeSource,
+      _routeCasingLayer,
+      const LineLayerProperties(
+        lineColor: '#ffffff',
+        lineWidth: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          5,
+          5.0,
+          12,
+          9.0,
+        ],
+        lineOpacity: 0.9,
+        lineCap: 'round',
+        lineJoin: 'round',
+      ),
+      enableInteraction: false,
+    );
+    await controller.addLineLayer(
+      _routeSource,
+      _routeLayer,
+      const LineLayerProperties(
+        lineColor: '#2166AC',
+        lineWidth: [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          5,
+          3.0,
+          12,
+          5.5,
+        ],
+        lineOpacity: 0.95,
+        lineCap: 'round',
+        lineJoin: 'round',
+      ),
+      enableInteraction: false,
     );
 
     // The scored sites as the threat hero (on top). Colour from the data,
@@ -454,12 +518,24 @@ class _MapScreenState extends State<MapScreen> {
       layerId,
     ], null);
     if (features.isEmpty || !mounted) return;
-    final properties = _extractProperties(features.first);
+    final feature = _extractFeature(features.first);
+    final properties = _extractProperties(feature);
     if (properties == null) return;
+    // Site coordinates for the "Route here" action (from the tapped feature's
+    // point geometry; the sheet itself only sees properties).
+    final coords =
+        ((feature?['geometry'] as Map?)?['coordinates'] as List?) ?? const [];
+    final target = layerId == _sitesLayer && coords.length >= 2
+        ? _RouteTarget(
+            name: '${properties['name'] ?? 'Site'}',
+            lat: (coords[1] as num).toDouble(),
+            lon: (coords[0] as num).toDouble(),
+          )
+        : null;
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: false,
-      builder: (_) {
+      builder: (sheetContext) {
         if (layerId == _pleiadesLayer) {
           return PleiadesSheet(properties: properties);
         }
@@ -469,9 +545,25 @@ class _MapScreenState extends State<MapScreen> {
         if (layerId == _eventsLayer) {
           return ConflictEventSheet(properties: properties);
         }
-        return SiteDetailSheet(properties: properties);
+        return SiteDetailSheet(
+          properties: properties,
+          onRoute: target == null
+              ? null
+              : () {
+                  Navigator.of(sheetContext).pop();
+                  _routeToSite(target, _route?.profile ?? RouteProfile.drive);
+                },
+        );
       },
     );
+  }
+
+  /// Decode a query result into the full feature map (properties + geometry).
+  Map<String, dynamic>? _extractFeature(dynamic feature) {
+    var decoded = feature;
+    if (decoded is String) decoded = jsonDecode(decoded);
+    if (decoded is! Map) return null;
+    return Map<String, dynamic>.from(decoded);
   }
 
   Map<String, dynamic>? _extractProperties(dynamic feature) {
@@ -603,6 +695,26 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
+  /// Service/permission checks plus the current position, shared by the locate
+  /// button and the routing flow. Returns null (after showing a message) when
+  /// the location is unavailable.
+  Future<Position?> _getPosition() async {
+    if (!await Geolocator.isLocationServiceEnabled()) {
+      _showLocationMessage('Location services are off. Enable them to locate.');
+      return null;
+    }
+    var permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      _showLocationMessage('Location permission denied.');
+      return null;
+    }
+    return Geolocator.getCurrentPosition();
+  }
+
   /// Foreground locate: request permission, get the current position, recentre
   /// the camera, show the location dot, and report the nearest scored site.
   Future<void> _locateMe() async {
@@ -610,22 +722,8 @@ class _MapScreenState extends State<MapScreen> {
     if (controller == null || _locating) return;
     setState(() => _locating = true);
     try {
-      if (!await Geolocator.isLocationServiceEnabled()) {
-        _showLocationMessage('Location services are off. Enable them to locate.');
-        return;
-      }
-      var permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-      }
-      if (permission == LocationPermission.denied ||
-          permission == LocationPermission.deniedForever) {
-        _showLocationMessage('Location permission denied.');
-        return;
-      }
-
-      final position = await Geolocator.getCurrentPosition();
-      if (!mounted) return;
+      final position = await _getPosition();
+      if (position == null || !mounted) return;
       setState(() => _myLocationEnabled = true);
       await controller.animateCamera(
         CameraUpdate.newLatLngZoom(
@@ -640,6 +738,88 @@ class _MapScreenState extends State<MapScreen> {
     } finally {
       if (mounted) setState(() => _locating = false);
     }
+  }
+
+  /// Request an ORS route from the current position to a site and show it on
+  /// the map. Location comes from the shared permission flow; the camera is
+  /// fitted to the route and a summary panel appears (profile switch + clear).
+  Future<void> _routeToSite(_RouteTarget target, RouteProfile profile) async {
+    final controller = _controller;
+    if (controller == null || _routingBusy) return;
+    if (!RouteService.isConfigured) {
+      _showLocationMessage(
+        'Routing needs an OpenRouteService key: build the app with '
+        '--dart-define=ORS_API_KEY=<key>.',
+      );
+      return;
+    }
+    setState(() => _routingBusy = true);
+    try {
+      final position = await _getPosition();
+      if (position == null || !mounted) return;
+      setState(() => _myLocationEnabled = true);
+      final route = await RouteService.fetchRoute(
+        from: LatLng(position.latitude, position.longitude),
+        to: LatLng(target.lat, target.lon),
+        profile: profile,
+      );
+      if (!mounted) return;
+      setState(() {
+        _route = route;
+        _routeTarget = target;
+        // The route replaces the nearest-site panel (same screen corner).
+        _nearest = null;
+      });
+      await controller.setGeoJsonSource(_routeSource, route.toGeojson());
+      await _fitCameraToRoute(route);
+    } on RouteException catch (error) {
+      _showLocationMessage(error.message);
+    } catch (_) {
+      _showLocationMessage('Routing failed.');
+    } finally {
+      if (mounted) setState(() => _routingBusy = false);
+    }
+  }
+
+  /// Re-request the active route with the other profile (drive/walk).
+  Future<void> _setRouteProfile(RouteProfile profile) async {
+    final target = _routeTarget;
+    if (target == null || _route?.profile == profile) return;
+    await _routeToSite(target, profile);
+  }
+
+  /// Remove the route line and panel.
+  Future<void> _clearRoute() async {
+    setState(() {
+      _route = null;
+      _routeTarget = null;
+    });
+    await _controller?.setGeoJsonSource(_routeSource, _emptyGeojson);
+  }
+
+  Future<void> _fitCameraToRoute(RouteResult route) async {
+    var minLat = route.points.first.latitude;
+    var maxLat = minLat;
+    var minLon = route.points.first.longitude;
+    var maxLon = minLon;
+    for (final p in route.points) {
+      if (p.latitude < minLat) minLat = p.latitude;
+      if (p.latitude > maxLat) maxLat = p.latitude;
+      if (p.longitude < minLon) minLon = p.longitude;
+      if (p.longitude > maxLon) maxLon = p.longitude;
+    }
+    await _controller?.animateCamera(
+      CameraUpdate.newLatLngBounds(
+        LatLngBounds(
+          southwest: LatLng(minLat, minLon),
+          northeast: LatLng(maxLat, maxLon),
+        ),
+        left: 48,
+        right: 48,
+        top: 140,
+        bottom: 180,
+      ),
+    );
   }
 
   void _showLocationMessage(String message) {
@@ -670,6 +850,8 @@ class _MapScreenState extends State<MapScreen> {
           name: (props['name'] ?? '').toString(),
           level: (props['threat_level'] ?? '').toString(),
           distanceMetres: metres,
+          lat: (coords[1] as num).toDouble(),
+          lon: (coords[0] as num).toDouble(),
         );
       }
     }
@@ -783,12 +965,35 @@ class _MapScreenState extends State<MapScreen> {
               onToggleEvents: _toggleEvents,
             ),
           ),
-          if (_nearest != null)
+          // Route summary and nearest-site panels share the corner above the
+          // FAB; an active route takes precedence.
+          if (_route != null && _routeTarget != null)
+            Positioned(
+              right: 12,
+              bottom: 88,
+              child: _RoutePanel(
+                route: _route!,
+                targetName: _routeTarget!.name,
+                busy: _routingBusy,
+                onProfileChanged: _setRouteProfile,
+                onDismiss: _clearRoute,
+              ),
+            )
+          else if (_nearest != null)
             Positioned(
               right: 12,
               bottom: 88,
               child: _NearestSitePanel(
                 nearest: _nearest!,
+                routing: _routingBusy,
+                onRoute: () => _routeToSite(
+                  _RouteTarget(
+                    name: _nearest!.name,
+                    lat: _nearest!.lat,
+                    lon: _nearest!.lon,
+                  ),
+                  _route?.profile ?? RouteProfile.drive,
+                ),
                 onDismiss: () => setState(() => _nearest = null),
               ),
             ),
@@ -814,24 +1019,44 @@ class _MapScreenState extends State<MapScreen> {
   }
 }
 
+/// Destination of a routing request (a scored site).
+class _RouteTarget {
+  const _RouteTarget({required this.name, required this.lat, required this.lon});
+
+  final String name;
+  final double lat;
+  final double lon;
+}
+
 /// Result of the nearest-site proximity check.
 class _NearestSite {
   const _NearestSite({
     required this.name,
     required this.level,
     required this.distanceMetres,
+    required this.lat,
+    required this.lon,
   });
 
   final String name;
   final String level;
   final double distanceMetres;
+  final double lat;
+  final double lon;
 }
 
 /// Compact panel reporting the nearest scored site to the user's location.
 class _NearestSitePanel extends StatelessWidget {
-  const _NearestSitePanel({required this.nearest, required this.onDismiss});
+  const _NearestSitePanel({
+    required this.nearest,
+    required this.routing,
+    required this.onRoute,
+    required this.onDismiss,
+  });
 
   final _NearestSite nearest;
+  final bool routing;
+  final VoidCallback onRoute;
   final VoidCallback onDismiss;
 
   @override
@@ -874,6 +1099,20 @@ class _NearestSitePanel extends StatelessWidget {
                       AppColors.threatLabel(nearest.level),
                       style: theme.textTheme.bodySmall,
                     ),
+                    const SizedBox(height: 6),
+                    // Routing entry point: directions to the nearest site.
+                    ActionChip(
+                      avatar: routing
+                          ? const SizedBox(
+                              width: 14,
+                              height: 14,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(Icons.directions_outlined, size: 16),
+                      label: const Text('Route'),
+                      visualDensity: VisualDensity.compact,
+                      onPressed: routing ? null : onRoute,
+                    ),
                   ],
                 ),
               ),
@@ -883,6 +1122,112 @@ class _NearestSitePanel extends StatelessWidget {
                 child: const Padding(
                   padding: EdgeInsets.all(4),
                   child: Icon(Icons.close, size: 18),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Summary panel for the active route: destination, distance and duration for
+/// the chosen profile, a drive/walk switch and a clear button.
+class _RoutePanel extends StatelessWidget {
+  const _RoutePanel({
+    required this.route,
+    required this.targetName,
+    required this.busy,
+    required this.onProfileChanged,
+    required this.onDismiss,
+  });
+
+  final RouteResult route;
+  final String targetName;
+  final bool busy;
+  final ValueChanged<RouteProfile> onProfileChanged;
+  final VoidCallback onDismiss;
+
+  String get _distance {
+    final km = route.distanceMetres / 1000.0;
+    return km >= 10 ? '${km.toStringAsFixed(0)} km' : '${km.toStringAsFixed(1)} km';
+  }
+
+  String get _duration {
+    final minutes = (route.durationSeconds / 60).round();
+    if (minutes < 60) return '$minutes min';
+    return '${minutes ~/ 60} h ${minutes % 60} min';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Card(
+      elevation: 3,
+      color: theme.colorScheme.surface.withValues(alpha: 0.94),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 250),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 8, 6, 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Route · $_distance · $_duration',
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        color: theme.colorScheme.outline,
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    onTap: onDismiss,
+                    borderRadius: BorderRadius.circular(16),
+                    child: const Padding(
+                      padding: EdgeInsets.all(4),
+                      child: Icon(Icons.close, size: 18),
+                    ),
+                  ),
+                ],
+              ),
+              Text(
+                targetName,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 6),
+              SegmentedButton<RouteProfile>(
+                segments: const [
+                  ButtonSegment(
+                    value: RouteProfile.drive,
+                    icon: Icon(Icons.directions_car_outlined, size: 16),
+                    label: Text('Drive'),
+                  ),
+                  ButtonSegment(
+                    value: RouteProfile.walk,
+                    icon: Icon(Icons.directions_walk_outlined, size: 16),
+                    label: Text('Walk'),
+                  ),
+                ],
+                selected: {route.profile},
+                onSelectionChanged: busy
+                    ? null
+                    : (selection) => onProfileChanged(selection.first),
+                showSelectedIcon: false,
+                style: const ButtonStyle(visualDensity: VisualDensity.compact),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Routing: openrouteservice.org',
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.outline,
                 ),
               ),
             ],
