@@ -39,7 +39,7 @@ class _SiteListScreenState extends State<SiteListScreen> {
     final raw = await rootBundle.loadString('assets/data/sites.geojson');
     final features = (jsonDecode(raw) as Map<String, dynamic>)['features'] as List;
     final sites = features
-        .map((f) => _Site.fromProperties((f as Map)['properties'] as Map))
+        .map((f) => _Site.fromFeature(f as Map))
         .toList()
       ..sort((a, b) => b.totalScore.compareTo(a.totalScore));
     setState(() => _sites = sites);
@@ -89,7 +89,14 @@ class _SiteListScreenState extends State<SiteListScreen> {
                   Divider(height: 1, color: theme.colorScheme.outlineVariant),
               itemBuilder: (context, index) {
                 final site = visible[index];
-                return _SiteTile(site: site, countryName: _countryName(site.iso2));
+                return _SiteTile(
+                  site: site,
+                  countryName: _countryName(site.iso2),
+                  // Tapping a row returns to the map and recentres on the site.
+                  onTap: () => Navigator.of(context).pop(
+                    (lat: site.lat, lon: site.lon),
+                  ),
+                );
               },
             ),
     );
@@ -159,15 +166,21 @@ class _FilterChip extends StatelessWidget {
 
 /// One site row: colour accent plus the level word and numeric score.
 class _SiteTile extends StatelessWidget {
-  const _SiteTile({required this.site, required this.countryName});
+  const _SiteTile({
+    required this.site,
+    required this.countryName,
+    required this.onTap,
+  });
 
   final _Site site;
   final String countryName;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return ListTile(
+      onTap: onTap,
       leading: Container(
         width: 12,
         height: 12,
@@ -199,6 +212,8 @@ class _Site {
     required this.level,
     required this.totalScore,
     required this.color,
+    required this.lat,
+    required this.lon,
   });
 
   final String name;
@@ -207,8 +222,12 @@ class _Site {
   final String level;
   final double totalScore;
   final Color color;
+  final double lat;
+  final double lon;
 
-  factory _Site.fromProperties(Map properties) {
+  factory _Site.fromFeature(Map feature) {
+    final properties = (feature['properties'] as Map?) ?? const {};
+    final coords = (feature['geometry'] as Map?)?['coordinates'] as List?;
     return _Site(
       name: (properties['name'] as String?) ?? 'Unknown',
       iso2: (properties['country_iso2'] as String?) ?? '',
@@ -216,6 +235,8 @@ class _Site {
       level: (properties['threat_level'] as String?) ?? '',
       totalScore: (properties['total_score'] as num?)?.toDouble() ?? 0,
       color: _parseHexColor(properties['threat_color'] as String?),
+      lon: coords != null && coords.length >= 2 ? (coords[0] as num).toDouble() : 0,
+      lat: coords != null && coords.length >= 2 ? (coords[1] as num).toDouble() : 0,
     );
   }
 }

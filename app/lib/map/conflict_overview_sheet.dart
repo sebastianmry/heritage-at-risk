@@ -18,7 +18,7 @@ class ConflictSiteTally {
 }
 
 /// Bottom sheet that summarises the conflict component: the total number of
-/// georeferenced UCDP events near heritage sites and the per-site breakdown,
+/// georeferenced ACLED events near heritage sites and the per-site breakdown,
 /// sorted by event count. Read-only; the data comes from the scored sites.
 class ConflictOverviewSheet extends StatelessWidget {
   const ConflictOverviewSheet({
@@ -52,8 +52,8 @@ class ConflictOverviewSheet extends StatelessWidget {
             Text('Conflict overview', style: theme.textTheme.titleLarge),
             const SizedBox(height: 4),
             Text(
-              'Lethal, georeferenced UCDP GED events within 30 km of each '
-              'World Heritage site (rolling 12-month window).',
+              'Georeferenced ACLED conflict events within 30 km of each '
+              'World Heritage site (rolling 36–12 month window).',
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.outline,
               ),

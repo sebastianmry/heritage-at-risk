@@ -56,7 +56,7 @@ DUCKDB_PATH: Path = INTERIM_DIR / "heritage.duckdb"
 # Ausgabe-Artefakte, die die App liest (Stufe 3, Export)
 SITES_GEOJSON_PATH: Path = ARTIFACTS_DIR / "sites.geojson"
 CONFLICT_RADIUS_GEOJSON_PATH: Path = ARTIFACTS_DIR / "conflict_radius.geojson"
-UCDP_EVENTS_GEOJSON_PATH: Path = ARTIFACTS_DIR / "ucdp_events.geojson"
+CONFLICT_EVENTS_GEOJSON_PATH: Path = ARTIFACTS_DIR / "conflict_events.geojson"
 BASEMAP_PMTILES_PATH: Path = ARTIFACTS_DIR / "basemap.pmtiles"
 
 # ---------------------------------------------------------------------------
@@ -164,22 +164,91 @@ UCDP_VIOLENCE_TYPES: dict[int, str] = {
     3: "one-sided violence",
 }
 
-# Zeitfenster der Konflikt-Ereignisse: rollendes Fenster der juengsten
-# CONFLICT_LOOKBACK_MONTHS Monate (Start = erster Tag des Monats vor N Monaten,
-# inklusive, YYYY-MM-DD). Der Threat Score soll die AKTUELLE Gefaehrdung zeigen,
-# nicht die gesamte Konflikthistorie. Ein einzelner Monat waere aber zu rauschig
-# (Konflikt ist episodisch, Schaeden kumulieren), daher ein mehrjaehriges
-# Aktuell-Fenster statt eines festen Jahres; 36 Monate decken die laufende
-# Eskalation (u. a. ab Okt. 2023) ab. Bewusst rollend: jeder Build ist ein
-# Schnappschuss der vorangehenden N Monate (etwas geringere Exakt-Reproduzier-
-# barkeit, dafuer immer aktuell). CONFLICT_EVENTS_FOR_FULL_SCORE ggf. mit dem
-# Fenster nachjustieren.
-# 12 Monate: bewusst aktuelles Fenster (die laufende Lage, nicht die mehrjaehrige
-# Historie); der Log-Deckel ist am p90 dieses Fensters kalibriert.
-CONFLICT_LOOKBACK_MONTHS: int = 12
+# ---------------------------------------------------------------------------
+# ACLED (Armed Conflict Location & Event Data): georeferenzierte Konflikt-
+# Ereignisse, alleinige Quelle der Konflikt-Komponente. Rueckwechsel von UCDP
+# (2026-06-24), nachdem das Konto auf die Research-Stufe freigeschaltet wurde.
+# ACLED erfasst auch NICHT-toedliche Treffer (abgefangene Drohnen/Raketen,
+# Beschuss, Explosionen ohne Tote) - genau die Luecke, die UCDP (Schwelle
+# >= 1 Toter) liess.
+#
+# WICHTIG, Lizenz: Die Research-Stufe erlaubt rein akademische Nutzung, aber
+# KEINE oeffentliche Veroeffentlichung der App oder der Daten. Das Repo bleibt
+# deshalb PRIVAT (nur Abgabe an den Prof). ACLED-Rohevents nie oeffentlich
+# weitergeben, stets sauber attribuieren. Siehe ACLED-Bewilligungsmail
+# (2026-06-23) und Memory open-source-only-sources.
+#
+# WICHTIG, Zeitfenster: Research liefert Event-Level (mit lat/lon) erst ab
+# >12 Monaten; die juengsten 12 Monate nur aggregiert ohne Koordinaten. Das
+# Konflikt-Fenster liegt deshalb zwischen 36 und 12 Monaten zurueck (s. u.),
+# also genau im punktgenau verfuegbaren Bereich.
+#
+# Auth: OAuth2 Password-Grant. POST ACLED_OAUTH_URL mit username/password (aus
+# .env), grant_type=password, client_id=acled, scope=authenticated liefert einen
+# 24-h-Bearer-Token. Damit GET ACLED_API_URL (Header Authorization: Bearer ...),
+# je Land (ISO-numerisch) paginiert, gefiltert auf event_date BETWEEN den
+# Fensterkanten.
+# ---------------------------------------------------------------------------
+
+ACLED_OAUTH_URL: str = "https://acleddata.com/oauth/token"
+ACLED_API_URL: str = "https://acleddata.com/api/acled/read"
+
+# Credentials ausschliesslich aus der Umgebung (.env), nie im Code oder Repo.
+ACLED_EMAIL: str | None = os.environ.get("ACLED_API_EMAIL")
+ACLED_PASSWORD: str | None = os.environ.get("ACLED_API_PASSWORD")
+
+# ACLED filtert Laender per ISO-3166-1-NUMERIC. Mapping der Region (deckt sich
+# mit COUNTRY_ISO2, inkl. Palaestina 275).
+ACLED_COUNTRY_ISO_NUMERIC: tuple[int, ...] = (
+    760,  # SY Syrien
+    422,  # LB Libanon
+    376,  # IL Israel
+    275,  # PS Palaestina
+    368,  # IQ Irak
+    364,  # IR Iran
+    887,  # YE Jemen
+    400,  # JO Jordanien
+    818,  # EG Aegypten
+    682,  # SA Saudi-Arabien
+    784,  # AE Vereinigte Arabische Emirate
+    512,  # OM Oman
+    634,  # QA Katar
+    48,   # BH Bahrain
+    414,  # KW Kuwait
+)
+
+# Relevante ACLED-Ereignistypen fuer die Gefaehrdung von Staetten: gewaltsame
+# Ereignisse inkl. nicht-toedlicher Beschuss/Drohnen/Raketen. Bewusst OHNE
+# Protests/Riots/Strategic developments (keine physische Bedrohung der
+# Bausubstanz). Filter greift in ingest_acled.build_events.
+ACLED_EVENT_TYPES: tuple[str, ...] = (
+    "Battles",
+    "Explosions/Remote violence",
+    "Violence against civilians",
+)
+
+# Maximale Zeilen je API-Seite (ACLED-Default/Max 5000); darueber wird paginiert.
+ACLED_PAGE_LIMIT: int = 5000
+
+# Konflikt-Zeitfenster: rollendes Fenster zwischen CONFLICT_LOOKBACK_MONTHS
+# (aeltere Kante, Fensteranfang) und CONFLICT_WINDOW_END_MONTHS (juengere Kante,
+# Fensterende), jeweils Monate zurueck. Anders als beim alten UCDP-Pfad (offen bis
+# heute) hat das Fenster jetzt BEIDE Kanten: ACLED Research gibt geokodierte
+# Einzelereignisse erst ab >12 Monaten frei (die juengsten 12 Monate nur aggregiert
+# ohne lat/lon, also nicht radius-joinbar). 36->12 Monate deckt damit den
+# punktgenau verfuegbaren Teil der laufenden Eskalation (u. a. ab Okt. 2023) ab.
+# Bewusst rollend: jeder Build ist ein Schnappschuss dieses Fensters. Start
+# inklusive, Ende exklusive (erster Tag des jeweiligen Monats, YYYY-MM-DD).
+#
+# Hinweis Score-Kalibrierung: CONFLICT_EVENTS_FOR_FULL_SCORE wurde am alten
+# 12-Monats-UCDP-Fenster (toedliche Events) geeicht. ACLED zaehlt ueber 24 Monate
+# auch nicht-toedliche Ereignisse, liefert also deutlich hoehere Counts je Site;
+# der Log-Deckel ist nach dem ersten echten ACLED-Lauf an dessen p90 nachzuziehen.
+CONFLICT_LOOKBACK_MONTHS: int = 36     # Fensteranfang (aeltere Kante)
+CONFLICT_WINDOW_END_MONTHS: int = 12   # Fensterende (juengere Kante, ACLED-Embargo)
 
 
-def _conflict_start_date(months: int) -> str:
+def _month_start_months_ago(months: int) -> str:
     today = date.today()
     year, month = today.year, today.month - months
     while month <= 0:
@@ -188,7 +257,8 @@ def _conflict_start_date(months: int) -> str:
     return date(year, month, 1).isoformat()
 
 
-CONFLICT_START_DATE: str = _conflict_start_date(CONFLICT_LOOKBACK_MONTHS)
+CONFLICT_START_DATE: str = _month_start_months_ago(CONFLICT_LOOKBACK_MONTHS)
+CONFLICT_END_DATE: str = _month_start_months_ago(CONFLICT_WINDOW_END_MONTHS)
 
 # Auswaertiges Amt: Reise- und Sicherheitshinweise als Laender-Gefaehrdungsindikator.
 # Die OpenData-API liefert je Land vier Bool-Flags, keine fertige Zahlenskala.
@@ -274,15 +344,17 @@ CONFLICT_RADIUS_KM: float = 30.0
 # Anzahl Ereignisse im Radius, ab der die Konflikt-Komponente voll zaehlt.
 # Die Abbildung Ereigniszahl -> Teilscore ist LOGARITHMISCH, nicht linear:
 # score = min(ln(1 + count) / ln(1 + CONFLICT_EVENTS_FOR_FULL_SCORE), 1). Begruendung:
-# die UCDP-Ereigniszahl je Site ist stark rechtsschief (im 12-Monats-Fenster/30-km-Radius
-# bei den betroffenen Sites Median 8, p90 ~26, ein Gaza-Ausreisser ~1850). Eine lineare
-# Schwelle saettigt entweder zu frueh (alle betroffenen Sites am Vollwert) oder ein hoher
-# Deckel rechnet die einstelligen Mehrheitswerte klein. Die Log-Skala verteilt die
+# die ACLED-Ereigniszahl je Site ist stark rechtsschief (im 36-12-Monats-Fenster/
+# 30-km-Radius bei den aktiven Sites Median 85, p90 ~1079, ein Gaza-Ausreisser ~19100).
+# Eine lineare Schwelle saettigt entweder zu frueh (alle betroffenen Sites am Vollwert)
+# oder ein hoher Deckel rechnet die Mehrheitswerte klein. Die Log-Skala verteilt die
 # Intensitaet glatt ueber die Spanne und bewahrt den raeumlichen Mehrwert der Konflikt-
-# daten gegenueber der laenderweiten Reisewarnung. Deckel 25 ~ p90 der aktiven Sites:
-# "25+ toedliche Ereignisse in 30 km ueber 12 Monate = maximale lokale Konflikt-
-# Exposition" (datenverankert, mit Fenster/Radius nachzuziehen, revidierbar).
-CONFLICT_EVENTS_FOR_FULL_SCORE: int = 25
+# daten gegenueber der laenderweiten Reisewarnung. Deckel 1000 ~ p90 der aktiven Sites:
+# "1000+ Gewaltereignisse (inkl. nicht-toedlich) in 30 km ueber 24 Monate = maximale
+# lokale Konflikt-Exposition" (datenverankert am echten ACLED-Lauf 2026-06-24, mit
+# Fenster/Radius nachzuziehen, revidierbar). Geeicht beim Quellenwechsel UCDP -> ACLED
+# (vorher 25 am 12-Monats-UCDP-Fenster toedlicher Events).
+CONFLICT_EVENTS_FOR_FULL_SCORE: int = 1000
 
 # ---------------------------------------------------------------------------
 # Darstellung: farbcodierte Threat-Level (gruen, gelb, rot)

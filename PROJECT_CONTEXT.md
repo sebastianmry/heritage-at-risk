@@ -32,7 +32,7 @@ menschliche Gefaehrdungsachse, die vierte die Naturgefahr. Die Gewichte liegen z
 |---|---|---|
 | In-Danger-Flag | UNESCO World Heritage Centre | 3 |
 | Reisewarnstufe (0 bis 2) | Auswaertiges Amt | 3 |
-| Konflikt-Ereignisse im 30-km-Radius (log-skaliert) | UCDP GED, DuckDB ST_Distance | 3 |
+| Konflikt-Ereignisse im 30-km-Radius (log-skaliert) | ACLED, DuckDB ST_Distance | 3 |
 | Naturgefahr (Erdbeben + Flusshochwasser, Max der Stufen) | ThinkHazard! (Weltbank GFDRR) | 1 |
 
 ## Pipeline
@@ -468,6 +468,34 @@ VLO/LOW/MED/HIG je Site, ueber `config.NATURAL_HAZARD_LEVEL_SCORES` (0 / 1/3 / 2
   startet host-seitig nicht mehr -> Laptop-Neustart noetig). Danach `adb install -r` von `C:\Users\sebas\app-debug.apk`
   und Detail-Sheet/Verteilung am Pixel verifizieren. Datengrenze: ThinkHazard-Flusshochwasser bewertet die
   Jemen-Lehm-WHS (Shibam/Zabid) niedrig (river flood, nicht Sturzflut); bewusst ehrlich uebernommen.
+
+**Konflikt-Komponente: Rueckwechsel UCDP GED -> ACLED (2026-06-24, Pipeline gelaufen, `flutter analyze`
+sauber, Debug-APK gebaut, am Geraet NOCH NICHT verifiziert).** Loest den UCDP-Stand darunter ab. ACLED-Zugang
+am 2026-06-23 auf **Research-Stufe** bewilligt (Auflage: nur akademisch, NICHT oeffentlich -> GitHub-Repo
+bleibt PRIVAT, ACLED-Rohevents gitignored/local-only, sauber attribuiert). Grund fuer ACLED statt UCDP:
+ACLED erfasst auch NICHT-toedliche Treffer (abgefangene Drohnen/Raketen, Beschuss/Explosionen ohne Tote),
+die UCDP mit seiner Schwelle >= 1 Toter verpasst.
+- **Fenster 36 -> 12 Monate** (statt 12-0): Research liefert georeferenzierte Event-Level-Daten erst ab
+  > 12 Monaten; die juengsten 12 Monate nur aggregiert ohne Koordinaten (nicht radius-joinbar). 36-12 ist
+  der punktgenau verfuegbare Bereich. Lauf 2026-06-24: Fenster 2023-06-01..2025-06-01, 148.181 Roh -> **88.265
+  Events** nach Filter (Typ/Region/Fenster), davon **41.334** im 30-km-Siteradius (-> Karten-Asset).
+- **`ingest_acled.py`** (OAuth2 Password-Grant, `ACLED_OAUTH_URL`/`ACLED_API_URL`, Credentials in `.env` als
+  `ACLED_API_EMAIL`/`ACLED_API_PASSWORD`): Felder erweitert um `sub_event_type` (Treffertyp: Air/drone strike,
+  Shelling, IED, Armed clash ...), `civilian_targeting`, `geo_precision`, `location`, `admin1`, `notes`,
+  `source`. Ausgabe UCDP-schema-kompatibel -> `RAW_DIR/acled/acled_events.parquet`.
+- **Pipeline-Aenderungen:** process.py (`CONFLICT_EVENTS_PARQUET` -> acled-Pfad, Report/Doku), export_events.py
+  (liest acled-parquet; jedes Feature traegt `year` 2023/24/25 plus sub_event_type/civilian_targeting/
+  geo_precision/location/notes; Metadaten ACLED), export.py (Score-Sidecar-Quelle ACLED). **App-Seite:**
+  Konflikt-Punkte jahrweise eingefaerbt (sequenzielle Rot-Rampe, neuer = intensiver, `AppColors.eventYear*`,
+  Match-Expression auf `year` in map_screen.dart); Legende um Jahres-Farbskala ergaenzt (`_LegendYearRamp`);
+  alle "UCDP GED"/"lethal events (>=1 death)"/"Uppsala"-Labels auf ACLED korrigiert (info_sheet,
+  conflict_overview_sheet, site_detail_sheet, map_screen).
+- **Dateiname:** Artefakt/Asset heisst `conflict_events.geojson` (Inhalt ACLED); umbenannt von
+  `ucdp_events.geojson` (2026-06-24). Config-Konstante `CONFLICT_EVENTS_GEOJSON_PATH`, App-Source/-Layer
+  `conflict-events`/`conflict-events-circles`. Das UCDP-Roh-Parquet (`ucdp_events.parquet`, Fallback-Pfad)
+  behaelt seinen Namen.
+- **Kalibrierung pruefen:** max ~19.100 Events/Site (Aleppo) >> `CONFLICT_EVENTS_FOR_FULL_SCORE`=1000 ->
+  Log-Deckel saturiert frueh; p90 dieses Laufs ggf. nachziehen.
 
 **Konflikt-Komponente: Wechsel von ACLED auf UCDP GED (2026-06-16, Pipeline gelaufen, `flutter analyze`
 sauber, APK noch nicht neu gebaut/getestet).** ACLED bleibt dauerhaft blockiert: Nicht nur die API
