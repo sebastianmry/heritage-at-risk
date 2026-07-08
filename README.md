@@ -76,6 +76,12 @@ Raw data lives outside the repository under `DATA_DIR` (default
 committed. See `PROJECT_CONTEXT.md` (in German) for the detailed, dated project
 log and methodology.
 
+A GitHub Actions workflow (`.github/workflows/daily-update.yml`) refreshes the
+time-critical sources daily (travel advisories and ACLED, plus the small UNESCO
+inventory), recomputes the score and commits only the aggregated artefacts; raw
+ACLED events never leave the ephemeral runner. The heavy OSM and Pleiades
+context layers stay static and are rebuilt manually.
+
 ## App
 
 The app (`app/`) renders the threat map with MapLibre Native over a monochrome

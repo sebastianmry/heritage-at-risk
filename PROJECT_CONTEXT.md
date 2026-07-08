@@ -491,6 +491,13 @@ gruen, Debug-APK gebaut, am Geraet NOCH NICHT verifiziert).** Autonome Session v
 - **Event-Sheet-Feinschliff:** Jahres-Punkt im ConflictEventSheet traegt jetzt die Rampenfarbe des getappten
   Events (vorher fix 2024er-Orange).
 - README (App-Abschnitt, Routing-Zeile, Build mit dart-define/build_app.bat) und `.env.example` aktualisiert.
+- **CI-Tagesjob gebaut** (`.github/workflows/daily-update.yml`, Plan von 2026-06-18): Cron 04:30 UTC +
+  workflow_dispatch; fluechtiger Runner ingestet UNESCO/AA/ACLED nach `DATA_DIR=runner.temp` (ACLED-Rohevents
+  verlassen den Runner nie), rechnet process/export/export_events/export_radius, spiegelt die GeoJSONs nach
+  app/assets/data/ und committet nur die aggregierten Artefakte (github-actions[bot]). Schwere OSM-/Pleiades-
+  Quellen bleiben bewusst statisch. export.py stempelt das Laufdatum -> ein Commit pro Tag, akzeptiert.
+  **OFFEN: Repo-Secrets `ACLED_API_EMAIL`/`ACLED_API_PASSWORD` setzen, pushen, ersten Lauf per
+  workflow_dispatch testen.**
 
 **Konflikt-Komponente: Rueckwechsel UCDP GED -> ACLED (2026-06-24, Pipeline gelaufen, `flutter analyze`
 sauber, Debug-APK gebaut, am Geraet NOCH NICHT verifiziert).** Loest den UCDP-Stand darunter ab. ACLED-Zugang
