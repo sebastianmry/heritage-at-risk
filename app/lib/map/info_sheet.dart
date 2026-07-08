@@ -67,6 +67,8 @@ class InfoSheet extends StatelessWidget {
                 'The 30 km area scored around each site'),
             const _LayerRow(Color(0xFFFB6A4A), 'Conflict events',
                 'ACLED events, coloured by year (2023 light → 2025 dark)'),
+            const _LayerRow(Color(0xFF2166AC), 'Route',
+                'Directions to a site (openrouteservice.org)'),
             const SizedBox(height: 12),
 
             _SectionTitle('Data & licence'),

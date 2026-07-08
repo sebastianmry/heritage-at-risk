@@ -469,6 +469,29 @@ VLO/LOW/MED/HIG je Site, ueber `config.NATURAL_HAZARD_LEVEL_SCORES` (0 / 1/3 / 2
   und Detail-Sheet/Verteilung am Pixel verifizieren. Datengrenze: ThinkHazard-Flusshochwasser bewertet die
   Jemen-Lehm-WHS (Shibam/Zabid) niedrig (river flood, nicht Sturzflut); bewusst ehrlich uebernommen.
 
+**Routing-Komponente v1 + Event-Sheet + Abgabe-Politur (2026-07-08, `flutter analyze` sauber, Tests
+gruen, Debug-APK gebaut, am Geraet NOCH NICHT verifiziert).** Autonome Session vor der Abgabe:
+- **Routing (README-Plan umgesetzt, Prof-Schwerpunkt):** Neues `app/lib/map/route_service.dart` spricht die
+  OpenRouteService Directions API v2 direkt (`POST /v2/directions/{profile}/geojson`, Authorization-Header,
+  Timeout 20 s, 404 = "keine Route" sauber gemappt). Profile Drive (`driving-car`) und Walk (`foot-walking`).
+  **Key-Handling gemaess Security-Leitlinie:** `String.fromEnvironment('ORS_API_KEY')`, injiziert zur Build-Zeit
+  via `--dart-define`; neues `build_app.bat` (Repo-Wurzel) liest `OPENROUTESERVICE_API_KEY` aus `.env` und baut
+  die Debug-APK damit. Ohne Key baut und laeuft die App, die Routing-Aktion erklaert dann den Setup-Weg.
+  Der urspruengliche Proxy-Plan ist damit bewusst abgeloest (kein Backend fuer eine Uni-Abgabe; dart-define
+  haelt den Key trotzdem aus Code und Repo). **UI:** "Route here"-Button im Site-Detail-Sheet (Sheet liefert
+  Koordinaten aus der getappten Feature-Geometrie) und Route-Chip im Nearest-Site-Panel; gemeinsamer
+  Standort-Flow (`_getPosition()`, aus `_locateMe` extrahiert). Route als Linien-Layer (weisses Casing +
+  kraeftiges Blau `#2166AC`, ColorBrewer-blau, bewusst ausserhalb Threat-Rampe und Event-Rot), Kamera fittet
+  auf die Route, `_RoutePanel` zeigt Distanz/Dauer + Drive/Walk-Umschalter (re-request) + Clear + ORS-Attribution.
+  Route ueberlebt den Theme-Wechsel (Source wird im Style-Load mit dem gehaltenen `_route`-State neu gesetzt).
+  Neue Dependency `http ^1.2.2`. **OFFEN: ORS-Key besorgen (openrouteservice.org/sign-up, free tier), in `.env`
+  eintragen, mit build_app.bat bauen und am Pixel verifizieren.**
+- **Hazard-Labels laienverstaendlich** (To-do erledigt): Detail-Sheet zeigt "Earthquake medium · Flood low"
+  statt "EQ Med · FL Low"; Zeile heisst schlicht "Natural hazard".
+- **Event-Sheet-Feinschliff:** Jahres-Punkt im ConflictEventSheet traegt jetzt die Rampenfarbe des getappten
+  Events (vorher fix 2024er-Orange).
+- README (App-Abschnitt, Routing-Zeile, Build mit dart-define/build_app.bat) und `.env.example` aktualisiert.
+
 **Konflikt-Komponente: Rueckwechsel UCDP GED -> ACLED (2026-06-24, Pipeline gelaufen, `flutter analyze`
 sauber, Debug-APK gebaut, am Geraet NOCH NICHT verifiziert).** Loest den UCDP-Stand darunter ab. ACLED-Zugang
 am 2026-06-23 auf **Research-Stufe** bewilligt (Auflage: nur akademisch, NICHT oeffentlich -> GitHub-Repo
