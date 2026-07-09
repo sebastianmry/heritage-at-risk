@@ -4,25 +4,23 @@ import 'package:flutter/material.dart';
 ///
 /// Deliberately keeps two colour worlds apart (GEOSPATIAL_DESIGN_GUIDE,
 /// "Distinct"):
-///   * UI chrome in a warm sandstone (thematically fitting for archaeology),
+///   * UI chrome in a CORINE Land Cover yellow (light-only design),
 ///   * data (threat) in the inverted traffic-light ramp.
 /// Threat is never encoded by colour alone, but always additionally through a
 /// label and a number (accessibility).
 class AppColors {
   AppColors._();
 
-  // Sandstone chrome for the UI, with a warm gold accent. Deep enough to carry
-  // light cream text (see [chromeOnColor]).
-  static const Color sandstone = Color(0xFF7E6238);
-  static const Color sandstoneDark = Color(0xFF5E4A2A);
-  static const Color accent = Color(0xFFFFC400);
+  // CORINE Land Cover inspired yellow chrome. `brand` is the pale arable-land
+  // yellow (CLC 211, #FFFFA8), used as the app-bar / chrome surface with dark
+  // text. `accent` is a deeper CORINE gold for the interactive primary
+  // (buttons, FAB, selected states) so controls stay legible on the light UI.
+  static const Color brand = Color(0xFFFFFFA8);
+  static const Color accent = Color(0xFFCBA200);
+  static const String brandHex = '#FFFFA8';
 
-  /// Sandstone as a hex string for MapLibre paint (plain site markers in the
-  /// conflict view, where the threat ramp is intentionally not used).
-  static const String sandstoneHex = '#7E6238';
-
-  /// Cream foreground used on the sandstone chrome (app bar, sheet headers).
-  static const Color chromeOnColor = Color(0xFFF5ECD8);
+  /// Warm near-black foreground used on the yellow chrome (app bar, FAB).
+  static const Color onChrome = Color(0xFF2B2A1F);
 
   // Inverted traffic-light ramp for the threat score; identical to the colours
   // in sites.geojson (config.THREAT_LEVEL_COLORS of the pipeline). High = red.
@@ -45,13 +43,17 @@ class AppColors {
   static const String eventYearCurrentHex = '#A50F15';
   static const String eventStrokeHex = '#7F0E1E';
 
-  // Warm tint for the basemap buildings (ember logic per theme, from the map
-  // prototype). Exposed as Color (legend swatch) and Hex (MapLibre paint).
-  // Match the app's sandstone theme colour, per request.
-  static const Color buildingWarmLight = sandstone;
-  static const Color buildingWarmDark = sandstoneDark;
-  static const String buildingWarmLightHex = sandstoneHex;
-  static const String buildingWarmDarkHex = '#5E4A2A';
+  /// Plain site markers in the conflict view (the threat ramp is intentionally
+  /// not used there). Dark olive-gold so the dots stay visible on the light
+  /// basemap and read as part of the CORINE palette. Exposed as Color (legend
+  /// swatch) and Hex (MapLibre paint).
+  static const Color conflictSite = Color(0xFF6E5F1E);
+  static const String conflictSiteHex = '#6E5F1E';
+
+  // Soft gold tint for the basemap building footprints (light-only). Reads on
+  // the light basemap without competing with the threat-coloured sites.
+  static const Color buildingWarmLight = Color(0xFFD8C97A);
+  static const String buildingWarmLightHex = '#D8C97A';
 
   /// Threat colour for a pipeline `threat_level` key.
   static Color forThreatLevel(String level) {
@@ -79,22 +81,25 @@ class AppColors {
   }
 }
 
-/// Light and dark theme of the app, both built on the sandstone seed.
+/// Light theme of the app. The design is deliberately light-only (no dark
+/// mode): a CORINE gold seed drives the Material colour scheme, with a pale
+/// CORINE-yellow app bar carrying dark chrome text.
 class AppTheme {
   AppTheme._();
 
-  static ThemeData light() => _build(Brightness.light);
-  static ThemeData dark() => _build(Brightness.dark);
-
-  static ThemeData _build(Brightness brightness) {
+  static ThemeData light() {
     final scheme = ColorScheme.fromSeed(
-      seedColor: AppColors.sandstone,
-      brightness: brightness,
+      seedColor: AppColors.accent,
+      brightness: Brightness.light,
     );
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
       fontFamily: 'Roboto',
+      appBarTheme: const AppBarTheme(
+        backgroundColor: AppColors.brand,
+        foregroundColor: AppColors.onChrome,
+      ),
     );
   }
 }

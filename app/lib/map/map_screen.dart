@@ -39,14 +39,7 @@ enum MapMode {
 /// (below). Context layers appear only when zooming in. A segmented button
 /// switches to a conflict-only view of the same map.
 class MapScreen extends StatefulWidget {
-  const MapScreen({
-    super.key,
-    required this.isDark,
-    required this.onToggleTheme,
-  });
-
-  final bool isDark;
-  final VoidCallback onToggleTheme;
+  const MapScreen({super.key});
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -343,14 +336,14 @@ class _MapScreenState extends State<MapScreen> {
     );
 
     // Plain site markers for the conflict view: same locations, but a neutral
-    // sandstone dot WITHOUT the threat ramp (the conflict view is about the
+    // olive-gold dot WITHOUT the threat ramp (the conflict view is about the
     // conflict data, not the score). Small and non-interactive; only a location
     // reference. Shown only in conflict mode (see _applyModeVisibility).
     await controller.addCircleLayer(
       _sitesSource,
       _sitesPlainLayer,
       CircleLayerProperties(
-        circleColor: AppColors.sandstoneHex,
+        circleColor: AppColors.conflictSiteHex,
         circleRadius: 4.0,
         circleOpacity: 0.9,
         circleStrokeColor: '#ffffff',
@@ -451,9 +444,7 @@ class _MapScreenState extends State<MapScreen> {
           (id) => id.toLowerCase().contains('building'),
         ),
       );
-    final warm = widget.isDark
-        ? AppColors.buildingWarmDarkHex
-        : AppColors.buildingWarmLightHex;
+    const warm = AppColors.buildingWarmLightHex;
     for (final id in _buildingLayerIds) {
       // Defensive per layer: not every "building" layer is a fill layer.
       try {
@@ -887,8 +878,8 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.sandstone,
-        foregroundColor: AppColors.chromeOnColor,
+        backgroundColor: AppColors.brand,
+        foregroundColor: AppColors.onChrome,
         title: const Text('Heritage at Risk'),
         actions: [
           IconButton(
@@ -906,21 +897,12 @@ class _MapScreenState extends State<MapScreen> {
             icon: const Icon(Icons.format_list_bulleted),
             onPressed: _openSiteList,
           ),
-          IconButton(
-            tooltip: widget.isDark ? 'Light theme' : 'Dark theme',
-            icon: Icon(
-              widget.isDark
-                  ? Icons.light_mode_outlined
-                  : Icons.dark_mode_outlined,
-            ),
-            onPressed: widget.onToggleTheme,
-          ),
         ],
       ),
       body: Stack(
         children: [
           MapLibreMap(
-            styleString: Basemap.forBrightnessDark(widget.isDark),
+            styleString: Basemap.style(),
             initialCameraPosition: const CameraPosition(
               target: LatLng(34.0, 38.0),
               zoom: 3.6,
@@ -1026,8 +1008,8 @@ class _MapScreenState extends State<MapScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _locating ? null : _locateMe,
-        backgroundColor: AppColors.sandstone,
-        foregroundColor: AppColors.chromeOnColor,
+        backgroundColor: AppColors.accent,
+        foregroundColor: AppColors.onChrome,
         tooltip: 'My location',
         child: _locating
             ? const SizedBox(
@@ -1035,7 +1017,7 @@ class _MapScreenState extends State<MapScreen> {
                 height: 22,
                 child: CircularProgressIndicator(
                   strokeWidth: 2.4,
-                  color: AppColors.chromeOnColor,
+                  color: AppColors.onChrome,
                 ),
               )
             : const Icon(Icons.my_location),

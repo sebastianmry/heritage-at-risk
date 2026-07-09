@@ -88,7 +88,7 @@ class Model3DSheet extends StatelessWidget {
                   _Badge(
                     label: isWhs ? 'UNESCO WHS' : 'Not scored',
                     color: isWhs
-                        ? AppColors.sandstone
+                        ? AppColors.accent
                         : theme.colorScheme.outline,
                   ),
                 ],

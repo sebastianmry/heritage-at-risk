@@ -206,7 +206,7 @@ class _LegendBody extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 const _LegendStatic(
-                  color: Color(0xFF7E6238),
+                  color: AppColors.conflictSite,
                   label: 'Heritage sites',
                 ),
                 _LegendToggle(
