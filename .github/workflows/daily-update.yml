@@ -29,10 +29,16 @@ jobs:
   update:
     runs-on: ubuntu-latest
     env:
-      DATA_DIR: ${{ runner.temp }}/heritage_data
+      # runner.temp ist im Job-env noch nicht verfuegbar, daher unten als Step
+      # ueber die Standard-Variable RUNNER_TEMP gesetzt.
       PYTHONUTF8: "1"
     steps:
       - uses: actions/checkout@v4
+
+      - name: DATA_DIR setzen
+        run: |
+          echo "DATA_DIR=$RUNNER_TEMP/heritage_data" >> "$GITHUB_ENV"
+          mkdir -p "$RUNNER_TEMP/heritage_data"
 
       - uses: actions/setup-python@v5
         with:
