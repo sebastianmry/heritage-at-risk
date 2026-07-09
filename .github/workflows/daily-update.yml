@@ -70,6 +70,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "Keine Datenaenderung, kein Commit."
           else
-            git commit -m "Daten-Update: AA + ACLED refresh ($(date -u +%F))"
+            git commit -m "Daten-Update: AA + UCDP refresh ($(date -u +%F))"
             git push
           fi
