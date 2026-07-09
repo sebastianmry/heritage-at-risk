@@ -1,0 +1,2 @@
+# Hilfsskripte aus der GitHub-Sprachstatistik ausnehmen (kein Projektcode).
+*.bat linguist-vendored
