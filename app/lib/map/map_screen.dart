@@ -82,7 +82,6 @@ class _MapScreenState extends State<MapScreen> {
   final Set<String> _activeLevels = {'high', 'medium', 'low'};
   bool _showPleiades = true;
   bool _showDensity = true;
-  bool _showBuildings = true;
   bool _showModels3d = true;
   bool _showRadius = false;
   bool _showEvents = false;
@@ -105,9 +104,6 @@ class _MapScreenState extends State<MapScreen> {
   RouteResult? _route;
   _RouteTarget? _routeTarget;
   bool _routingBusy = false;
-
-  /// Building layers of the provider basemap (resolved from the style at runtime).
-  final Set<String> _buildingLayerIds = {};
 
   Future<Map<String, dynamic>> _loadGeojson(String asset) async {
     final raw = await rootBundle.loadString(asset);
@@ -184,6 +180,9 @@ class _MapScreenState extends State<MapScreen> {
           12,
           22.0,
         ],
+        // Single-hue violet-magenta ramp (Purples), deliberately outside the
+        // threat red, brand yellow, Pleiades indigo and 3D cyan so the density
+        // shading reads as its own signal (matches AppColors.density).
         heatmapColor: [
           'interpolate',
           ['linear'],
@@ -191,13 +190,13 @@ class _MapScreenState extends State<MapScreen> {
           0.0,
           'rgba(0,0,0,0)',
           0.2,
-          'rgba(254,224,144,0.45)',
+          'rgba(233,205,242,0.45)',
           0.4,
-          'rgb(253,174,97)',
+          'rgb(198,140,214)',
           0.7,
-          'rgb(244,109,67)',
+          'rgb(150,70,175)',
           1.0,
-          'rgb(178,24,43)',
+          'rgb(106,27,154)',
         ],
         heatmapOpacity: [
           'interpolate',
@@ -426,37 +425,6 @@ class _MapScreenState extends State<MapScreen> {
     await controller.setLayerVisibility(_models3dLayer, _showModels3d);
     await controller.setLayerVisibility(_radiusLayer, _showRadius);
     await controller.setLayerVisibility(_eventsLayer, _showEvents);
-    await _styleBasemapBuildings();
-  }
-
-  /// Tint the CARTO basemap building layers warm (ember logic, matching the
-  /// density shading) and show or hide them per the toggle. We deliberately do
-  /// not ship our own footprints; the geometry comes from the basemap. Runs on
-  /// every style load (including after the light/dark switch).
-  Future<void> _styleBasemapBuildings() async {
-    final controller = _controller;
-    if (controller == null) return;
-    final ids = await controller.getLayerIds();
-    _buildingLayerIds
-      ..clear()
-      ..addAll(
-        ids.whereType<String>().where(
-          (id) => id.toLowerCase().contains('building'),
-        ),
-      );
-    const warm = AppColors.buildingWarmLightHex;
-    for (final id in _buildingLayerIds) {
-      // Defensive per layer: not every "building" layer is a fill layer.
-      try {
-        await controller.setLayerProperties(
-          id,
-          FillLayerProperties(fillColor: warm, fillOpacity: 0.9),
-        );
-        await controller.setLayerVisibility(id, _showBuildings);
-      } catch (_) {
-        // Skip layers without a fill paint (e.g. extrusion/symbol).
-      }
-    }
   }
 
   Future<void> _applyThreatFilter() async {
@@ -608,13 +576,6 @@ class _MapScreenState extends State<MapScreen> {
     _controller?.setLayerVisibility(_densityLayer, show);
   }
 
-  void _toggleBuildings(bool show) {
-    setState(() => _showBuildings = show);
-    for (final id in _buildingLayerIds) {
-      _controller?.setLayerVisibility(id, show);
-    }
-  }
-
   void _toggleModels3d(bool show) {
     setState(() => _showModels3d = show);
     _controller?.setLayerVisibility(_models3dLayer, show);
@@ -687,7 +648,6 @@ class _MapScreenState extends State<MapScreen> {
       _showEvents = conflict;
       _showPleiades = !conflict;
       _showDensity = !conflict;
-      _showBuildings = !conflict;
       _showModels3d = !conflict;
     });
     _applyModeVisibility();
@@ -706,9 +666,6 @@ class _MapScreenState extends State<MapScreen> {
     await controller.setLayerVisibility(_models3dLayer, _showModels3d);
     await controller.setLayerVisibility(_radiusLayer, _showRadius);
     await controller.setLayerVisibility(_eventsLayer, _showEvents);
-    for (final id in _buildingLayerIds) {
-      await controller.setLayerVisibility(id, _showBuildings);
-    }
   }
 
   /// Service/permission checks plus the current position, shared by the locate
@@ -959,14 +916,12 @@ class _MapScreenState extends State<MapScreen> {
               activeLevels: _activeLevels,
               showPleiades: _showPleiades,
               showDensity: _showDensity,
-              showBuildings: _showBuildings,
               showModels3d: _showModels3d,
               showRadius: _showRadius,
               showEvents: _showEvents,
               onToggleLevel: _toggleLevel,
               onTogglePleiades: _togglePleiades,
               onToggleDensity: _toggleDensity,
-              onToggleBuildings: _toggleBuildings,
               onToggleModels3d: _toggleModels3d,
               onToggleRadius: _toggleRadius,
               onToggleEvents: _toggleEvents,

@@ -50,10 +50,10 @@ class AppColors {
   static const Color conflictSite = Color(0xFF6E5F1E);
   static const String conflictSiteHex = '#6E5F1E';
 
-  // Soft gold tint for the basemap building footprints (light-only). Reads on
-  // the light basemap without competing with the threat-coloured sites.
-  static const Color buildingWarmLight = Color(0xFFD8C97A);
-  static const String buildingWarmLightHex = '#D8C97A';
+  /// Heritage / old-town density heatmap accent (violet-magenta). Deliberately
+  /// outside every other layer's hue (threat red, brand yellow, Pleiades
+  /// indigo, 3D cyan) so the density shading reads as its own signal.
+  static const Color density = Color(0xFF8E24AA);
 
   /// Threat colour for a pipeline `threat_level` key.
   static Color forThreatLevel(String level) {

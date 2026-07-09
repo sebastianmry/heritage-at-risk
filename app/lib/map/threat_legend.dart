@@ -27,14 +27,12 @@ class ThreatLegend extends StatefulWidget {
     required this.activeLevels,
     required this.showPleiades,
     required this.showDensity,
-    required this.showBuildings,
     required this.showModels3d,
     required this.showRadius,
     required this.showEvents,
     required this.onToggleLevel,
     required this.onTogglePleiades,
     required this.onToggleDensity,
-    required this.onToggleBuildings,
     required this.onToggleModels3d,
     required this.onToggleRadius,
     required this.onToggleEvents,
@@ -44,14 +42,12 @@ class ThreatLegend extends StatefulWidget {
   final Set<String> activeLevels;
   final bool showPleiades;
   final bool showDensity;
-  final bool showBuildings;
   final bool showModels3d;
   final bool showRadius;
   final bool showEvents;
   final ValueChanged<ThreatLevel> onToggleLevel;
   final ValueChanged<bool> onTogglePleiades;
   final ValueChanged<bool> onToggleDensity;
-  final ValueChanged<bool> onToggleBuildings;
   final ValueChanged<bool> onToggleModels3d;
   final ValueChanged<bool> onToggleRadius;
   final ValueChanged<bool> onToggleEvents;
@@ -180,16 +176,10 @@ class _LegendBody extends StatelessWidget {
                   onTap: () => legend.onTogglePleiades(!legend.showPleiades),
                 ),
                 _LegendToggle(
-                  color: const Color(0xFFE9852F),
+                  color: AppColors.density,
                   label: 'Heritage density',
                   active: legend.showDensity,
                   onTap: () => legend.onToggleDensity(!legend.showDensity),
-                ),
-                _LegendToggle(
-                  color: AppColors.buildingWarmLight,
-                  label: 'Buildings',
-                  active: legend.showBuildings,
-                  onTap: () => legend.onToggleBuildings(!legend.showBuildings),
                 ),
                 _LegendToggle(
                   color: const Color(0xFF0FB5C9),
