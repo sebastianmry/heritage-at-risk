@@ -32,7 +32,7 @@ menschliche Gefaehrdungsachse, die vierte die Naturgefahr. Die Gewichte liegen z
 |---|---|---|
 | In-Danger-Flag | UNESCO World Heritage Centre | 3 |
 | Reisewarnstufe (0 bis 2) | Auswaertiges Amt | 3 |
-| Konflikt-Ereignisse im 30-km-Radius (log-skaliert) | ACLED, DuckDB ST_Distance | 3 |
+| Konflikt-Ereignisse im 30-km-Radius (log-skaliert) | UCDP GED (CC BY 4.0), DuckDB ST_Distance | 3 |
 | Naturgefahr (Erdbeben + Flusshochwasser, Max der Stufen) | ThinkHazard! (Weltbank GFDRR) | 1 |
 
 ## Pipeline
