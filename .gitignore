@@ -17,6 +17,7 @@
 !*.yml
 !*.yaml
 !.gitignore
+!.gitattributes
 !.env.example
 # Build-Helfer (liest den ORS-Key aus der lokalen .env, enthaelt selbst kein Geheimnis).
 !build_app.bat
