@@ -8,17 +8,21 @@ void main() {
   runApp(const ProviderScope(child: HeritageApp()));
 }
 
-/// Root of the app. The design is light-only (no dark mode), so a single
-/// [AppTheme.light] drives the whole UI.
-class HeritageApp extends StatelessWidget {
+/// Root of the app. Light/dark is driven by [basemapDarkModeProvider] (the
+/// basemap toggle in MapScreen), not the OS setting, so map tiles and app
+/// chrome always agree.
+class HeritageApp extends ConsumerWidget {
   const HeritageApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dark = ref.watch(basemapDarkModeProvider);
     return MaterialApp(
       title: 'Heritage at Risk',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
+      themeMode: dark ? ThemeMode.dark : ThemeMode.light,
       home: const MapScreen(),
     );
   }
