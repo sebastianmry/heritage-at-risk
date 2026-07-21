@@ -60,9 +60,8 @@ class RouteException implements Exception {
 /// Directions client for the OpenRouteService API (v2, GeoJSON responses).
 ///
 /// The API key is injected at build time via
-/// `--dart-define=ORS_API_KEY=...` and is never committed to the repo
-/// (PROJECT_CONTEXT security guideline: no live key in source). Without a key
-/// the routing UI stays visible but explains how to enable it.
+/// `--dart-define=ORS_API_KEY=...` and is never committed to the repo.
+/// Without a key the routing UI stays visible but explains how to enable it.
 class RouteService {
   static const String _apiKey = String.fromEnvironment('ORS_API_KEY');
   static const String _baseUrl =

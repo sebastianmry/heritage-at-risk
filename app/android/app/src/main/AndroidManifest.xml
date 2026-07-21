@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Basemap-Tiles (CARTO) und spaeter Proxy-Aufrufe brauchen Netzzugang. -->
+    <!-- Basemap tiles (MapTiler) and routing requests (OpenRouteService) need network access. -->
     <uses-permission android:name="android.permission.INTERNET"/>
-    <!-- Vordergrund-Ortung fuer Proximity-Alerts (Laufzeit-Anfrage im App-Code). -->
+    <!-- Foreground location for proximity alerts (runtime request in the app code). -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <application
@@ -46,7 +46,7 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
-        <!-- url_launcher: 3D-Modell-Links im externen Browser oeffnen (Android 11+). -->
+        <!-- url_launcher: opens 3D-model links in the external browser (Android 11+). -->
         <intent>
             <action android:name="android.intent.action.VIEW"/>
             <data android:scheme="https"/>

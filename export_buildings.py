@@ -1,24 +1,25 @@
-"""Stufe 3, Export der Altstadt- und Fundstaetten-Dichte-Schummerung.
+"""Stage 3, export of the old town and site density shading.
 
-Schreibt eine Karten-Kontextebene aus zwei OSM-Quellen, auf den engen Site-Umkreis
-(config.BUILDINGS_NEAR_SITES_KM) beschnitten und ohne Threat Score (reine Darstellung):
+Writes a map context layer from two OSM sources, clipped to the narrow site
+vicinity (config.BUILDINGS_NEAR_SITES_KM) and without a threat score (pure
+presentation):
 
-  * Gebaeude (ingest_osm_buildings.py, <land>_buildings.parquet) -> Stadtgewebe/Altstadt
-  * historische Objekte (ingest_osm.py, <land>_historic.parquet, historic=*:
-    archaeological_site, ruins, monument, castle ...) -> antike Strukturen
+  * buildings (ingest_osm_buildings.py, <country>_buildings.parquet) -> urban fabric/old town
+  * historic objects (ingest_osm.py, <country>_historic.parquet, historic=*:
+    archaeological_site, ruins, monument, castle ...) -> ancient structures
 
-building_density.geojson  Dichte-"Schummerung": die Zentroide beider Quellen zu einem
-                          Gitter (config.BUILDINGS_DENSITY_CELL_DEG) aggregiert, ein
-                          gewichteter Punkt je Zelle (Gewicht = Summe der Treffer).
-                          historische Objekte zaehlen HISTORIC_WEIGHT-fach, damit auch
-                          abgelegene Ruinen (Palmyra, Petra) ohne moderne Bebauung
-                          gluehen, nicht nur dichte moderne Staedte. Speist die warme
-                          MapLibre-Heatmap ueber den historischen Kernen.
+building_density.geojson  Density "shading": the centroids of both sources
+                          aggregated into a grid (config.BUILDINGS_DENSITY_CELL_DEG),
+                          one weighted point per cell (weight = sum of hits).
+                          Historic objects count HISTORIC_WEIGHT times, so that
+                          remote ruins (Palmyra, Petra) without modern development
+                          also glow, not just dense modern cities. Feeds the warm
+                          MapLibre heatmap over the historic cores.
 
-Die Aggregation statt Roh-Einbettung ist Absicht (Footprints sind zu zahlreich fuer den
-Renderer; die echten Polygone kommen aus der Provider-Basemap, siehe PROJECT_CONTEXT.md).
+Aggregation instead of raw embedding is deliberate: per-site footprints are far
+too numerous to embed as a map layer without overloading the renderer.
 
-Input:  RAW_DIR/osm/parquet/<land>_{buildings,historic}.parquet, unesco_sites.parquet
+Input:  RAW_DIR/osm/parquet/<country>_{buildings,historic}.parquet, unesco_sites.parquet
 Output: config.ARTIFACTS_DIR/building_density.geojson
 """
 
@@ -38,10 +39,10 @@ SITES_PARQUET: Path = config.RAW_DIR / "unesco" / "unesco_sites.parquet"
 
 DENSITY_GEOJSON: Path = config.ARTIFACTS_DIR / "building_density.geojson"
 
-COORD_PRECISION: int = 5  # ~1 m, genug fuer eine Kontextebene und spart Dateigroesse
+COORD_PRECISION: int = 5  # ~1 m, enough for a context layer and saves file size
 
-# historische Objekte zaehlen schwerer als ein einzelnes Gebaeude, damit auch
-# abgelegene Fundstaetten (wenige Ruinen, kaum moderne Bebauung) sichtbar gluehen.
+# Historic objects count more heavily than a single building, so that remote
+# find sites (few ruins, hardly any modern development) also glow visibly.
 HISTORIC_WEIGHT: int = 4
 
 
@@ -53,24 +54,24 @@ def _write_geojson(path: Path, features: list[dict[str, object]], *, layer: str)
 
 
 def _country_parquets(suffix: str) -> list[str]:
-    """Vorhandene <land>_<suffix>.parquet der aktuell konfigurierten Laender."""
+    """Existing <country>_<suffix>.parquet files of the currently configured countries."""
     paths = []
-    for land in config.COUNTRIES:
-        path = BUILDINGS_DIR / f"{land}_{suffix}.parquet"
+    for country in config.COUNTRIES:
+        path = BUILDINGS_DIR / f"{country}_{suffix}.parquet"
         if path.exists() and path.stat().st_size > 0:
             paths.append(path.as_posix())
     return paths
 
 
 def export_density(con: duckdb.DuckDBPyConnection, radius_m: float) -> tuple[int, int]:
-    """Gebaeude- und historic-Zentroide zu einem gewichteten Dichte-Gitter aggregieren."""
+    """Aggregates building and historic centroids into a weighted density grid."""
     buildings = _country_parquets("buildings")
     if not buildings:
-        raise RuntimeError(f"Keine Gebaeude-Parquets in {BUILDINGS_DIR}. Zuerst ingest_osm_buildings.py laufen lassen.")
+        raise RuntimeError(f"No building parquets in {BUILDINGS_DIR}. Run ingest_osm_buildings.py first.")
     historic = _country_parquets("historic")
 
     cell = config.BUILDINGS_DENSITY_CELL_DEG
-    # Beide Quellen mit Gewicht in eine CTE: Gebaeude w=1, historic w=HISTORIC_WEIGHT.
+    # Both sources with weight in one CTE: buildings w=1, historic w=HISTORIC_WEIGHT.
     src_parts = [
         f"SELECT ST_X(ST_Centroid(geometry)) AS lon, ST_Y(ST_Centroid(geometry)) AS lat, "
         f"1 AS w FROM read_parquet({buildings!r})"
@@ -113,7 +114,7 @@ def export_density(con: duckdb.DuckDBPyConnection, radius_m: float) -> tuple[int
 def run() -> None:
     ingest_common.ensure_data_dirs()
     if not ingest_common.already_fetched(SITES_PARQUET):
-        raise RuntimeError(f"UNESCO-Sites fehlen ({SITES_PARQUET}). Zuerst ingest_unesco.py laufen lassen.")
+        raise RuntimeError(f"UNESCO sites missing ({SITES_PARQUET}). Run ingest_unesco.py first.")
 
     radius_m = config.BUILDINGS_NEAR_SITES_KM * 1000.0
     con = duckdb.connect()
@@ -127,7 +128,7 @@ def run() -> None:
         con.close()
 
     de_mb = DENSITY_GEOJSON.stat().st_size / 1_048_576
-    print(f"export_buildings: {n_cells} Dichte-Zellen (max {max_weight} Gebaeude/Zelle) "
+    print(f"export_buildings: {n_cells} density cells (max {max_weight} buildings/cell) "
           f"-> {DENSITY_GEOJSON.name} ({de_mb:.2f} MB)")
 
 

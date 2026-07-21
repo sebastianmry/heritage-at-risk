@@ -1,20 +1,22 @@
-"""Stufe 1, Ingest UCDP GED (Konflikt-Ereignisse).
+"""Stage 1, ingest UCDP GED (conflict events).
 
-Alleinige Quelle der Konflikt-Komponente des Threat Score. UCDP GED ist offen
-lizenziert (CC BY 4.0), georeferenziert und peer-reviewed, also auch fuer eine
-veroeffentlichte Open-Source-App rechtssicher.
+Sole source of the conflict component of the threat score. UCDP GED is
+openly licensed (CC BY 4.0), georeferenced, and peer-reviewed, so also
+legally safe for a published open-source app.
 
-Zwei Bausteine, beide tokenfrei ueber das UCDP Download Center:
-  - GED-Hauptdatensatz (config.UCDP_GED_CSV_URL, ZIP): 1989 bis Ende Vorjahr.
-  - GED-Candidate (config.UCDP_CANDIDATE_CSV_URL, CSV): das laufende Jahr, monatlich.
-Zusammen decken sie das rollende Konflikt-Fenster bis fast an die Gegenwart
-(UCDP hat ~6 Wochen Lag, der letzte Monat fehlt also bewusst).
+Two building blocks, both token-free via the UCDP Download Center:
+  - GED main dataset (config.UCDP_GED_CSV_URL, ZIP): 1989 through the end of
+    the previous year.
+  - GED candidate (config.UCDP_CANDIDATE_CSV_URL, CSV): the current year,
+    monthly.
+Together they cover the rolling conflict window up to almost the present
+(UCDP has a ~6 week lag, so the most recent month is deliberately missing).
 
-Gefiltert wird auf die REGION_BBOX und das CONFLICT_START_DATE; der Score-Join
-in process.py ist rein raeumlich (Punkte im CONFLICT_RADIUS_KM je Site).
+Filtering is applied to REGION_BBOX and CONFLICT_START_DATE; the score join
+in process.py is purely spatial (points within CONFLICT_RADIUS_KM per site).
 
 Input:  config.UCDP_GED_CSV_URL (ZIP), config.UCDP_CANDIDATE_CSV_URL (CSV)
-Output: RAW_DIR/ucdp/ucdp_events.parquet (GeoParquet, Punktgeometrie)
+Output: RAW_DIR/ucdp/ucdp_events.parquet (GeoParquet, point geometry)
 """
 
 from __future__ import annotations
@@ -33,14 +35,14 @@ EVENTS_PARQUET: Path = UCDP_DIR / "ucdp_events.parquet"
 GED_ZIP: Path = UCDP_DIR / "ged_full.zip"
 CANDIDATE_CSV: Path = UCDP_DIR / "ged_candidate.csv"
 
-# Schlanke Feldauswahl: Geometrie und Zeit fuer den Filter, Typ und Tote als Kontext.
+# Lean field selection: geometry and time for the filter, type and deaths as context.
 SOURCE_COLUMNS: tuple[str, ...] = (
     "id", "date_start", "type_of_violence", "country", "latitude", "longitude", "best",
 )
 
 
 def _read_source(path: Path, *, compression: str | None = None) -> pd.DataFrame:
-    """Liest eine GED-CSV (auch aus dem ZIP) auf die noetigen Spalten beschnitten."""
+    """Reads a GED CSV (also from the ZIP), trimmed to the needed columns."""
     return pd.read_csv(
         path,
         usecols=list(SOURCE_COLUMNS),
@@ -51,7 +53,7 @@ def _read_source(path: Path, *, compression: str | None = None) -> pd.DataFrame:
 
 
 def _filter_to_scope(source_df: pd.DataFrame) -> pd.DataFrame:
-    """Beschneidet auf Region (BBox) und Zeitfenster."""
+    """Clips to the region (bbox) and time window."""
     lon_min, lat_min, lon_max, lat_max = config.REGION_BBOX
     longitude = pd.to_numeric(source_df["longitude"], errors="coerce")
     latitude = pd.to_numeric(source_df["latitude"], errors="coerce")
@@ -63,7 +65,7 @@ def _filter_to_scope(source_df: pd.DataFrame) -> pd.DataFrame:
 
 
 def build_events(scoped_df: pd.DataFrame) -> gpd.GeoDataFrame:
-    """Baut die getypte Punktebene (WGS84) im Projekt-Schema der Konflikt-Events."""
+    """Builds the typed point layer (WGS84) in the project schema for conflict events."""
     if scoped_df.empty:
         return gpd.GeoDataFrame(
             columns=["event_id", "event_date", "violence_type", "country",
@@ -96,7 +98,7 @@ def run(*, refresh: bool = False) -> None:
 
     if ingest_common.already_fetched(EVENTS_PARQUET) and not refresh:
         existing_gdf = gpd.read_parquet(EVENTS_PARQUET)
-        print(f"UCDP uebersprungen, {len(existing_gdf)} Ereignisse bereits vorhanden (--refresh erzwingt neu).")
+        print(f"UCDP skipped, {len(existing_gdf)} events already present (--refresh forces a redo).")
         return
 
     ingest_common.download_file(config.UCDP_GED_CSV_URL, GED_ZIP, refresh=refresh)
@@ -104,17 +106,17 @@ def run(*, refresh: bool = False) -> None:
 
     ged_df = _filter_to_scope(_read_source(GED_ZIP, compression="zip"))
     candidate_df = _filter_to_scope(_read_source(CANDIDATE_CSV))
-    print(f"  GED-Hauptdatensatz: {len(ged_df)} Ereignisse in Region+Fenster")
-    print(f"  GED-Candidate:      {len(candidate_df)} Ereignisse in Region+Fenster")
+    print(f"  GED main dataset: {len(ged_df)} events in region+window")
+    print(f"  GED candidate:    {len(candidate_df)} events in region+window")
 
     events_gdf = build_events(pd.concat([ged_df, candidate_df], ignore_index=True))
     events_gdf.to_parquet(EVENTS_PARQUET)
-    print(f"UCDP-Ingest: {len(events_gdf)} Ereignisse ab {config.CONFLICT_START_DATE} -> {EVENTS_PARQUET.name}")
+    print(f"UCDP ingest: {len(events_gdf)} events from {config.CONFLICT_START_DATE} -> {EVENTS_PARQUET.name}")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--refresh", action="store_true", help="Rohdaten und Parquet neu laden.")
+    parser.add_argument("--refresh", action="store_true", help="Reload raw data and parquet.")
     args = parser.parse_args()
     run(refresh=args.refresh)
 

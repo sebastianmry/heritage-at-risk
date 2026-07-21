@@ -1,14 +1,15 @@
-"""Stufe 1, Ingest Auswaertiges Amt.
+"""Stage 1, ingest German Federal Foreign Office (Auswaertiges Amt).
 
-Holt die Reise- und Sicherheitshinweise als Laender-Gefaehrdungsindikator und
-leitet je Land der Region eine Warnstufe (0 bis 2) fuer den Threat Score ab.
+Fetches the travel and security advisories as a country-level danger
+indicator and derives a warning level (0 to 2) per country of the region for
+the threat score.
 
-Die OpenData-API liefert je Land vier Bool-Flags (warning, partialWarning,
-situationWarning, situationPartWarning), keine fertige Zahlenskala. Die
-Ableitung der Stufe 0 bis 2 steckt zentral in config.AA_WARNING_LEVELS, die
-hoechste zutreffende Stufe gewinnt. Begruendung dort und in PROJECT_CONTEXT.md.
+The OpenData API returns four boolean flags per country (warning,
+partialWarning, situationWarning, situationPartWarning), not a ready-made
+numeric scale. The derivation of the 0-to-2 level lives centrally in
+config.AA_WARNING_LEVELS; the highest matching level wins. Rationale there.
 
-Input:  config.AA_TRAVELWARNING_URL, gefiltert auf config.COUNTRY_ISO2
+Input:  config.AA_TRAVELWARNING_URL, filtered to config.COUNTRY_ISO2
 Output: RAW_DIR/auswaertiges_amt/travel_warning_levels.csv
 """
 
@@ -31,14 +32,14 @@ REGION_ISO: frozenset[str] = frozenset(config.COUNTRY_ISO2)
 
 
 def _epoch_to_date(value: object) -> str:
-    """Wandelt einen Epoch-Sekunden-Wert in ein ISO-Datum (UTC) um."""
+    """Converts an epoch-seconds value to an ISO date (UTC)."""
     if not value:
         return ""
     return datetime.fromtimestamp(int(value), tz=timezone.utc).date().isoformat()
 
 
 def _warning_level(item: dict[str, object]) -> int:
-    """Hoechste zutreffende Stufe nach config.AA_WARNING_LEVELS, sonst 0."""
+    """Highest matching level per config.AA_WARNING_LEVELS, otherwise 0."""
     for flag, level in config.AA_WARNING_LEVELS:
         if item.get(flag):
             return level
@@ -46,7 +47,7 @@ def _warning_level(item: dict[str, object]) -> int:
 
 
 def parse_region_levels(payload: bytes) -> pd.DataFrame:
-    """Filtert die API-Antwort auf die Region und leitet je Land die Stufe ab."""
+    """Filters the API response to the region and derives the level per country."""
     response = json.loads(payload.decode("utf-8"))["response"]
     source_last_modified = _epoch_to_date(response.get("lastModified"))
 
@@ -80,7 +81,7 @@ def run(*, refresh: bool = False) -> None:
 
     if ingest_common.already_fetched(WARNING_LEVELS_CSV) and not refresh:
         existing_df = pd.read_csv(WARNING_LEVELS_CSV)
-        print(f"Auswaertiges Amt uebersprungen, {len(existing_df)} Laender bereits vorhanden.")
+        print(f"German Federal Foreign Office skipped, {len(existing_df)} countries already present.")
         return
 
     response = ingest_common.get_with_retry(config.AA_TRAVELWARNING_URL)
@@ -88,21 +89,21 @@ def run(*, refresh: bool = False) -> None:
 
     missing = REGION_ISO - set(levels_df["country_iso2"])
     if missing:
-        print(f"  Warnung: {len(missing)} Region-Land/Laender fehlen in der AA-Antwort: "
+        print(f"  Warning: {len(missing)} region country/countries missing from the AA response: "
               f"{', '.join(sorted(missing))}")
 
     levels_df.to_csv(WARNING_LEVELS_CSV, index=False, encoding="utf-8")
 
-    print(f"AA-Ingest: {len(levels_df)} Region-Laender -> {WARNING_LEVELS_CSV.name}")
+    print(f"AA ingest: {len(levels_df)} region countries -> {WARNING_LEVELS_CSV.name}")
     for level in range(config.AA_WARNING_LEVEL_MAX, -1, -1):
         countries = levels_df.loc[levels_df["warning_level"] == level, "country_iso2"]
         if not countries.empty:
-            print(f"  Stufe {level}: {', '.join(countries)}")
+            print(f"  Level {level}: {', '.join(countries)}")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--refresh", action="store_true", help="Vorhandene Rohdaten neu laden.")
+    parser.add_argument("--refresh", action="store_true", help="Reload existing raw data.")
     args = parser.parse_args()
     run(refresh=args.refresh)
 

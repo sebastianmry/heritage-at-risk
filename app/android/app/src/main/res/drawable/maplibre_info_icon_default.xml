@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Overrides org.maplibre.gl:android-sdk-opengl's own maplibre_info_icon_default
+     (a teal-blue "i"): Android resource merging lets an app-module resource of the
+     same name win over the same-named one in a library AAR. Recoloured to match
+     AppColors.onChrome (#2B2A1F) so the native attribution icon reads as part of
+     the app's own chrome instead of the plugin's default blue. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        android:width="21dp"
+        android:height="21dp"
+        android:viewportHeight="24.0"
+        android:viewportWidth="24.0">
+    <path
+        android:fillColor="#FF2B2A1F"
+        android:pathData="M11,17h2v-6h-2v6zm1,-15C6.48,2 2,6.48 2,12s4.48,10 10,10 10,-4.48 10,-10S17.52,2 12,2zm0,18c-4.41,0 -8,-3.59 -8,-8s3.59,-8 8,-8 8,3.59 8,8 -3.59,8 -8,8zM11,9h2V7h-2v2z"/>
+</vector>

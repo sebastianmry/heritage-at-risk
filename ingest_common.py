@@ -1,9 +1,8 @@
-"""Gemeinsame Logik der Ingest-Stufe.
+"""Shared logic of the ingest stage.
 
-Dieses Modul wird nie direkt aufgerufen. Es kapselt die robuste
-Datenbeschaffung (Retry mit Backoff, harte Timeouts, inkrementeller Cache,
-Resume ueber Existenzpruefung) und stellt sie den schlanken Fetcher-Skripten
-bereit.
+This module is never called directly. It encapsulates robust data
+acquisition (retry with backoff, hard timeouts, incremental cache, resume
+via existence check) and provides it to the lean fetcher scripts.
 """
 
 from __future__ import annotations
@@ -17,13 +16,13 @@ import config
 
 
 def ensure_data_dirs() -> None:
-    """Legt die Daten-Verzeichnisse an, falls sie fehlen."""
+    """Creates the data directories if they are missing."""
     for directory in (config.RAW_DIR, config.INTERIM_DIR, config.CACHE_DIR, config.ARTIFACTS_DIR):
         directory.mkdir(parents=True, exist_ok=True)
 
 
 def already_fetched(target_path: Path) -> bool:
-    """Resume ueber Existenzpruefung: ist das Ziel schon vorhanden und nicht leer?"""
+    """Resume via existence check: does the target already exist and is it non-empty?"""
     return target_path.exists() and target_path.stat().st_size > 0
 
 
@@ -34,10 +33,10 @@ def get_with_retry(
     timeout: float = config.HTTP_TIMEOUT_SECONDS,
     max_retries: int = config.HTTP_MAX_RETRIES,
 ) -> requests.Response:
-    """GET mit exponentiellem Backoff auf transiente Serverfehler.
+    """GET with exponential backoff on transient server errors.
 
-    Transiente Fehler (429, 500, 502, 503, 504) werden mehrfach mit wachsender
-    Wartezeit wiederholt. Dauerhafte Fehler (etwa 404) brechen sofort ab.
+    Transient errors (429, 500, 502, 503, 504) are retried repeatedly with a
+    growing wait time. Permanent errors (e.g. 404) abort immediately.
     """
     last_error: Exception | None = None
     for attempt in range(max_retries):
@@ -49,16 +48,16 @@ def get_with_retry(
             if response.status_code not in config.HTTP_RETRY_STATUS:
                 response.raise_for_status()
                 return response
-            last_error = requests.HTTPError(f"transienter Status {response.status_code} fuer {url}")
+            last_error = requests.HTTPError(f"transient status {response.status_code} for {url}")
 
         wait_seconds = config.HTTP_BACKOFF_FACTOR ** attempt
         time.sleep(wait_seconds)
 
-    raise RuntimeError(f"Abruf fehlgeschlagen nach {max_retries} Versuchen: {url}") from last_error
+    raise RuntimeError(f"fetch failed after {max_retries} attempts: {url}") from last_error
 
 
 def download_to(url: str, target_path: Path, *, refresh: bool = False) -> Path:
-    """Laedt eine kleine Datei vollstaendig nach target_path (im Speicher)."""
+    """Downloads a small file completely to target_path (in memory)."""
     if already_fetched(target_path) and not refresh:
         return target_path
 
@@ -76,11 +75,11 @@ def download_file(
     timeout: float = config.HTTP_TIMEOUT_SECONDS,
     max_retries: int = config.HTTP_MAX_RETRIES,
 ) -> Path:
-    """Laedt eine grosse Datei streamend nach target_path.
+    """Downloads a large file to target_path in streaming fashion.
 
-    Schreibt zuerst in eine .part-Datei und benennt erst nach vollstaendigem
-    Download um. Ein abgebrochener Lauf hinterlaesst so keine halbe Datei, die
-    die Existenzpruefung faelschlich als fertig zaehlt.
+    Writes to a .part file first and only renames it after the download
+    completes fully. An aborted run therefore leaves behind no half file that
+    the existence check would wrongly count as finished.
     """
     if already_fetched(target_path) and not refresh:
         return target_path
@@ -93,7 +92,7 @@ def download_file(
         try:
             with requests.get(url, stream=True, headers=config.HTTP_HEADERS, timeout=timeout) as response:
                 if response.status_code in config.HTTP_RETRY_STATUS:
-                    last_error = requests.HTTPError(f"transienter Status {response.status_code} fuer {url}")
+                    last_error = requests.HTTPError(f"transient status {response.status_code} for {url}")
                 else:
                     response.raise_for_status()
                     with part_path.open("wb") as handle:
@@ -106,4 +105,4 @@ def download_file(
 
         time.sleep(config.HTTP_BACKOFF_FACTOR ** attempt)
 
-    raise RuntimeError(f"Download fehlgeschlagen nach {max_retries} Versuchen: {url}") from last_error
+    raise RuntimeError(f"download failed after {max_retries} attempts: {url}") from last_error

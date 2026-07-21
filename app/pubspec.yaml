@@ -1,5 +1,5 @@
 name: heritage_at_risk
-description: "Heritage at Risk - Gefaehrdungsanalyse antiker Kulturerbestaetten in der MENA-Region"
+description: "Heritage at Risk - threat analysis of ancient heritage sites in the MENA region"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -35,19 +35,19 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
-  # Karten-Engine (MapLibre Native, GPU-beschleunigt, rendert Vektor-Tiles und GeoJSON).
+  # Map engine (MapLibre Native, GPU-accelerated, renders vector tiles and GeoJSON).
   maplibre_gl: ^0.26.1
 
-  # State-Management gemaess App-Architektur (PROJECT_CONTEXT).
+  # State management (providers for the score data, map state, filters).
   flutter_riverpod: ^2.6.1
 
-  # Oeffnet 3D-Modell-Links (Sketchfab/CyArk) im externen Browser.
+  # Opens 3D-model links (Sketchfab/CyArk) in the external browser.
   url_launcher: ^6.3.1
 
-  # Vordergrund-Ortung (Eigenstandort + Naehe zu Sites), nur waehrend Nutzung.
+  # Foreground location (own position + proximity to sites), only while in use.
   geolocator: ^13.0.2
 
-  # HTTP-Client fuer die Routing-Anfragen an OpenRouteService (Key via --dart-define).
+  # HTTP client for the routing requests to OpenRouteService (key via --dart-define).
   http: ^1.2.2
 
 dev_dependencies:
@@ -72,7 +72,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-  # Vorgerechnete Artefakte der Pipeline, gebuendelt (App liest nur fertige Daten).
+  # Precomputed pipeline artefacts, bundled (the app reads only finished data).
   assets:
     - assets/data/sites.geojson
     - assets/data/conflict_radius.geojson

@@ -21,8 +21,9 @@ void main() {
     expect(AppColors.threatLabel('unknown'), 'low');
   });
 
-  test('light theme builds without error (design is light-only)', () {
+  test('light and dark themes build with the matching brightness', () {
     expect(AppTheme.light().brightness, Brightness.light);
+    expect(AppTheme.dark().brightness, Brightness.dark);
   });
 
   test('route result serialises to a GeoJSON LineString (lon/lat order)', () {

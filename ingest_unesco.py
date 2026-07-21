@@ -1,17 +1,17 @@
-"""Stufe 1, Ingest UNESCO World Heritage Centre.
+"""Stage 1, ingest UNESCO World Heritage Centre.
 
-Holt das Site-Inventar der Region aus dem WHC-XML: ID, Name, Land, Kategorie,
-Koordinaten und Beschreibung. Die Koordinaten stecken verschachtelt in
-geolocations/poi, je Site kann es mehrere POI geben.
+Fetches the region's site inventory from the WHC XML: ID, name, country,
+category, coordinates, and description. The coordinates are nested inside
+geolocations/poi; a site can have several POIs.
 
-Das offizielle In-Danger-Flag kommt NICHT aus diesem XML. Das danger-Feld der
-Liste ist nachweislich unvollstaendig (Syrien zeigt 1 von 6 Sites, real sind es
-6). Es wird nur als Referenz mitgefuehrt. Das maszgebliche Flag kommt aus der
-kuratierten Liste (siehe ingest_unesco_danger / RAW_DIR/unesco). Siehe
-PROJECT_CONTEXT.md, Abschnitt Validierung der Datengrenzen.
+The official in-danger flag does not come from this XML. The list's danger
+field is demonstrably incomplete (Syria shows 1 of 6 sites, in reality there
+are 6). It is only carried along as a reference. The authoritative flag
+comes from the curated list (see ingest_unesco_danger / RAW_DIR/unesco). See
+PROJECT_CONTEXT.md, Pipeline architecture.
 
 Input:  config.UNESCO_WHC_XML_URL
-Output: RAW_DIR/unesco/unesco_sites.parquet (GeoParquet, Punktgeometrie)
+Output: RAW_DIR/unesco/unesco_sites.parquet (GeoParquet, point geometry)
 """
 
 from __future__ import annotations
@@ -34,10 +34,11 @@ SITES_PARQUET: Path = UNESCO_DIR / "unesco_sites.parquet"
 
 REGION_ISO: frozenset[str] = frozenset(iso.lower() for iso in config.COUNTRY_ISO2)
 
-# Laenderzuordnung fuer Sites ohne brauchbares iso_code im WHC-XML. Old City of
-# Jerusalem (WHC 148) ist im XML laenderlos ("Site proposed by Jordan"). Fuer die
-# Reisewarnstufen-Zuordnung und die Gruppierung wird sie hier Israel zugeordnet.
-# Das ist eine bewusste Projektzuordnung, nicht die offizielle UNESCO-Position.
+# Country assignment for sites without a usable iso_code in the WHC XML. Old
+# City of Jerusalem (WHC 148) is countryless in the XML ("Site proposed by
+# Jordan"). For the travel advisory level assignment and grouping it is
+# assigned to Israel here. This is a deliberate project assignment, not the
+# official UNESCO position.
 COUNTRY_OVERRIDES: dict[int, str] = {148: "il"}
 
 
@@ -51,7 +52,7 @@ def _strip_html(value: str) -> str:
 
 
 def _pick_coordinates(row: etree._Element) -> tuple[float, float] | None:
-    """Waehlt den POI mit einem ISO der Region, sonst den ersten POI."""
+    """Chooses the POI with a region ISO, otherwise the first POI."""
     pois = row.findall("geolocations/poi")
     if not pois:
         return None
@@ -86,8 +87,8 @@ def parse_region_sites(xml_bytes: bytes) -> gpd.GeoDataFrame:
         coordinates = _pick_coordinates(row)
         name = _text(row, "site")
 
-        # Sonderfall ohne iso_code (z. B. Old City of Jerusalem, politisch
-        # bedingt leer): geografisch ueber die Bounding Box einschliessen.
+        # Special case without iso_code (e.g. Old City of Jerusalem, empty
+        # for political reasons): include geographically via the bounding box.
         include = iso_match
         if not iso_match and not iso_codes and coordinates is not None:
             latitude, longitude = coordinates
@@ -125,7 +126,7 @@ def parse_region_sites(xml_bytes: bytes) -> gpd.GeoDataFrame:
         )
 
     if without_coordinates:
-        print(f"  Hinweis: {len(without_coordinates)} Region-Site(s) ohne POI-Koordinaten: "
+        print(f"  Note: {len(without_coordinates)} region site(s) without POI coordinates: "
               f"{', '.join(without_coordinates)}")
 
     frame = gpd.GeoDataFrame(pd.DataFrame(records), geometry="geometry", crs="EPSG:4326")
@@ -138,7 +139,7 @@ def run(*, refresh: bool = False) -> None:
 
     if ingest_common.already_fetched(SITES_PARQUET) and not refresh:
         existing = gpd.read_parquet(SITES_PARQUET)
-        print(f"UNESCO uebersprungen, {len(existing)} Sites bereits vorhanden.")
+        print(f"UNESCO skipped, {len(existing)} sites already present.")
         return
 
     response = ingest_common.get_with_retry(config.UNESCO_WHC_XML_URL)
@@ -146,13 +147,13 @@ def run(*, refresh: bool = False) -> None:
     sites.to_parquet(SITES_PARQUET)
 
     in_danger_raw = int((sites["danger_raw"].str.contains("Y", na=False)).sum())
-    print(f"UNESCO-Ingest: {len(sites)} Region-Sites -> {SITES_PARQUET.name}")
-    print(f"  davon laut (unzuverlaessigem) danger-Feld aktuell gefaehrdet: {in_danger_raw}")
+    print(f"UNESCO ingest: {len(sites)} region sites -> {SITES_PARQUET.name}")
+    print(f"  of which currently at risk per the (unreliable) danger field: {in_danger_raw}")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--refresh", action="store_true", help="Inventar neu vom WHC laden.")
+    parser.add_argument("--refresh", action="store_true", help="Reload the inventory from the WHC.")
     args = parser.parse_args()
     run(refresh=args.refresh)
 

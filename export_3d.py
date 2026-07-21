@@ -1,24 +1,25 @@
-"""Stufe 3, Export der 3D-Modell-Ebene.
+"""Stage 3, export of the 3D model layer.
 
-Schreibt eine kuratierte Karten-Ebene mit Staetten, fuer die es ein gutes
-oeffentliches 3D-Modell gibt (Laserscan, Photogrammetrie oder Rekonstruktion).
-Quelle ist die manuell gepflegte `reference/heritage_3d_models.csv` (wie die
-In-Danger-Liste): Name, Koordinaten, Quelle, Modell-URL, Lizenz/Notiz.
+Writes a curated map layer with sites for which a good public 3D model
+exists (laser scan, photogrammetry, or reconstruction). Source is the
+manually maintained `reference/heritage_3d_models.csv` (like the in-danger
+list): name, coordinates, source, model URL, licence/note.
 
-Die Ebene traegt keinen Threat Score; sie ist Kontext und Vertiefung. Sie umfasst
-zwei Arten von Punkten:
+The layer carries no threat score; it is context and depth. It comprises
+two kinds of points:
 
-  * is_whs=true  -- bewertete UNESCO-Welterbestaetten mit Modell (Palmyra, Babylon ...)
-  * is_whs=false -- bewusst zerstoerte, aber NICHT eingeschriebene Ikonen unserer
-                    Laender (Mosul al-Nuri, Nimrud, Nineveh). Sie fehlen dem
-                    Score-Set (UNESCO-WHS-only), gehoeren aber sichtbar dazu; in der
-                    App klar als "nicht gescort" gekennzeichnet.
+  * is_whs=true  -- scored UNESCO World Heritage sites with a model (Palmyra, Babylon ...)
+  * is_whs=false -- deliberately destroyed but not inscribed icons of our
+                    countries (Mosul al-Nuri, Nimrud, Nineveh). They are
+                    missing from the score set (UNESCO WHS only), but
+                    visibly belong; in the app they are clearly labelled
+                    "not scored".
 
-Aufgenommen werden nur Eintraege der aktuell konfigurierten Laender (config.COUNTRY_ISO2),
-damit die Ebene konsistent zum Scope bleibt.
+Only entries of the currently configured countries (config.COUNTRY_ISO2)
+are included, so the layer stays consistent with the scope.
 
-Die App zeigt je Punkt ein eigenes Symbol; ein Tap oeffnet ein Sheet mit Metadaten
-und einem Link, der das Modell im Browser oeffnet (v1, dependency-arm).
+The app shows its own symbol per point; a tap opens a sheet with metadata
+and a link that opens the model in the browser (v1, dependency-lean).
 
 Input:  reference/heritage_3d_models.csv
 Output: config.ARTIFACTS_DIR/heritage_3d.geojson
@@ -40,7 +41,7 @@ MODELS_GEOJSON: Path = config.ARTIFACTS_DIR / "heritage_3d.geojson"
 
 COORD_PRECISION: int = 5
 
-# Property-Reihenfolge im GeoJSON (stabil, lesbar).
+# Property order in the GeoJSON (stable, readable).
 PROPERTIES: tuple[str, ...] = (
     "name", "country_iso2", "is_whs", "unesco_site_id",
     "source", "author", "license", "model_url", "coord_source", "note",
@@ -52,7 +53,7 @@ def _to_bool(value: str) -> bool:
 
 
 def _ascii_fold(text: str) -> str:
-    """Diakritika folden, Gross-/Kleinschreibung erhalten (lesbarer ASCII-Name)."""
+    """Folds diacritics, keeps upper/lower case (readable ASCII name)."""
     decomposed = unicodedata.normalize("NFKD", text)
     folded = "".join(c for c in decomposed if not unicodedata.combining(c))
     return re.sub(r"\s+", " ", folded.encode("ascii", "ignore").decode("ascii")).strip()
@@ -80,9 +81,9 @@ def _feature(row: dict[str, str]) -> dict[str, object]:
 
 
 def export_models() -> tuple[int, int]:
-    """CSV lesen, auf Scope-Laender filtern, GeoJSON schreiben. Gibt (geschrieben, uebersprungen)."""
+    """Reads the CSV, filters to scope countries, writes GeoJSON. Returns (written, skipped)."""
     if not MODELS_CSV.exists():
-        raise RuntimeError(f"3D-Liste fehlt ({MODELS_CSV}).")
+        raise RuntimeError(f"3D list missing ({MODELS_CSV}).")
 
     features: list[dict[str, object]] = []
     skipped = 0
@@ -90,7 +91,7 @@ def export_models() -> tuple[int, int]:
         for row in csv.DictReader(handle):
             iso = (row.get("country_iso2") or "").strip().upper()
             if iso not in config.COUNTRY_ISO2:
-                skipped += 1  # ausserhalb des aktuellen Scope (z. B. Afghanistan spaeter)
+                skipped += 1  # outside the current scope (e.g. Afghanistan later)
                 continue
             if not (row.get("model_url") or "").strip():
                 skipped += 1
@@ -120,8 +121,8 @@ def export_models() -> tuple[int, int]:
 
 def run() -> None:
     written, skipped = export_models()
-    print(f"export_3d: {written} 3D-Modelle -> {MODELS_GEOJSON.name} "
-          f"({skipped} ausserhalb Scope/ohne URL uebersprungen)")
+    print(f"export_3d: {written} 3D models -> {MODELS_GEOJSON.name} "
+          f"({skipped} outside scope/without URL skipped)")
 
 
 def main() -> None:

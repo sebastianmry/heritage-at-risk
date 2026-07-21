@@ -3,6 +3,7 @@ import 'dart:math' show Point;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:maplibre_gl/maplibre_gl.dart';
 
@@ -20,7 +21,7 @@ import 'threat_legend.dart';
 
 /// The two views of the map, switched by a segmented button at the top.
 ///
-/// Both share ONE MapLibre instance (one GL context); switching only toggles
+/// Both share one MapLibre instance (one GL context); switching only toggles
 /// which layer set and which explanatory panel are shown. Two live maps would
 /// be memory-heavy and crash-prone on Android, so we deliberately reuse one.
 enum MapMode {
@@ -34,18 +35,18 @@ enum MapMode {
 /// Main view: the threat map of the MENA region.
 ///
 /// Reads the bundled pipeline artefacts and stacks them as MapLibre layers over
-/// a monochrome CARTO basemap: the scored sites as an inverted traffic-light
+/// a muted MapTiler `dataviz` basemap: the scored sites as an inverted traffic-light
 /// ramp (on top), ancient places and building density as progressive context
 /// (below). Context layers appear only when zooming in. A segmented button
 /// switches to a conflict-only view of the same map.
-class MapScreen extends StatefulWidget {
+class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
 
   @override
-  State<MapScreen> createState() => _MapScreenState();
+  ConsumerState<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapScreenState extends ConsumerState<MapScreen> {
   static const String _sitesSource = 'sites';
   static const String _sitesLayer = 'sites-circles';
   static const String _sitesPlainLayer = 'sites-plain-circles';
@@ -78,6 +79,11 @@ class _MapScreenState extends State<MapScreen> {
   Map<String, dynamic>? _eventsGeojson;
 
   MapMode _mode = MapMode.threat;
+
+  /// Whether the camera has already been fit to the full site extent. Set
+  /// once on the first style load so later reloads (e.g. the dark toggle)
+  /// don't reset the user's current pan/zoom.
+  bool _initialExtentFit = false;
 
   final Set<String> _activeLevels = {'high', 'medium', 'low'};
   bool _showPleiades = true;
@@ -142,10 +148,49 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
+  /// Fits the camera to the bounding box of all sites (from the westernmost
+  /// to the easternmost site) with a slim padding, so the app opens zoomed
+  /// out to the full extent instead of a fixed region. Runs once, via
+  /// `moveCamera` (instant, no animation) so it reads as the default view
+  /// rather than a zoom-out on load.
+  Future<void> _fitInitialExtentOnce(MapLibreMapController controller) async {
+    if (_initialExtentFit) return;
+    final features = (_sitesGeojson?['features'] as List?) ?? const [];
+    double? minLat, maxLat, minLon, maxLon;
+    for (final feature in features) {
+      final coords =
+          ((feature as Map)['geometry']?['coordinates'] as List?) ?? const [];
+      if (coords.length < 2) continue;
+      final lon = (coords[0] as num).toDouble();
+      final lat = (coords[1] as num).toDouble();
+      minLat = (minLat == null || lat < minLat) ? lat : minLat;
+      maxLat = (maxLat == null || lat > maxLat) ? lat : maxLat;
+      minLon = (minLon == null || lon < minLon) ? lon : minLon;
+      maxLon = (maxLon == null || lon > maxLon) ? lon : maxLon;
+    }
+    if (minLat == null || maxLat == null || minLon == null || maxLon == null) {
+      return;
+    }
+    _initialExtentFit = true;
+    await controller.moveCamera(
+      CameraUpdate.newLatLngBounds(
+        LatLngBounds(
+          southwest: LatLng(minLat, minLon),
+          northeast: LatLng(maxLat, maxLon),
+        ),
+        left: 32,
+        top: 32,
+        right: 32,
+        bottom: 32,
+      ),
+    );
+  }
+
   Future<void> _onStyleLoaded() async {
     final controller = _controller;
     if (controller == null) return;
     await _ensureDataLoaded();
+    await _fitInitialExtentOnce(controller);
 
     // Building density as a warm heatmap "shading" (bottom, from mid zoom).
     await controller.addGeoJsonSource(_densitySource, _densityGeojson!);
@@ -335,7 +380,7 @@ class _MapScreenState extends State<MapScreen> {
     );
 
     // Plain site markers for the conflict view: same locations, but a neutral
-    // olive-gold dot WITHOUT the threat ramp (the conflict view is about the
+    // olive-gold dot without the threat ramp (the conflict view is about the
     // conflict data, not the score). Small and non-interactive; only a location
     // reference. Shown only in conflict mode (see _applyModeVisibility).
     await controller.addCircleLayer(
@@ -353,8 +398,8 @@ class _MapScreenState extends State<MapScreen> {
 
     // UCDP conflict events as bold dots, coloured by event year (two-step red
     // ramp: current year dark, previous year lighter; the rolling 12-month
-    // window spans exactly these two). Added AFTER the site markers so in the
-    // conflict view they sit ABOVE the (plain) sites — the conflict data is the
+    // window spans exactly these two). Added after the site markers so in the
+    // conflict view they sit above the (plain) sites — the conflict data is the
     // hero there. Larger and more opaque at low zoom so the pattern reads in
     // the overview. Off by default in threat view, non-interactive (taps run
     // via _onMapClick).
@@ -564,6 +609,20 @@ class _MapScreenState extends State<MapScreen> {
       if (!_activeLevels.remove(level.key)) _activeLevels.add(level.key);
     });
     _applyThreatFilter();
+  }
+
+  /// Swaps the basemap tiles between light/dark and, via
+  /// [basemapDarkModeProvider], the whole app's chrome (cards, sheets,
+  /// dialogs) along with it. Just changing the `styleString` prop does not
+  /// reload the native style (maplibre_gl routes prop diffs through
+  /// `updateMapOptions`, which does not apply style changes), so the reload is
+  /// triggered explicitly via `controller.setStyle`. That fires
+  /// `onStyleLoadedCallback` on completion, which re-adds all sources/layers
+  /// via `_onStyleLoaded`.
+  void _toggleBasemapDark() {
+    final next = !ref.read(basemapDarkModeProvider);
+    ref.read(basemapDarkModeProvider.notifier).state = next;
+    _controller?.setStyle(Basemap.style(dark: next));
   }
 
   void _togglePleiades(bool show) {
@@ -833,6 +892,7 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final basemapDark = ref.watch(basemapDarkModeProvider);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.brand,
@@ -854,12 +914,19 @@ class _MapScreenState extends State<MapScreen> {
             icon: const Icon(Icons.format_list_bulleted),
             onPressed: _openSiteList,
           ),
+          IconButton(
+            tooltip: basemapDark ? 'Light basemap' : 'Dark basemap',
+            icon: Icon(
+              basemapDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+            ),
+            onPressed: _toggleBasemapDark,
+          ),
         ],
       ),
       body: Stack(
         children: [
           MapLibreMap(
-            styleString: Basemap.style(),
+            styleString: Basemap.style(dark: basemapDark),
             initialCameraPosition: const CameraPosition(
               target: LatLng(34.0, 38.0),
               zoom: 3.6,
@@ -872,6 +939,15 @@ class _MapScreenState extends State<MapScreen> {
             onStyleLoadedCallback: _onStyleLoaded,
             compassEnabled: true,
             myLocationEnabled: _myLocationEnabled,
+            // The native MapLibre attribution ("i") control is separate from our
+            // Flutter widgets (it's drawn by the native SDK, not the FAB), so it
+            // needs its own margin to clear the gesture-nav inset — the FAB's
+            // Padding fix below has no effect on it.
+            attributionButtonPosition: AttributionButtonPosition.bottomRight,
+            attributionButtonMargins: Point<double>(
+              12,
+              MediaQuery.of(context).padding.bottom + 16,
+            ),
           ),
           Positioned(
             top: 12,
@@ -961,21 +1037,29 @@ class _MapScreenState extends State<MapScreen> {
             ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _locating ? null : _locateMe,
-        backgroundColor: AppColors.accent,
-        foregroundColor: AppColors.onChrome,
-        tooltip: 'My location',
-        child: _locating
-            ? const SizedBox(
-                width: 22,
-                height: 22,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.4,
-                  color: AppColors.onChrome,
-                ),
-              )
-            : const Icon(Icons.my_location),
+      floatingActionButton: Padding(
+        // Nudges the FAB clear of the gesture-nav inset (Scaffold's default
+        // 16dp margin alone can leave it clipped by the system bar).
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).padding.bottom + 8,
+          right: 8,
+        ),
+        child: FloatingActionButton(
+          onPressed: _locating ? null : _locateMe,
+          backgroundColor: AppColors.accent,
+          foregroundColor: AppColors.onChrome,
+          tooltip: 'My location',
+          child: _locating
+              ? const SizedBox(
+                  width: 22,
+                  height: 22,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.4,
+                    color: AppColors.onChrome,
+                  ),
+                )
+              : const Icon(Icons.my_location),
+        ),
       ),
     );
   }

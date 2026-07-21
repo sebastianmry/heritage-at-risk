@@ -1,14 +1,15 @@
-"""Stufe 1, Ingest Pleiades.
+"""Stage 1, ingest Pleiades.
 
-Holt antike Ortsnamen und Koordinaten (griechisch, persisch, aramaeisch) zur
-Anreicherung der Sites. Pleiades ist global; gefiltert wird auf die Region-BBox.
+Fetches ancient place names and coordinates (Greek, Persian, Aramaic) to
+enrich the sites. Pleiades is global; filtering is applied to the region
+bbox.
 
-Der Roh-Dump (csv.gz) landet als Cache unter RAW_DIR/pleiades, die abgeleitete,
-auf die Region begrenzte Punktebene als GeoParquet (Point, WGS84) analog zum
-UNESCO-Ingest fuer den spaeteren raeumlichen Join.
+The raw dump (csv.gz) lands as a cache under RAW_DIR/pleiades, the derived
+point layer limited to the region as GeoParquet (Point, WGS84), analogous to
+the UNESCO ingest, for the later spatial join.
 
 Input:  config.PLEIADES_PLACES_CSV_URL
-Output: RAW_DIR/pleiades/pleiades_places.parquet (GeoParquet, Punktgeometrie)
+Output: RAW_DIR/pleiades/pleiades_places.parquet (GeoParquet, point geometry)
 """
 
 from __future__ import annotations
@@ -29,7 +30,7 @@ PLACES_PARQUET: Path = PLEIADES_DIR / "pleiades_places.parquet"
 
 PLEIADES_BASE_URL: str = "https://pleiades.stoa.org"
 
-# Nur die fuer die Anreicherung relevanten Spalten aus dem 26-spaltigen Dump.
+# Only the columns relevant to the enrichment, out of the 26-column dump.
 SOURCE_COLUMNS: tuple[str, ...] = (
     "id", "title", "description", "featureTypes", "timePeriodsKeys",
     "minDate", "maxDate", "locationPrecision", "path", "reprLat", "reprLong",
@@ -37,7 +38,7 @@ SOURCE_COLUMNS: tuple[str, ...] = (
 
 
 def parse_region_places(dump_path: Path) -> gpd.GeoDataFrame:
-    """Liest den Dump, filtert auf die Region-BBox und baut eine Punktebene."""
+    """Reads the dump, filters to the region bbox and builds a point layer."""
     raw_df = pd.read_csv(dump_path, usecols=list(SOURCE_COLUMNS), low_memory=False)
 
     raw_df["latitude"] = pd.to_numeric(raw_df["reprLat"], errors="coerce")
@@ -49,8 +50,8 @@ def parse_region_places(dump_path: Path) -> gpd.GeoDataFrame:
         raw_df["longitude"].between(lon_min, lon_max)
         & raw_df["latitude"].between(lat_min, lat_max)
     )
-    # Zurueckgezogene Eintraege haben path /errata/... statt /places/...; sie
-    # sind geloeschte Dubletten und gehoeren nicht in die Anreicherungsebene.
+    # Retracted entries have path /errata/... instead of /places/...; they
+    # are deleted duplicates and do not belong in the enrichment layer.
     is_place = raw_df["path"].fillna("").str.startswith("/places/")
     region_df = raw_df.loc[in_region & is_place].copy()
 
@@ -80,19 +81,19 @@ def run(*, refresh: bool = False) -> None:
 
     if ingest_common.already_fetched(PLACES_PARQUET) and not refresh:
         existing_gdf = gpd.read_parquet(PLACES_PARQUET)
-        print(f"Pleiades uebersprungen, {len(existing_gdf)} Region-Orte bereits vorhanden.")
+        print(f"Pleiades skipped, {len(existing_gdf)} region places already present.")
         return
 
     ingest_common.download_file(config.PLEIADES_PLACES_CSV_URL, DUMP_CSV_GZ, refresh=refresh)
     places_gdf = parse_region_places(DUMP_CSV_GZ)
     places_gdf.to_parquet(PLACES_PARQUET)
 
-    print(f"Pleiades-Ingest: {len(places_gdf)} Region-Orte -> {PLACES_PARQUET.name}")
+    print(f"Pleiades ingest: {len(places_gdf)} region places -> {PLACES_PARQUET.name}")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--refresh", action="store_true", help="Dump und Ableitung neu laden.")
+    parser.add_argument("--refresh", action="store_true", help="Reload the dump and derived data.")
     args = parser.parse_args()
     run(refresh=args.refresh)
 

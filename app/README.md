@@ -6,8 +6,8 @@ finished artefacts produced by the Python/DuckDB pipeline (`../artifacts/`) and
 renders them with MapLibre Native.
 
 See the [project README](../README.md) for the full description, the threat-score
-methodology and the data sources, and `../PROJECT_CONTEXT.md` (in German) for the
-dated project log.
+methodology and the data sources, and `../PROJECT_CONTEXT.md` for notes on
+approaches that were evaluated and dropped during development.
 
 ## Build
 

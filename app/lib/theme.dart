@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+/// Whether the app is in dark mode. Driven by the basemap dark/light toggle in
+/// MapScreen — one switch flips both the map tiles and every surface built from
+/// [AppTheme] (cards, sheets, dialogs), so the whole app reads as one state
+/// instead of following the OS dark-mode setting.
+final basemapDarkModeProvider = StateProvider<bool>((ref) => false);
 
 /// Central colour and theme definitions (single source of truth for the UI).
 ///
-/// Deliberately keeps two colour worlds apart (GEOSPATIAL_DESIGN_GUIDE,
-/// "Distinct"):
-///   * UI chrome in a CORINE Land Cover yellow (light-only design),
+/// Deliberately keeps two colour worlds apart:
+///   * UI chrome in a desert-sand accent, switching with [basemapDarkModeProvider],
 ///   * data (threat) in the inverted traffic-light ramp.
 /// Threat is never encoded by colour alone, but always additionally through a
 /// label and a number (accessibility).
 class AppColors {
   AppColors._();
 
-  // CORINE Land Cover inspired yellow chrome. `brand` is the pale arable-land
-  // yellow (CLC 211, #FFFFA8), used as the app-bar / chrome surface with dark
-  // text. `accent` is a deeper CORINE gold for the interactive primary
-  // (buttons, FAB, selected states) so controls stay legible on the light UI.
-  static const Color brand = Color(0xFFFFFFA8);
-  static const Color accent = Color(0xFFCBA200);
-  static const String brandHex = '#FFFFA8';
+  // Desert-sand chrome (#FAD5A5), used both as the app-bar / chrome surface
+  // and as the single interactive accent (buttons, FAB, selected states) so
+  // chrome and controls read as one colour.
+  static const Color brand = Color(0xFFFAD5A5);
+  static const Color accent = Color(0xFFFAD5A5);
+  static const String brandHex = '#FAD5A5';
 
   /// Warm near-black foreground used on the yellow chrome (app bar, FAB).
   static const Color onChrome = Color(0xFF2B2A1F);
@@ -44,8 +49,8 @@ class AppColors {
   static const String eventStrokeHex = '#7F0E1E';
 
   /// Plain site markers in the conflict view (the threat ramp is intentionally
-  /// not used there). Dark olive-gold so the dots stay visible on the light
-  /// basemap and read as part of the CORINE palette. Exposed as Color (legend
+  /// not used there). Dark olive-gold so the dots stay visible on the basemap
+  /// and read as part of the desert-sand palette. Exposed as Color (legend
   /// swatch) and Hex (MapLibre paint).
   static const Color conflictSite = Color(0xFF6E5F1E);
   static const String conflictSiteHex = '#6E5F1E';
@@ -67,8 +72,9 @@ class AppColors {
     }
   }
 
-  /// Short English label for a pipeline `threat_level` key. Used instead of the
-  /// German `threat_label` field carried in the data.
+  /// Short label for a pipeline `threat_level` key, derived from the key
+  /// itself rather than the free-text `threat_label` field in the data, so
+  /// the label stays typed against the known levels.
   static String threatLabel(String level) {
     switch (level) {
       case 'high':
@@ -81,16 +87,21 @@ class AppColors {
   }
 }
 
-/// Light theme of the app. The design is deliberately light-only (no dark
-/// mode): a CORINE gold seed drives the Material colour scheme, with a pale
-/// CORINE-yellow app bar carrying dark chrome text.
+/// Light and dark themes of the app. The app bar/FAB chrome stays the
+/// desert-sand brand colour in both (set explicitly, not derived from the
+/// seed) so the "brand" reads the same regardless of mode; only the derived
+/// surfaces — cards, sheets, dialogs — switch with [basemapDarkModeProvider].
 class AppTheme {
   AppTheme._();
 
-  static ThemeData light() {
+  static ThemeData light() => _themeFor(Brightness.light);
+
+  static ThemeData dark() => _themeFor(Brightness.dark);
+
+  static ThemeData _themeFor(Brightness brightness) {
     final scheme = ColorScheme.fromSeed(
       seedColor: AppColors.accent,
-      brightness: Brightness.light,
+      brightness: brightness,
     );
     return ThemeData(
       useMaterial3: true,

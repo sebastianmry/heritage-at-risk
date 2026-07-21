@@ -1,20 +1,21 @@
-"""Stufe 1, Ingest Naturgefahren (ThinkHazard!).
+"""Stage 1, ingest natural hazards (ThinkHazard!).
 
-Ordnet jeder UNESCO-Site eine Erdbeben- und eine Flusshochwasser-Gefaehrdungsstufe
-zu (Very low / Low / Medium / High). Quelle ist ThinkHazard! der Weltbank (GFDRR),
-das je Verwaltungsgebiet die maximale Gefaehrdungsstufe fuehrt (Erdbeben aus GEM,
-Hochwasser aus einem globalen Flutmodell). Diese Komponente ersetzt im Threat Score
-die WMF-Watch-Liste, die in der Region strukturell nie eine WHS flaggte.
+Assigns each UNESCO site an earthquake and a river-flood hazard level (Very
+low / Low / Medium / High). Source is the World Bank's (GFDRR) ThinkHazard!,
+which maintains the maximum hazard level per administrative division
+(earthquake from GEM, flood from a global flood model).
 
-ThinkHazard! kennt keinen Punkt-zu-Gebiet-Lookup. Der Weg ist daher: Site-Koordinate
--> Reverse-Geocoding (Nominatim) zu Provinz/Distrikt -> Namenssuche in ThinkHazard!
-(aufs Land gefiltert) -> Report-JSON je Gebietscode -> EQ- und FL-Stufe.
+ThinkHazard! has no point-to-area lookup. The path is therefore: site
+coordinate -> reverse geocoding (Nominatim) to province/district -> name
+search in ThinkHazard! (filtered to the country) -> report JSON per division
+code -> EQ and FL level.
 
-Das Ergebnis ist eine kuratierte, committete CSV (reference/natural_hazard.csv,
-keyed per site_id), analog zu unesco_in_danger.csv. process.py liest nur diese CSV,
-kein Live-API-Zugriff zur Score-Zeit. Mit --refresh neu erzeugen (selten noetig,
-die Stufen sind statisch). Die Spalte match_confidence dokumentiert, ob die Site auf
-Distrikt- (adm2), Provinz- (adm1) oder nur Landesebene (country) aufgeloest wurde.
+The result is a curated, committed CSV (reference/natural_hazard.csv, keyed
+per site_id), analogous to unesco_in_danger.csv. process.py only reads this
+CSV, no live API access at score time. Regenerate with --refresh (rarely
+needed, the levels are static). The match_confidence column documents
+whether the site was resolved at district (adm2), province (adm1), or only
+country level (country).
 
 Input:  RAW_DIR/unesco/unesco_sites.parquet (site_id, country_iso2, lat/lon)
 Output: reference/natural_hazard.csv
@@ -41,9 +42,9 @@ NOMINATIM_REVERSE_URL: str = f"{config.NOMINATIM_URL}/reverse"
 THINKHAZARD_SEARCH_URL: str = "https://thinkhazard.org/en/administrativedivision"
 THINKHAZARD_REPORT_URL: str = "https://thinkhazard.org/en/report/{code}.json"
 
-NOMINATIM_MIN_INTERVAL_S: float = 1.1  # Nutzungsrichtlinie: hoechstens 1 Anfrage/s
+NOMINATIM_MIN_INTERVAL_S: float = 1.1  # usage policy: at most 1 request/s
 
-# ThinkHazard-Landesname (admin0) je Region-ISO, als Kleinschreib-Teilstring(e).
+# ThinkHazard country name (admin0) per region ISO, as lower-case substring(s).
 COUNTRY_ADMIN0_HINTS: dict[str, tuple[str, ...]] = {
     "SY": ("syrian", "syria"),
     "LB": ("lebanon",),
@@ -61,10 +62,11 @@ COUNTRY_ADMIN0_HINTS: dict[str, tuple[str, ...]] = {
     "BH": ("bahrain",),
 }
 
-# Provinz-Aliase je Land: bereinigter Nominatim-Name (lower) -> ThinkHazard-Schreibweise.
-# Noetig, wo Nominatim und ThinkHazards GAUL-Namen transliterieren oder anders kuerzen
-# (z. B. Nominatim "Isfahan" vs. ThinkHazard "Esfahan", "North District" vs. "Northern").
-# Der Alias steuert sowohl die Namenssuche als auch den Namensvergleich.
+# Province aliases per country: cleaned Nominatim name (lower) -> ThinkHazard
+# spelling. Needed where Nominatim and ThinkHazard's GAUL names transliterate
+# or abbreviate differently (e.g. Nominatim "Isfahan" vs. ThinkHazard
+# "Esfahan", "North District" vs. "Northern"). The alias drives both the name
+# search and the name comparison.
 _TERM_ALIASES: dict[str, dict[str, str]] = {
     "SY": {"dar a": "Dara"},
     "LB": {"beqaa": "Bekaa", "keserwan-jbeil": "Mount Lebanon"},
@@ -73,24 +75,25 @@ _TERM_ALIASES: dict[str, dict[str, str]] = {
     "IL": {"north": "Northern", "south": "Southern"},
 }
 
-# Direkte Gebiets-Zuordnung je site_id, wo Reverse-Geocoding kein brauchbares
-# Verwaltungsgebiet liefert. Palaestina: Nominatim gibt nur Oslo-Zonen ("Area A/C/H1")
-# statt des Gouvernements; ThinkHazard fuehrt die Distrikte aber sauber unter
-# "West Bank and Gaza". (code, Label)
+# Direct division assignment per site_id, where reverse geocoding does not
+# yield a usable administrative division. Palestine: Nominatim only returns
+# Oslo zones ("Area A/C/H1") instead of the governorate; ThinkHazard,
+# however, lists the districts cleanly under "West Bank and Gaza".
+# (code, label)
 _DIVISION_OVERRIDES: dict[int, tuple[int, str]] = {
     1433: (3397, "West Bank and Gaza / Bethlehem"),       # Church of the Nativity
-    1492: (3397, "West Bank and Gaza / Bethlehem"),       # Battir (Gouvernement Bethlehem)
+    1492: (3397, "West Bank and Gaza / Bethlehem"),       # Battir (Bethlehem Governorate)
     1565: (3394, "West Bank and Gaza / Al Khalil (Hebron)"),
     1687: (3396, "West Bank and Gaza / Ariha (Jericho)"),
     1749: (1291, "West Bank and Gaza / Deir al Balah"),   # Saint Hilarion (Gaza)
 }
 
-# Kanonische Gefaehrdungsstufen; "no-data"/fehlend wird zu NDA (Teilscore 0).
+# Canonical hazard levels; "no-data"/missing becomes NDA (partial score 0).
 _LEVEL_CANON: dict[str, str] = {
     "VLO": "VLO", "LOW": "LOW", "MED": "MED", "HIG": "HIG", "no-data": "NDA", "NDA": "NDA",
 }
 
-# Verwaltungs-Gattungswoerter, die vor dem Namensvergleich entfallen.
+# Administrative generic terms that are dropped before the name comparison.
 _ADMIN_STOPWORDS: frozenset[str] = frozenset((
     "governorate", "province", "district", "region", "county", "subdistrict",
     "muhafazat", "muhafazah", "mohafazat", "qadaa", "qada", "markaz", "nahiyah",
@@ -99,7 +102,7 @@ _ADMIN_STOPWORDS: frozenset[str] = frozenset((
 
 
 def _normalize(name: str | None) -> str:
-    """Foldet Diakritika, entfernt Gattungswoerter und Sonderzeichen."""
+    """Folds diacritics, removes generic terms and special characters."""
     if not name:
         return ""
     folded = unicodedata.normalize("NFKD", name)
@@ -111,11 +114,12 @@ def _normalize(name: str | None) -> str:
 
 
 def _search_term(name: str | None) -> str:
-    """Bereinigter Suchbegriff fuer ThinkHazard: Gattungswoerter raus, ASCII-Rest.
+    """Cleaned search term for ThinkHazard: generic terms removed, ASCII only.
 
-    Nominatim liefert 'Homs Governorate', 'Khuzestan Province', 'Shush County';
-    die ThinkHazard-Namenssuche braucht den blanken Kern ('Homs'). Nicht-ASCII
-    (z. B. persische Ortsnamen im city-Feld) wird verworfen, sie matchen ohnehin nie.
+    Nominatim returns 'Homs Governorate', 'Khuzestan Province', 'Shush
+    County'; the ThinkHazard name search needs the bare core ('Homs').
+    Non-ASCII (e.g. Persian place names in the city field) is discarded,
+    since it never matches anyway.
     """
     if not name or not name.isascii():
         return ""
@@ -125,7 +129,7 @@ def _search_term(name: str | None) -> str:
 
 
 def _canonical_adm1(iso2: str, adm1: str) -> str:
-    """Bereinigter Provinzname, ueber _TERM_ALIASES auf die ThinkHazard-Schreibweise gebracht."""
+    """Cleaned province name, mapped to the ThinkHazard spelling via _TERM_ALIASES."""
     cleaned = _search_term(adm1)
     return _TERM_ALIASES.get(iso2, {}).get(cleaned.lower(), cleaned)
 
@@ -135,7 +139,7 @@ def _canonical_level(mnemonic: str | None) -> str:
 
 
 class _Cache:
-    """Schlanker JSON-Cache, damit Reruns die APIs nicht erneut belasten."""
+    """Lean JSON cache so reruns do not hit the APIs again."""
 
     def __init__(self, path: Path) -> None:
         self.path = path
@@ -155,7 +159,7 @@ class _Cache:
 
 
 def _reverse_geocode(lat: float, lon: float, cache: _Cache) -> dict[str, str]:
-    """Holt die Adress-/Verwaltungsfelder einer Koordinate von Nominatim."""
+    """Fetches the address/administrative fields of a coordinate from Nominatim."""
     key = f"geo:{lat:.5f},{lon:.5f}"
     cached = cache.get(key)
     if cached is not None:
@@ -175,7 +179,7 @@ def _reverse_geocode(lat: float, lon: float, cache: _Cache) -> dict[str, str]:
 
 
 def _thinkhazard_search(term: str, cache: _Cache) -> list[dict[str, object]]:
-    """Sucht Verwaltungsgebiete per Name in ThinkHazard!."""
+    """Searches for administrative divisions by name in ThinkHazard!."""
     if not term:
         return []
     key = f"search:{term.lower()}"
@@ -190,7 +194,7 @@ def _thinkhazard_search(term: str, cache: _Cache) -> list[dict[str, object]]:
 
 
 def _thinkhazard_levels(code: int, cache: _Cache) -> dict[str, str]:
-    """Liest die Gefaehrdungsstufen (mnemonic je Hazard) eines Gebietscodes."""
+    """Reads the hazard levels (mnemonic per hazard) of a division code."""
     key = f"report:{code}"
     cached = cache.get(key)
     if cached is not None:
@@ -206,7 +210,7 @@ def _thinkhazard_levels(code: int, cache: _Cache) -> dict[str, str]:
 
 
 def _admin_fields(address: dict[str, str]) -> tuple[str, str, str]:
-    """Zieht Provinz (adm1), Distrikt (adm2) und Ort aus den Nominatim-Feldern."""
+    """Extracts province (adm1), district (adm2) and place from the Nominatim fields."""
     adm1 = address.get("state") or address.get("region") or address.get("province") or ""
     adm2 = (address.get("county") or address.get("state_district")
             or address.get("city_district") or address.get("district") or "")
@@ -223,7 +227,7 @@ def _matches_country(result: dict[str, object], iso2: str) -> bool:
 def _choose_division(
     iso2: str, adm1: str, adm2: str, cache: _Cache
 ) -> tuple[dict[str, object] | None, str]:
-    """Waehlt das beste ThinkHazard-Gebiet fuer eine Site, mit Konfidenz-Label."""
+    """Chooses the best ThinkHazard division for a site, with a confidence label."""
     def _country_fallback() -> tuple[dict[str, object] | None, str]:
         for hint in COUNTRY_ADMIN0_HINTS.get(iso2, ()):
             for result in _thinkhazard_search(hint, cache):
@@ -256,7 +260,7 @@ def _choose_division(
         if _name_hit(r_adm1, norm_adm1):
             score += 50
         if score < 100 and not result.get("admin2"):
-            score += 1  # bei reinem adm1-Treffer die Provinz-Einheit bevorzugen
+            score += 1  # for a pure adm1 hit, prefer the province unit
         if score > best_score:
             best_score, best_result = score, result
 
@@ -264,7 +268,7 @@ def _choose_division(
         return best_result, "adm2"
     if best_score >= 50:
         return best_result, "adm1"
-    return _country_fallback()  # Land trifft, Name nicht -> ehrlich Landesebene
+    return _country_fallback()  # country matches, name doesn't -> honestly fall back to country level
 
 
 def _division_label(result: dict[str, object]) -> str:
@@ -276,11 +280,11 @@ def run(*, refresh: bool = False) -> None:
     output_path = config.NATURAL_HAZARD_PATH
     if ingest_common.already_fetched(output_path) and not refresh:
         existing = pd.read_csv(output_path)
-        print(f"Naturgefahren uebersprungen, {len(existing)} Sites bereits vorhanden.")
+        print(f"Natural hazards skipped, {len(existing)} sites already present.")
         return
 
     if not ingest_common.already_fetched(UNESCO_SITES_PARQUET):
-        raise RuntimeError(f"UNESCO-Sites fehlen ({UNESCO_SITES_PARQUET}). Zuerst ingest_unesco.py laufen lassen.")
+        raise RuntimeError(f"UNESCO sites missing ({UNESCO_SITES_PARQUET}). Run ingest_unesco.py first.")
 
     sites_gdf = gpd.read_parquet(UNESCO_SITES_PARQUET)
     cache = _Cache(CACHE_PATH)
@@ -325,18 +329,18 @@ def run(*, refresh: bool = False) -> None:
     hazard_df.to_csv(output_path, index=False, encoding="utf-8")
 
     coarse = hazard_df[hazard_df["match_confidence"].isin(["country", "none"])]
-    print(f"\nNaturgefahren-Ingest: {len(hazard_df)} Sites -> {output_path.name}")
+    print(f"\nNatural hazard ingest: {len(hazard_df)} sites -> {output_path.name}")
     by_conf = hazard_df["match_confidence"].value_counts().to_dict()
-    print("  Konfidenz:", ", ".join(f"{k}={v}" for k, v in by_conf.items()))
+    print("  Confidence:", ", ".join(f"{k}={v}" for k, v in by_conf.items()))
     if not coarse.empty:
-        print(f"  Nur Landesebene ({len(coarse)}):")
+        print(f"  Country level only ({len(coarse)}):")
         for rec in coarse.itertuples(index=False):
-            print(f"    [{rec.match_confidence}] {rec.country_iso2} {rec.name} -> {rec.division or '(kein Treffer)'}")
+            print(f"    [{rec.match_confidence}] {rec.country_iso2} {rec.name} -> {rec.division or '(no match)'}")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--refresh", action="store_true", help="Vorhandene CSV neu erzeugen.")
+    parser.add_argument("--refresh", action="store_true", help="Regenerate the existing CSV.")
     args = parser.parse_args()
     run(refresh=args.refresh)
 

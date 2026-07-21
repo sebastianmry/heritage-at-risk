@@ -1,23 +1,24 @@
-"""Stufe 3, Export der Heritage-Kontextebene.
+"""Stage 3, export of the heritage context layer.
 
-Schreibt die thematische Overlay-Ebene, die die App unter den bewerteten Sites
-zeigt (Detail beim Reinzoomen): Pleiades (antike Orte) als kompaktes GeoJSON-
-Artefakt, Punktgeometrie in CRS84.
+Writes the thematic overlay layer that the app shows underneath the scored
+sites (detail when zooming in): Pleiades (ancient places) as a compact
+GeoJSON artefact, point geometry in CRS84.
 
-Anders als sites.geojson (Score-Ebene) traegt diese Ebene keinen Score; sie ist
-visueller Kontext. Sie wird auf die Umgebung der bewerteten Sites beschnitten (nur
-Orte im CONTEXT_NEAR_SITES_KM-Radius einer UNESCO-Site). Begruendung: Die App zeigt
-Kontext nur dort, wo man hinzoomt (man navigiert von Site zu Site), nicht in leerem
-Gelaende. Das haelt das Artefakt klein (region-weit waeren es 13.452 Orte) und
-fokussiert es auf das Relevante.
+Unlike sites.geojson (score layer), this layer carries no score; it is
+visual context. It is clipped to the vicinity of the scored sites (only
+places within the CONTEXT_NEAR_SITES_KM radius of a UNESCO site). Rationale:
+the app shows context only where you zoom in (you navigate from site to
+site), not on empty terrain. This keeps the artefact small (region-wide it
+would be 13,452 places) and focuses it on what's relevant.
 
-Pleiades-Orte, die einen Namens-Doppelpunkt zu einer nahen UNESCO-Site bilden (viele
-Welterbestaetten sind selbst antike Orte: Palmyra, Babylon, Damascus ...), werden
-verworfen, damit nicht zwei Marker dieselbe Staette zeigen. Bewusst nur bei
-Namensidentitaet, nicht per Radius (Details an DEDUP_NEAR_SITES_M unten).
+Pleiades places that form a name duplicate of a nearby UNESCO site (many
+World Heritage sites are themselves ancient places: Palmyra, Babylon,
+Damascus ...) are dropped, so that two markers don't show the same site.
+Deliberately only on name identity, not by radius (details at
+DEDUP_NEAR_SITES_M below).
 
-OSM historic wurde als Kontextebene wieder verworfen (zu dicht/rauschig, Pleiades
-genuegt; siehe PROJECT_CONTEXT.md, Bewusst verworfene Ansaetze).
+OSM historic was dropped again as a context layer (too dense/noisy, Pleiades
+suffices; see PROJECT_CONTEXT.md, Deliberately dropped approaches).
 
 Input:  RAW_DIR/pleiades/pleiades_places.parquet, RAW_DIR/unesco/unesco_sites.parquet
 Output: config.ARTIFACTS_DIR/pleiades.geojson
@@ -42,22 +43,23 @@ SITES_PARQUET: Path = config.RAW_DIR / "unesco" / "unesco_sites.parquet"
 
 PLEIADES_GEOJSON: Path = config.ARTIFACTS_DIR / "pleiades.geojson"
 
-# Nur Kontext im Umkreis der bewerteten Sites (Begruendung im Modul-Docstring).
+# Only context within the vicinity of the scored sites (rationale in the module docstring).
 CONTEXT_NEAR_SITES_KM: float = 15.0
 
-COORD_PRECISION: int = 5  # ~1 m, genug fuer eine Kontextebene und spart Dateigroesse
+COORD_PRECISION: int = 5  # ~1 m, enough for a context layer and saves file size
 
-# Pleiades-Dublette einer UNESCO-Site: Viele Welterbestaetten sind selbst antike
-# Orte und stehen damit auch in Pleiades (Palmyra, Petra, Babylon ...). Liegt ein
-# Pleiades-Punkt nahe an einer UNESCO-Site UND traegt denselben Namen, ist es ein
-# doppelter Marker fuer dieselbe Staette; dann faellt der Pleiades-Punkt raus (die
-# bewertete Site gewinnt). Bewusst NUR bei Namensidentitaet, nicht per Radius:
-# rund um eine Site liegen viele eigenstaendige antike Orte (Babylons Tore/Tempel,
-# Assur-Archive), die als Kontext erhalten bleiben sollen.
-DEDUP_NEAR_SITES_M: float = 2000.0  # Namensvergleich nur fuer plausibel selbe Orte
-DEDUP_FUZZY_RATIO: float = 0.85     # Transliterations-Varianten (Bisotun~Bisutun)
+# Pleiades duplicate of a UNESCO site: many World Heritage sites are
+# themselves ancient places and therefore also appear in Pleiades (Palmyra,
+# Petra, Babylon ...). If a Pleiades point lies near a UNESCO site and
+# carries the same name, it is a duplicate marker for the same site; then
+# the Pleiades point is dropped (the scored site wins). Deliberately only on
+# name identity, not by radius: around a site there are many independent
+# ancient places (Babylon's gates/temples, Assur archives) that should
+# remain as context.
+DEDUP_NEAR_SITES_M: float = 2000.0  # name comparison only for plausibly-same places
+DEDUP_FUZZY_RATIO: float = 0.85     # transliteration variants (Bisotun~Bisutun)
 
-# UNESCO-Geruestwoerter, die nicht zum eigentlichen Ortsnamen gehoeren.
+# UNESCO boilerplate words that are not part of the actual place name.
 _UNESCO_LEAD = re.compile(
     r"^(site of|ancient city of|ancient town of|ancient village[s]? of|ancient|"
     r"historic town of|historic city of|historic|old city of|old town of|"
@@ -66,23 +68,23 @@ _UNESCO_LEAD = re.compile(
 
 
 def _norm_name(s: str) -> str:
-    """Kleinschreiben, Diakritika folden, auf [a-z0-9]+ reduzieren."""
+    """Lowercases, folds diacritics, reduces to [a-z0-9]+."""
     decomposed = unicodedata.normalize("NFKD", s)
     s = "".join(c for c in decomposed if not unicodedata.combining(c)).lower()
     return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9]+", " ", s)).strip()
 
 
-# Platzhalter-Titel, die Pleiades fuer unbenannte/ungeklaerte Orte vergibt; raus.
+# Placeholder titles that Pleiades assigns to unnamed/unresolved places; dropped.
 _PLACEHOLDER_TITLES = re.compile(r"^(unknown|untitled|unnamed)\b", re.I)
 
 
 def _ascii_fold_title(title: str) -> str:
-    """Diakritika folden, ABER Gross-/Kleinschreibung und Wortgrenzen erhalten.
+    """Folds diacritics but keeps upper/lower case and word boundaries.
 
-    Anders als _norm_name (das fuer den Vergleich kleinschreibt und zerlegt) bleibt
-    der Name lesbar: "Arbela" aus "Arbela", "Abu Fanduwa" aus "Abu Fanduwa",
-    "Al-Hilah" aus "Al-Hilah". Nicht zerlegbare Sonderzeichen (Ayn/Hamza-Modifier)
-    werden danach als Nicht-ASCII verworfen.
+    Unlike _norm_name (which lowercases and breaks apart for comparison),
+    the name stays readable: "Arbela" from "Arbela", "Abu Fanduwa" from "Abu
+    Fanduwa", "Al-Hilah" from "Al-Hilah". Special characters that cannot be
+    decomposed (Ayn/Hamza modifiers) are then discarded as non-ASCII.
     """
     decomposed = unicodedata.normalize("NFKD", title)
     folded = "".join(c for c in decomposed if not unicodedata.combining(c))
@@ -90,8 +92,8 @@ def _ascii_fold_title(title: str) -> str:
     return re.sub(r"\s+", " ", ascii_only).strip()
 
 
-# Pleiades-Ortstyp-Slugs auf lesbare Labels. Was hier fehlt, wird generisch
-# aufgehuebscht (Bindestriche zu Leerzeichen, Erstbuchstabe gross).
+# Pleiades place-type slugs mapped to readable labels. What's missing here
+# gets generically prettified (hyphens to spaces, first letter capitalized).
 _TYPE_LABELS: dict[str, str] = {
     "archive-repository": "Archive/Repository",
     "architecturalcomplex": "Architectural complex",
@@ -105,10 +107,10 @@ _TYPE_LABELS: dict[str, str] = {
 
 
 def _clean_types(raw_types: str) -> str:
-    """Pleiades-Typ-Slugs lesbar machen: Zahlen-Suffix weg, 'unlocated' raus, mappen."""
+    """Makes Pleiades type slugs readable: strip numeric suffix, drop 'unlocated', map."""
     labels: list[str] = []
     for token in re.split(r"[;,]", raw_types):
-        slug = re.sub(r"-\d+$", "", token.strip().lower())  # Disambiguierungs-Zahl weg
+        slug = re.sub(r"-\d+$", "", token.strip().lower())  # strip disambiguation number
         if not slug or slug == "unlocated":
             continue
         label = _TYPE_LABELS.get(slug) or slug.replace("-", " ").replace("_", " ").capitalize()
@@ -118,7 +120,7 @@ def _clean_types(raw_types: str) -> str:
 
 
 def _unesco_name_candidates(name: str) -> set[str]:
-    """Kern-Ortsnamen einer UNESCO-Site (Geruest weg, an / : und 'and' gesplittet)."""
+    """Core place names of a UNESCO site (boilerplate stripped, split on / : and 'and')."""
     name = re.sub(r"\(.*?\)", " ", name)
     name = re.sub(r"\s+and its .*$", "", name, flags=re.I)
     name = re.sub(r"\s+[-–]\s+.*$", "", name)
@@ -132,13 +134,13 @@ def _unesco_name_candidates(name: str) -> set[str]:
 
 
 def _pleiades_name_candidates(title: str) -> set[str]:
-    """Namensvarianten eines Pleiades-Orts (Klammern/Bracket weg, an / gesplittet)."""
+    """Name variants of a Pleiades place (brackets/parentheses stripped, split on /)."""
     title = re.sub(r"\[.*?\]|\(.*?\)", " ", title)
     return {n for part in title.split("/") if len(n := _norm_name(part)) >= 3}
 
 
 def _same_place(unesco_name: str, pleiades_title: str) -> bool:
-    """Tragen UNESCO-Site und Pleiades-Ort denselben Ortsnamen (exakt oder fuzzy)?"""
+    """Do the UNESCO site and the Pleiades place share the same place name (exact or fuzzy)?"""
     unis = _unesco_name_candidates(unesco_name)
     ples = _pleiades_name_candidates(pleiades_title)
     for u in unis:
@@ -164,10 +166,11 @@ def _point_feature(lon: float, lat: float, properties: dict[str, object]) -> dic
 
 
 def export_pleiades(con: duckdb.DuckDBPyConnection) -> tuple[int, int, int]:
-    """Pleiades-Kontext schreiben; gibt (geschriebene, Namens-Dubletten, Platzhalter) zurueck."""
+    """Writes the Pleiades context; returns (written, name duplicates, placeholders)."""
     radius_m = CONTEXT_NEAR_SITES_KM * 1000.0
-    # Je Pleiades-Punkt im Kontext-Umkreis: zusaetzlich die Namen der UNESCO-Sites
-    # im engen Dedup-Umkreis (fuer den Namens-Identitaetstest in Python).
+    # For each Pleiades point within the context vicinity: also the names of
+    # the UNESCO sites within the narrow dedup vicinity (for the name
+    # identity test in Python).
     rows = con.execute(f"""
         WITH pts AS (
             SELECT title, feature_types AS types, pleiades_url AS url, longitude AS lon, latitude AS lat
@@ -190,11 +193,11 @@ def export_pleiades(con: duckdb.DuckDBPyConnection) -> tuple[int, int, int]:
     dropped_placeholder = 0
     for title, types, url, lon, lat, near_names in rows:
         if near_names and any(_same_place(name, title or "") for name in near_names):
-            dropped += 1  # Namens-Dublette einer UNESCO-Site, nur diese faellt raus
+            dropped += 1  # name duplicate of a UNESCO site, only this one is dropped
             continue
         clean_title = _ascii_fold_title(title or "")
         if not clean_title or _PLACEHOLDER_TITLES.match(clean_title):
-            dropped_placeholder += 1  # unbenannter/ungeklaerter Pleiades-Ort
+            dropped_placeholder += 1  # unnamed/unresolved Pleiades place
             continue
         features.append(_point_feature(lon, lat, {
             "title": clean_title,
@@ -208,9 +211,9 @@ def export_pleiades(con: duckdb.DuckDBPyConnection) -> tuple[int, int, int]:
 def run() -> None:
     ingest_common.ensure_data_dirs()
     if not ingest_common.already_fetched(PLEIADES_PARQUET):
-        raise RuntimeError(f"Pleiades fehlt ({PLEIADES_PARQUET}). Zuerst ingest_pleiades.py laufen lassen.")
+        raise RuntimeError(f"Pleiades missing ({PLEIADES_PARQUET}). Run ingest_pleiades.py first.")
     if not ingest_common.already_fetched(SITES_PARQUET):
-        raise RuntimeError(f"UNESCO-Sites fehlen ({SITES_PARQUET}). Zuerst ingest_unesco.py laufen lassen.")
+        raise RuntimeError(f"UNESCO sites missing ({SITES_PARQUET}). Run ingest_unesco.py first.")
 
     con = duckdb.connect()
     try:
@@ -222,8 +225,8 @@ def run() -> None:
     finally:
         con.close()
 
-    print(f"export_context: {n_pleiades} Pleiades-Orte -> {PLEIADES_GEOJSON.name} "
-          f"({n_dropped} Namens-Dubletten von UNESCO-Sites, {n_placeholder} Platzhalter verworfen)")
+    print(f"export_context: {n_pleiades} Pleiades places -> {PLEIADES_GEOJSON.name} "
+          f"({n_dropped} name duplicates of UNESCO sites, {n_placeholder} placeholders dropped)")
 
 
 def main() -> None:

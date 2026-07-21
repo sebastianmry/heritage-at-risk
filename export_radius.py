@@ -1,14 +1,15 @@
-"""Stufe 3, Export der Konflikt-Radien.
+"""Stage 3, export of the conflict radii.
 
-Zeichnet je UNESCO-Site den Umkreis, in dem die Konflikt-Komponente Ereignisse
-zaehlt (config.CONFLICT_RADIUS_KM), als Polygon-FeatureCollection. Die App legt
-das als dezente, schaltbare Ebene ueber die Karte, damit sichtbar wird, welchen
-raeumlichen Ausschnitt der Score je Site auswertet (Transparenz der Methodik).
+Draws, per UNESCO site, the vicinity within which the conflict component
+counts events (config.CONFLICT_RADIUS_KM), as a polygon FeatureCollection.
+The app overlays this on the map as an unobtrusive, toggleable layer, so it
+becomes visible which spatial extent the score evaluates per site
+(methodology transparency).
 
-Die Kreise sind geodaetisch korrekt (pyproj.Geod auf dem WGS84-Ellipsoid), nicht
-als Pixel-Radius gemalt: ein 30-km-Kreis bleibt 30 km, unabhaengig von Zoom und
-Breitengrad. Liest die committeten Site-Koordinaten aus sites.geojson (kein
-DuckDB noetig, reine Geometrie).
+The circles are geodetically correct (pyproj.Geod on the WGS84 ellipsoid),
+not drawn as a pixel radius: a 30 km circle stays 30 km, independent of zoom
+and latitude. Reads the committed site coordinates from sites.geojson (no
+DuckDB needed, pure geometry).
 
 Input:  config.SITES_GEOJSON_PATH
 Output: config.CONFLICT_RADIUS_GEOJSON_PATH
@@ -24,24 +25,24 @@ import config
 import ingest_common
 
 GEOD: Geod = Geod(ellps="WGS84")
-CIRCLE_VERTICES: int = 72  # glatt genug, klein genug fuer den Inline-Embed
+CIRCLE_VERTICES: int = 72  # smooth enough, small enough for the inline embed
 
 
 def _circle_ring(lon: float, lat: float, radius_m: float) -> list[list[float]]:
-    """Baut einen geschlossenen, geodaetisch korrekten Kreis-Ring um einen Punkt."""
+    """Builds a closed, geodetically correct circle ring around a point."""
     ring: list[list[float]] = []
     for vertex in range(CIRCLE_VERTICES):
         azimuth = 360.0 * vertex / CIRCLE_VERTICES
         point_lon, point_lat, _ = GEOD.fwd(lon, lat, azimuth, radius_m)
         ring.append([point_lon, point_lat])
-    ring.append(ring[0])  # Ring schliessen
+    ring.append(ring[0])  # close the ring
     return ring
 
 
 def run() -> None:
     ingest_common.ensure_data_dirs()
     if not ingest_common.already_fetched(config.SITES_GEOJSON_PATH):
-        raise RuntimeError(f"Keine {config.SITES_GEOJSON_PATH.name}. Zuerst export.py laufen lassen.")
+        raise RuntimeError(f"No {config.SITES_GEOJSON_PATH.name}. Run export.py first.")
 
     sites = json.loads(config.SITES_GEOJSON_PATH.read_text(encoding="utf-8"))
     radius_m = config.CONFLICT_RADIUS_KM * 1000.0
@@ -59,10 +60,10 @@ def run() -> None:
     feature_collection = {
         "type": "FeatureCollection",
         "metadata": {
-            "title": f"Konflikt-Auswerteradius je UNESCO-Site ({config.CONFLICT_RADIUS_KM:.0f} km)",
+            "title": f"Conflict evaluation radius per UNESCO site ({config.CONFLICT_RADIUS_KM:.0f} km)",
             "radius_km": config.CONFLICT_RADIUS_KM,
-            "note": "Geodaetische Kreise (WGS84) um die Site-Punkte; in diesem Umkreis "
-                    "zaehlt die Konflikt-Komponente die UCDP-GED-Ereignisse.",
+            "note": "Geodetic circles (WGS84) around the site points; within this "
+                    "vicinity the conflict component counts the UCDP GED events.",
         },
         "features": features,
     }
@@ -72,7 +73,7 @@ def run() -> None:
         json.dumps(feature_collection, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
-    print(f"export_radius: {len(features)} Kreise ({config.CONFLICT_RADIUS_KM:.0f} km) "
+    print(f"export_radius: {len(features)} circles ({config.CONFLICT_RADIUS_KM:.0f} km) "
           f"-> {config.CONFLICT_RADIUS_GEOJSON_PATH.name}")
 
 

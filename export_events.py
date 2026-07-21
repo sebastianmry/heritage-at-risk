@@ -1,28 +1,30 @@
-"""Stufe 3, Export der UCDP-Konfliktereignisse als Kartenebene.
+"""Stage 3, export of the UCDP conflict events as a map layer.
 
-Schreibt die UCDP-GED-Ereignisse (Region + Zeitfenster, aus ingest_ucdp.py) als
-Punkt-FeatureCollection, die die App als dezente, schaltbare Ebene ueber die
-Karte legt. So wird das raeumliche Konfliktmuster sichtbar, das die Konflikt-
-Score-Komponente je Site zaehlt (Methodik-Transparenz, ergaenzt den
-30-km-Auswerteradius aus export_radius.py).
+Writes the UCDP GED events (region + time window, from ingest_ucdp.py) as a
+point FeatureCollection that the app overlays on the map as an unobtrusive,
+toggleable layer. This makes visible the spatial conflict pattern that the
+conflict score component counts per site (methodology transparency,
+complements the 30 km evaluation radius from export_radius.py).
 
-Jedes Feature traegt `date` (event_date) + `year` fuer die jahrweise Einfaerbung
-in der App sowie `violence_type` (GED-Kategorie) und `deaths` (best estimate).
-Bewusst schlank gehalten (Koordinaten auf 5 Nachkommastellen gerundet), damit
-das gebuendelte Asset klein bleibt; die Vollattribute liegen nur im ucdp-Parquet.
+Each feature carries `date` (event_date) + `year` for year-wise colouring in
+the app, as well as `violence_type` (GED category) and `deaths` (best
+estimate). Deliberately kept lean (coordinates rounded to 5 decimal places),
+so the bundled asset stays small; the full attributes only live in the
+ucdp parquet.
 
-Exportiert werden NUR Ereignisse, die im CONFLICT_RADIUS_KM einer Site liegen,
-also genau die Events, die der Score auch zaehlt (process.py joint per
-ST_Distance_Sphere im selben Radius). Weit von jeder Site entfernte Cluster
-(z. B. Sudan/Aethiopien) fallen damit aus Karte und Score gleichermassen heraus;
-Grenzfaelle nahe an Sites (z. B. Pakistan) bleiben. Logik ueber den Radius statt
-ueber starre Laendergrenzen. Der Filter ist geodaetisch (pyproj.Geod auf WGS84),
-wie die Kreise in export_radius.py, und liest die committeten Site-Koordinaten
-aus sites.geojson (kein DuckDB noetig, reine Geometrie).
+Only events that lie within CONFLICT_RADIUS_KM of a site are exported, i.e.
+exactly the events the score also counts (process.py joins via
+ST_Distance_Sphere within the same radius). Clusters far from any site
+(e.g. Sudan/Ethiopia) therefore drop out of both the map and the score
+alike; borderline cases near sites (e.g. Pakistan) remain. Logic via the
+radius rather than rigid country borders. The filter is geodetic
+(pyproj.Geod on WGS84), like the circles in export_radius.py, and reads the
+committed site coordinates from sites.geojson (no DuckDB needed, pure
+geometry).
 
-Input:  RAW_DIR/ucdp/ucdp_events.parquet (aus ingest_ucdp.py),
-        config.SITES_GEOJSON_PATH (aus export.py)
-Output: config.CONFLICT_EVENTS_GEOJSON_PATH (conflict_events.geojson, Inhalt UCDP GED)
+Input:  RAW_DIR/ucdp/ucdp_events.parquet (from ingest_ucdp.py),
+        config.SITES_GEOJSON_PATH (from export.py)
+Output: config.CONFLICT_EVENTS_GEOJSON_PATH (conflict_events.geojson, UCDP GED content)
 """
 
 from __future__ import annotations
@@ -45,7 +47,7 @@ def _within_radius_mask(
     event_lons: np.ndarray, event_lats: np.ndarray,
     site_coords: list[tuple[float, float]], radius_m: float,
 ) -> np.ndarray:
-    """True je Event, das in radius_m um mindestens eine Site liegt (geodaetisch)."""
+    """True per event that lies within radius_m of at least one site (geodetic)."""
     within = np.zeros(event_lons.shape, dtype=bool)
     for site_lon, site_lat in site_coords:
         origin_lons = np.full(event_lons.shape, site_lon)
@@ -58,9 +60,9 @@ def _within_radius_mask(
 def run() -> None:
     ingest_common.ensure_data_dirs()
     if not ingest_common.already_fetched(CONFLICT_EVENTS_PARQUET):
-        raise RuntimeError(f"Keine {CONFLICT_EVENTS_PARQUET.name}. Zuerst ingest_ucdp.py laufen lassen.")
+        raise RuntimeError(f"No {CONFLICT_EVENTS_PARQUET.name}. Run ingest_ucdp.py first.")
     if not ingest_common.already_fetched(config.SITES_GEOJSON_PATH):
-        raise RuntimeError(f"Keine {config.SITES_GEOJSON_PATH.name}. Zuerst export.py laufen lassen.")
+        raise RuntimeError(f"No {config.SITES_GEOJSON_PATH.name}. Run export.py first.")
 
     events = pd.read_parquet(CONFLICT_EVENTS_PARQUET)
 
@@ -83,14 +85,14 @@ def run() -> None:
         features.append({
             "type": "Feature",
             "geometry": {
-                # Auf 5 Nachkommastellen (~1 m) gerundet, haelt das App-Asset klein.
+                # Rounded to 5 decimal places (~1 m), keeps the app asset small.
                 "type": "Point",
                 "coordinates": [round(float(row.longitude), 5), round(float(row.latitude), 5)],
             },
-            # Schlanke Properties: nur was die Karte braucht. year fuer die
-            # Einfaerbung, violence_type (GED-Kategorie) als Kontext-Label,
-            # deaths (best estimate) als Schwere-Marker. country/event_id
-            # bleiben nur im Parquet (ucdp_events.parquet), nicht im Bundle.
+            # Lean properties: only what the map needs. year for the
+            # colouring, violence_type (GED category) as a context label,
+            # deaths (best estimate) as a severity marker. country/event_id
+            # stay only in the parquet (ucdp_events.parquet), not in the bundle.
             "properties": {
                 "date": str(pd.Timestamp(row.event_date).date()),
                 "year": int(pd.Timestamp(row.event_date).year),
@@ -102,14 +104,14 @@ def run() -> None:
     feature_collection = {
         "type": "FeatureCollection",
         "metadata": {
-            "title": "UCDP-GED-Konfliktereignisse (Region + Zeitfenster)",
+            "title": "UCDP GED conflict events (region + time window)",
             "lookback_months": config.CONFLICT_LOOKBACK_MONTHS,
             "start_date": config.CONFLICT_START_DATE,
             "source": "UCDP GED (Uppsala Conflict Data Program), CC BY 4.0",
             "radius_km": config.CONFLICT_RADIUS_KM,
-            "note": "Georeferenzierte Ereignisse im "
-                    f"{config.CONFLICT_RADIUS_KM:.0f}-km-Radius einer Site; genau die "
-                    "Events, die die Konflikt-Score-Komponente je Site zaehlt.",
+            "note": "Georeferenced events within the "
+                    f"{config.CONFLICT_RADIUS_KM:.0f} km radius of a site; exactly the "
+                    "events the conflict score component counts per site.",
         },
         "features": features,
     }
@@ -119,8 +121,8 @@ def run() -> None:
         json.dumps(feature_collection, ensure_ascii=False),
         encoding="utf-8",
     )
-    print(f"export_events: {len(features)} von {total_count} UCDP-Ereignissen im "
-          f"{config.CONFLICT_RADIUS_KM:.0f}-km-Siteradius -> {config.CONFLICT_EVENTS_GEOJSON_PATH.name}")
+    print(f"export_events: {len(features)} of {total_count} UCDP events within the "
+          f"{config.CONFLICT_RADIUS_KM:.0f} km site radius -> {config.CONFLICT_EVENTS_GEOJSON_PATH.name}")
 
 
 def main() -> None:

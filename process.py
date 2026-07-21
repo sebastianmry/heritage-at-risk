@@ -1,34 +1,33 @@
-"""Stufe 2, Verarbeitung in DuckDB.
+"""Stage 2, processing in DuckDB.
 
-Die wissenschaftliche Mitte der Pipeline. Die Spatial Extension fuehrt die
-Quellen zusammen und berechnet je UNESCO-Site den Threat Score (0 bis
-config.SCORE_MAX) aus vier unabhaengigen Komponenten:
+The scientific core of the pipeline. The spatial extension merges the
+sources and computes the threat score (0 to config.SCORE_MAX) per UNESCO
+site from four independent components:
 
-  1. UNESCO In-Danger-Flag   (Gewicht 3, binaer)        reference/unesco_in_danger.csv
-  2. Reisewarnstufe 0-2      (Gewicht 3, linear)        Auswaertiges Amt (CSV)
-  3. Konflikt               (Gewicht 3, log-skaliert)   UCDP GED im CONFLICT_RADIUS_KM
-  4. Naturgefahr EQ+FL       (Gewicht 2, Stufen)        ThinkHazard! (reference/natural_hazard.csv)
+  1. UNESCO in-danger flag    (weight 3, binary)          reference/unesco_in_danger.csv
+  2. Travel advisory level 0-2 (weight 3, linear)          German Federal Foreign Office (CSV)
+  3. Conflict                 (weight 3, log-scaled)       UCDP GED within CONFLICT_RADIUS_KM
+  4. Natural hazard EQ+FL     (weight 1, levels)           ThinkHazard! (reference/natural_hazard.csv)
 
-Die Naturgefahr nimmt das Maximum aus Erdbeben- und Flusshochwasser-Stufe je Site
-(ThinkHazard! der Weltbank, ueber config.NATURAL_HAZARD_LEVEL_SCORES auf [0,1]
-abgebildet) und skaliert es mit dem Gewicht: eine Site ist gefaehrdet, wenn sie
-EINER der beiden Gefahren stark ausgesetzt ist. Diese Komponente loest die
-WMF-Watch-Liste ab, die in der Region strukturell nie eine WHS flaggte
-(PROJECT_CONTEXT.md, Bewusst verworfene Ansaetze).
+The natural hazard component takes the maximum of the earthquake and river
+flood level per site (World Bank ThinkHazard!, mapped to [0,1] via
+config.NATURAL_HAZARD_LEVEL_SCORES) and scales it with the weight: a site is
+at risk if it is strongly exposed to either of the two hazards.
 
-Die Konflikt-Komponente zaehlt die UCDP-GED-Konfliktereignisse im geografischen
-Radius je Site (ST_Distance_Sphere auf ST_Point(lon, lat), latitude/longitude statt
-WKB), log-skaliert auf [0,1] und mit dem Konflikt-Gewicht skaliert. Bekannte
-Grenze: UCDP zaehlt nur Ereignisse mit >= 1 Todesopfer (PROJECT_CONTEXT).
+The conflict component counts the UCDP GED conflict events within the
+geographic radius per site (ST_Distance_Sphere on ST_Point(lon, lat),
+latitude/longitude instead of WKB), log-scales it to [0,1] and scales it
+with the conflict weight. Known limitation: UCDP only counts events with at
+least 1 fatality.
 
-Quellen-tolerant: fehlt ucdp_events.parquet, zaehlt der Konflikt-Anteil fuer alle
-Sites 0. Der Rest rechnet durch. Sobald die Datei existiert, faellt sie ohne
-Codeaenderung ein.
+Source-tolerant: if ucdp_events.parquet is missing, the conflict share
+counts as 0 for all sites. The rest still computes. As soon as the file
+exists, it is picked up without any code change.
 
 Input:  RAW_DIR/unesco/unesco_sites.parquet, reference/unesco_in_danger.csv,
         RAW_DIR/auswaertiges_amt/travel_warning_levels.csv, reference/natural_hazard.csv,
         optional RAW_DIR/ucdp/ucdp_events.parquet
-Output: Tabelle site_scores in config.DUCKDB_PATH
+Output: table site_scores in config.DUCKDB_PATH
 """
 
 from __future__ import annotations
@@ -49,21 +48,21 @@ SCORES_TABLE: str = "site_scores"
 
 
 def _require_inputs() -> None:
-    """Prueft die zwingenden Eingaben vorab (die Konflikt-Events sind optional)."""
+    """Checks the mandatory inputs upfront (the conflict events are optional)."""
     required = {
-        "UNESCO-Sites": UNESCO_SITES_PARQUET,
-        "UNESCO In-Danger": config.UNESCO_IN_DANGER_PATH,
-        "Reisewarnstufen": AA_WARNINGS_CSV,
-        "Naturgefahren": config.NATURAL_HAZARD_PATH,
+        "UNESCO sites": UNESCO_SITES_PARQUET,
+        "UNESCO in-danger": config.UNESCO_IN_DANGER_PATH,
+        "Travel advisory levels": AA_WARNINGS_CSV,
+        "Natural hazards": config.NATURAL_HAZARD_PATH,
     }
     missing = [f"{label} ({path})" for label, path in required.items()
                if not ingest_common.already_fetched(path)]
     if missing:
-        raise RuntimeError("Fehlende Eingaben fuer die Verarbeitung: " + "; ".join(missing))
+        raise RuntimeError("Missing inputs for processing: " + "; ".join(missing))
 
 
 def _threat_level_case(score_column: str) -> str:
-    """Baut den CASE-Ausdruck der Threat-Level-Klassen aus config.THREAT_LEVEL_BREAKS."""
+    """Builds the CASE expression for the threat level classes from config.THREAT_LEVEL_BREAKS."""
     *lower_breaks, (top_label, _) = config.THREAT_LEVEL_BREAKS
     whens = " ".join(
         f"WHEN {score_column} <= {upper} THEN '{label}'" for label, upper in lower_breaks
@@ -72,14 +71,14 @@ def _threat_level_case(score_column: str) -> str:
 
 
 def _points_relation(parquet_path: Path) -> str:
-    """SQL-Quelle einer Punktebene, leer (aber typkorrekt) wenn die Datei fehlt."""
+    """SQL source of a point layer, empty (but type-correct) if the file is missing."""
     if ingest_common.already_fetched(parquet_path):
         return f"SELECT latitude, longitude FROM read_parquet('{parquet_path.as_posix()}')"
     return "SELECT NULL::DOUBLE AS latitude, NULL::DOUBLE AS longitude WHERE FALSE"
 
 
 def _hazard_score_case(level_column: str) -> str:
-    """Baut den CASE-Ausdruck Stufe -> Teilscore [0,1] aus config.NATURAL_HAZARD_LEVEL_SCORES."""
+    """Builds the CASE expression level -> partial score [0,1] from config.NATURAL_HAZARD_LEVEL_SCORES."""
     whens = " ".join(
         f"WHEN '{level}' THEN {score}" for level, score in config.NATURAL_HAZARD_LEVEL_SCORES.items()
     )
@@ -87,7 +86,7 @@ def _hazard_score_case(level_column: str) -> str:
 
 
 def _build_score_sql() -> str:
-    """Setzt die komplette Score-Abfrage als CREATE OR REPLACE TABLE zusammen."""
+    """Assembles the complete score query as a CREATE OR REPLACE TABLE."""
     conflict_radius_m = config.CONFLICT_RADIUS_KM * 1000.0
 
     return f"""
@@ -153,30 +152,30 @@ def _build_score_sql() -> str:
 
 
 def _report(con: duckdb.DuckDBPyConnection, *, conflict_available: bool) -> None:
-    """Druckt eine kompakte Zusammenfassung des berechneten Scores."""
+    """Prints a compact summary of the computed score."""
     total = con.execute(f"SELECT COUNT(*) FROM {SCORES_TABLE}").fetchone()[0]
-    print(f"process: {total} Sites bewertet, Score 0 bis {config.SCORE_MAX} -> Tabelle {SCORES_TABLE}")
+    print(f"process: {total} sites scored, score 0 to {config.SCORE_MAX} -> table {SCORES_TABLE}")
     if not conflict_available:
-        print("  Hinweis: kein ucdp_events.parquet, Konflikt-Komponente fuer alle Sites 0 "
-              "(zuerst ingest_ucdp.py laufen lassen, siehe PROJECT_CONTEXT.md).")
+        print("  Note: no ucdp_events.parquet, conflict component 0 for all sites "
+              "(run ingest_ucdp.py first).")
 
     by_level = con.execute(
         f"SELECT threat_level, COUNT(*) FROM {SCORES_TABLE} GROUP BY threat_level ORDER BY MIN(total_score)"
     ).fetchall()
-    print("  Threat-Level:", ", ".join(f"{level}={count}" for level, count in by_level))
+    print("  Threat level:", ", ".join(f"{level}={count}" for level, count in by_level))
 
     in_danger = con.execute(f"SELECT COUNT(*) FROM {SCORES_TABLE} WHERE in_danger").fetchone()[0]
     high_hazard = con.execute(
         f"SELECT COUNT(*) FROM {SCORES_TABLE} WHERE eq_level = 'HIG' OR fl_level = 'HIG'"
     ).fetchone()[0]
-    print(f"  In-Danger: {in_danger}, Naturgefahr hoch (EQ oder FL = HIG): {high_hazard}")
+    print(f"  In-danger: {in_danger}, natural hazard high (EQ or FL = HIG): {high_hazard}")
 
     if conflict_available:
         with_conflict, max_count = con.execute(
             f"SELECT COUNT(*) FILTER (WHERE conflict_count > 0), MAX(conflict_count) FROM {SCORES_TABLE}"
         ).fetchone()
-        print(f"  Konflikt (UCDP GED): {with_conflict} Sites mit Ereignissen im "
-              f"{config.CONFLICT_RADIUS_KM:.0f}-km-Radius, max {max_count} je Site.")
+        print(f"  Conflict (UCDP GED): {with_conflict} sites with events within the "
+              f"{config.CONFLICT_RADIUS_KM:.0f} km radius, max {max_count} per site.")
 
     top = con.execute(
         f"SELECT name, country_iso2, total_score, threat_level FROM {SCORES_TABLE} LIMIT 5"
@@ -205,7 +204,7 @@ def run(*, recompute: bool = False) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--recompute", action="store_true",
-                        help="Score neu rechnen (aktuell stets voller, guenstiger Durchlauf).")
+                        help="Recompute the score (currently always a full, cheap run).")
     args = parser.parse_args()
     run(recompute=args.recompute)
 
