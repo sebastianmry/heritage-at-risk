@@ -1,8 +1,8 @@
 {
   "type": "FeatureCollection",
   "metadata": {
-    "title": "Heritage at Risk: Threat Score je UNESCO-Welterbestaette (MENA)",
-    "generated": "2026-07-21",
+    "title": "Heritage at Risk: threat score per UNESCO World Heritage site (MENA)",
+    "generated": "2026-07-22",
     "site_count": 100,
     "score_max": 10,
     "score_components": {
@@ -12,12 +12,12 @@
       },
       "travel_warning": {
         "weight": 3,
-        "source": "Auswaertiges Amt"
+        "source": "German Federal Foreign Office"
       },
       "conflict": {
         "weight": 3,
         "source": "UCDP GED (Uppsala Conflict Data Program)",
-        "method": "log-skalierter Subscore der Konfliktereignisse im Radius",
+        "method": "log-scaled subscore of the conflict events within the radius",
         "radius_km": 30.0
       },
       "natural_hazard": {
@@ -33,27 +33,27 @@
     "threat_levels": [
       {
         "level": "low",
-        "label": "niedrig",
+        "label": "Low",
         "color": "#1a9641",
         "max_score": 3.0
       },
       {
         "level": "medium",
-        "label": "mittel",
+        "label": "Medium",
         "color": "#fdae61",
         "max_score": 6.0
       },
       {
         "level": "high",
-        "label": "hoch",
+        "label": "High",
         "color": "#d7191c",
         "max_score": 10.0
       }
     ],
     "crs": "urn:ogc:def:crs:OGC:1.3:CRS84",
-    "license": "Quellen unter ihren jeweiligen Lizenzen; abgeleitetes Artefakt fuer ein akademisches Projekt.",
+    "license": "Sources under their respective licences; derived artefact for an academic project.",
     "contact": "HeritageAtRisk/0.1 (academic project; sebastian.macherey@gmail.com)",
-    "notes": "Threat Score 0 bis 10 aus vier gewichteten Quellen. Gefaehrdung ist nicht nur farblich, sondern auch ueber threat_level/Label kodiert (Accessibility)."
+    "notes": "Threat score 0 to 10 from four weighted sources. Danger is encoded not only by colour but also via threat_level/label (accessibility)."
   },
   "features": [
     {
@@ -82,7 +82,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 9.47,
         "threat_level": "high",
-        "threat_label": "hoch",
+        "threat_label": "High",
         "threat_color": "#d7191c"
       }
     },
@@ -112,7 +112,7 @@
         "score_natural": 0.3333333333333333,
         "total_score": 9.33,
         "threat_level": "high",
-        "threat_label": "hoch",
+        "threat_label": "High",
         "threat_color": "#d7191c"
       }
     },
@@ -142,7 +142,7 @@
         "score_natural": 0.3333333333333333,
         "total_score": 9.18,
         "threat_level": "high",
-        "threat_label": "hoch",
+        "threat_label": "High",
         "threat_color": "#d7191c"
       }
     },
@@ -172,7 +172,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 8.95,
         "threat_level": "high",
-        "threat_label": "hoch",
+        "threat_label": "High",
         "threat_color": "#d7191c"
       }
     },
@@ -202,7 +202,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 8.87,
         "threat_level": "high",
-        "threat_label": "hoch",
+        "threat_label": "High",
         "threat_color": "#d7191c"
       }
     },
@@ -232,7 +232,7 @@
         "score_natural": 0.3333333333333333,
         "total_score": 8.7,
         "threat_level": "high",
-        "threat_label": "hoch",
+        "threat_label": "High",
         "threat_color": "#d7191c"
       }
     },
@@ -262,7 +262,7 @@
         "score_natural": 1.0,
         "total_score": 8.65,
         "threat_level": "high",
-        "threat_label": "hoch",
+        "threat_label": "High",
         "threat_color": "#d7191c"
       }
     },
@@ -292,7 +292,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 8.46,
         "threat_level": "high",
-        "threat_label": "hoch",
+        "threat_label": "High",
         "threat_color": "#d7191c"
       }
     },
@@ -322,7 +322,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 8.32,
         "threat_level": "high",
-        "threat_label": "hoch",
+        "threat_label": "High",
         "threat_color": "#d7191c"
       }
     },
@@ -352,7 +352,7 @@
         "score_natural": 0.3333333333333333,
         "total_score": 8.13,
         "threat_level": "high",
-        "threat_label": "hoch",
+        "threat_label": "High",
         "threat_color": "#d7191c"
       }
     },
@@ -382,7 +382,7 @@
         "score_natural": 0.3333333333333333,
         "total_score": 7.98,
         "threat_level": "high",
-        "threat_label": "hoch",
+        "threat_label": "High",
         "threat_color": "#d7191c"
       }
     },
@@ -412,7 +412,7 @@
         "score_natural": 0.3333333333333333,
         "total_score": 7.61,
         "threat_level": "high",
-        "threat_label": "hoch",
+        "threat_label": "High",
         "threat_color": "#d7191c"
       }
     },
@@ -442,7 +442,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 7.3,
         "threat_level": "high",
-        "threat_label": "hoch",
+        "threat_label": "High",
         "threat_color": "#d7191c"
       }
     },
@@ -472,7 +472,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 7.3,
         "threat_level": "high",
-        "threat_label": "hoch",
+        "threat_label": "High",
         "threat_color": "#d7191c"
       }
     },
@@ -502,7 +502,7 @@
         "score_natural": 1.0,
         "total_score": 7.0,
         "threat_level": "high",
-        "threat_label": "hoch",
+        "threat_label": "High",
         "threat_color": "#d7191c"
       }
     },
@@ -532,7 +532,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 6.67,
         "threat_level": "high",
-        "threat_label": "hoch",
+        "threat_label": "High",
         "threat_color": "#d7191c"
       }
     },
@@ -562,7 +562,7 @@
         "score_natural": 0.3333333333333333,
         "total_score": 6.18,
         "threat_level": "high",
-        "threat_label": "hoch",
+        "threat_label": "High",
         "threat_color": "#d7191c"
       }
     },
@@ -592,7 +592,7 @@
         "score_natural": 0.3333333333333333,
         "total_score": 6.14,
         "threat_level": "high",
-        "threat_label": "hoch",
+        "threat_label": "High",
         "threat_color": "#d7191c"
       }
     },
@@ -622,7 +622,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 5.79,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -652,7 +652,7 @@
         "score_natural": 1.0,
         "total_score": 5.5,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -682,7 +682,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 5.17,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -712,7 +712,7 @@
         "score_natural": 0.0,
         "total_score": 5.14,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -742,7 +742,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 4.66,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -772,7 +772,7 @@
         "score_natural": 1.0,
         "total_score": 4.64,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -802,7 +802,7 @@
         "score_natural": 1.0,
         "total_score": 4.64,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -832,7 +832,7 @@
         "score_natural": 1.0,
         "total_score": 4.64,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -862,7 +862,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 4.45,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -892,7 +892,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 4.37,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -922,7 +922,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 4.3,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -952,7 +952,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 4.3,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -982,7 +982,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 4.3,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1012,7 +1012,7 @@
         "score_natural": 1.0,
         "total_score": 4.0,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1042,7 +1042,7 @@
         "score_natural": 1.0,
         "total_score": 4.0,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1072,7 +1072,7 @@
         "score_natural": 1.0,
         "total_score": 4.0,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1102,7 +1102,7 @@
         "score_natural": 1.0,
         "total_score": 4.0,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1132,7 +1132,7 @@
         "score_natural": 1.0,
         "total_score": 4.0,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1162,7 +1162,7 @@
         "score_natural": 1.0,
         "total_score": 4.0,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1192,7 +1192,7 @@
         "score_natural": 1.0,
         "total_score": 4.0,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1222,7 +1222,7 @@
         "score_natural": 1.0,
         "total_score": 4.0,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1252,7 +1252,7 @@
         "score_natural": 1.0,
         "total_score": 4.0,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1282,7 +1282,7 @@
         "score_natural": 1.0,
         "total_score": 4.0,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1312,7 +1312,7 @@
         "score_natural": 1.0,
         "total_score": 4.0,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1342,7 +1342,7 @@
         "score_natural": 1.0,
         "total_score": 4.0,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1372,7 +1372,7 @@
         "score_natural": 1.0,
         "total_score": 4.0,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1402,7 +1402,7 @@
         "score_natural": 1.0,
         "total_score": 4.0,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1432,7 +1432,7 @@
         "score_natural": 1.0,
         "total_score": 4.0,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1462,7 +1462,7 @@
         "score_natural": 1.0,
         "total_score": 4.0,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1492,7 +1492,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 3.67,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1522,7 +1522,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 3.67,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1552,7 +1552,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 3.67,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1582,7 +1582,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 3.67,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1612,7 +1612,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 3.67,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1642,7 +1642,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 3.67,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1672,7 +1672,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 3.67,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1702,7 +1702,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 3.67,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1732,7 +1732,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 3.67,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1762,7 +1762,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 3.67,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1792,7 +1792,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 3.67,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1822,7 +1822,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 3.44,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1852,7 +1852,7 @@
         "score_natural": 1.0,
         "total_score": 3.14,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1882,7 +1882,7 @@
         "score_natural": 1.0,
         "total_score": 3.14,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1912,7 +1912,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 3.1,
         "threat_level": "medium",
-        "threat_label": "mittel",
+        "threat_label": "Medium",
         "threat_color": "#fdae61"
       }
     },
@@ -1942,7 +1942,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 2.79,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -1972,7 +1972,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 2.58,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2002,7 +2002,7 @@
         "score_natural": 1.0,
         "total_score": 2.5,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2032,7 +2032,7 @@
         "score_natural": 1.0,
         "total_score": 2.5,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2062,7 +2062,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 2.17,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2092,7 +2092,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 2.17,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2122,7 +2122,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 1.94,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2152,7 +2152,7 @@
         "score_natural": 0.3333333333333333,
         "total_score": 1.61,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2182,7 +2182,7 @@
         "score_natural": 1.0,
         "total_score": 1.0,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2212,7 +2212,7 @@
         "score_natural": 1.0,
         "total_score": 1.0,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2242,7 +2242,7 @@
         "score_natural": 1.0,
         "total_score": 1.0,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2272,7 +2272,7 @@
         "score_natural": 1.0,
         "total_score": 1.0,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2302,7 +2302,7 @@
         "score_natural": 1.0,
         "total_score": 1.0,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2332,7 +2332,7 @@
         "score_natural": 0.3333333333333333,
         "total_score": 0.97,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2362,7 +2362,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 0.67,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2392,7 +2392,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 0.67,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2422,7 +2422,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 0.67,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2452,7 +2452,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 0.67,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2482,7 +2482,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 0.67,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2512,7 +2512,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 0.67,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2542,7 +2542,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 0.67,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2572,7 +2572,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 0.67,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2602,7 +2602,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 0.67,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2632,7 +2632,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 0.67,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2662,7 +2662,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 0.67,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2692,7 +2692,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 0.67,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2722,7 +2722,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 0.67,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2752,7 +2752,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 0.67,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2782,7 +2782,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 0.67,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2812,7 +2812,7 @@
         "score_natural": 0.6666666666666666,
         "total_score": 0.67,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2842,7 +2842,7 @@
         "score_natural": 0.3333333333333333,
         "total_score": 0.33,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2872,7 +2872,7 @@
         "score_natural": 0.3333333333333333,
         "total_score": 0.33,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2902,7 +2902,7 @@
         "score_natural": 0.3333333333333333,
         "total_score": 0.33,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2932,7 +2932,7 @@
         "score_natural": 0.3333333333333333,
         "total_score": 0.33,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2962,7 +2962,7 @@
         "score_natural": 0.0,
         "total_score": 0.0,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -2992,7 +2992,7 @@
         "score_natural": 0.0,
         "total_score": 0.0,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -3022,7 +3022,7 @@
         "score_natural": 0.0,
         "total_score": 0.0,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     },
@@ -3052,7 +3052,7 @@
         "score_natural": 0.0,
         "total_score": 0.0,
         "threat_level": "low",
-        "threat_label": "niedrig",
+        "threat_label": "Low",
         "threat_color": "#1a9641"
       }
     }

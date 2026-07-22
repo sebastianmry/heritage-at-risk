@@ -1,9 +1,9 @@
 {
   "type": "FeatureCollection",
   "metadata": {
-    "title": "Konflikt-Auswerteradius je UNESCO-Site (30 km)",
+    "title": "Conflict evaluation radius per UNESCO site (30 km)",
     "radius_km": 30.0,
-    "note": "Geodaetische Kreise (WGS84) um die Site-Punkte; in diesem Umkreis zaehlt die Konflikt-Komponente die UCDP-GED-Ereignisse."
+    "note": "Geodetic circles (WGS84) around the site points; within this vicinity the conflict component counts the UCDP GED events."
   },
   "features": [
     {
