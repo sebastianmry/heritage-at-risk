@@ -2,8 +2,8 @@
   "type": "FeatureCollection",
   "metadata": {
     "title": "Heritage at Risk: threat score per UNESCO World Heritage site (MENA)",
-    "generated": "2026-07-25",
-    "site_count": 102,
+    "generated": "2026-07-26",
+    "site_count": 104,
     "score_max": 10,
     "score_components": {
       "in_danger": {
@@ -3106,6 +3106,66 @@
         "conflict_count": 0,
         "eq_level": "VLO",
         "fl_level": "VLO",
+        "score_in_danger": 0,
+        "score_travel": 0.0,
+        "score_conflict": 0.0,
+        "score_natural": 0.0,
+        "total_score": 0.0,
+        "threat_level": "low",
+        "threat_label": "Low",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          56.2657916667,
+          25.4823305556
+        ]
+      },
+      "properties": {
+        "site_id": 1724,
+        "name": "Wadi Wurayah",
+        "country_iso2": "AE",
+        "category": "Natural",
+        "http_url": "https://whc.unesco.org/en/list/1724",
+        "in_danger": false,
+        "warning_level": 0,
+        "conflict_count": 0,
+        "eq_level": "NDA",
+        "fl_level": "NDA",
+        "score_in_danger": 0,
+        "score_travel": 0.0,
+        "score_conflict": 0.0,
+        "score_natural": 0.0,
+        "total_score": 0.0,
+        "threat_level": "low",
+        "threat_label": "Low",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          34.9755555556,
+          29.4297222223
+        ]
+      },
+      "properties": {
+        "site_id": 1742,
+        "name": "Aqaba Marine Reserve",
+        "country_iso2": "JO",
+        "category": "Natural",
+        "http_url": "https://whc.unesco.org/en/list/1742",
+        "in_danger": false,
+        "warning_level": 0,
+        "conflict_count": 0,
+        "eq_level": "NDA",
+        "fl_level": "NDA",
         "score_in_danger": 0,
         "score_travel": 0.0,
         "score_conflict": 0.0,
