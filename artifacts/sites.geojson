@@ -2,8 +2,8 @@
   "type": "FeatureCollection",
   "metadata": {
     "title": "Heritage at Risk: threat score per UNESCO World Heritage site (MENA)",
-    "generated": "2026-07-26",
-    "site_count": 104,
+    "generated": "2026-07-27",
+    "site_count": 105,
     "score_max": 10,
     "score_components": {
       "in_danger": {
@@ -1974,6 +1974,36 @@
         "threat_level": "medium",
         "threat_label": "Medium",
         "threat_color": "#fdae61"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          50.726375,
+          36.3906472222
+        ]
+      },
+      "properties": {
+        "site_id": 1770,
+        "name": "Alamūt Castle and Related Fortifications",
+        "country_iso2": "IR",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1770",
+        "in_danger": false,
+        "warning_level": 2,
+        "conflict_count": 0,
+        "eq_level": "NDA",
+        "fl_level": "NDA",
+        "score_in_danger": 0,
+        "score_travel": 3.0,
+        "score_conflict": 0.0,
+        "score_natural": 0.0,
+        "total_score": 3.0,
+        "threat_level": "low",
+        "threat_label": "Low",
+        "threat_color": "#1a9641"
       }
     },
     {
