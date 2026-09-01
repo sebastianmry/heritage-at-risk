@@ -2,7 +2,7 @@
   "type": "FeatureCollection",
   "metadata": {
     "title": "Heritage at Risk: threat score per UNESCO World Heritage site (MENA)",
-    "generated": "2026-08-31",
+    "generated": "2026-09-01",
     "site_count": 105,
     "score_max": 10,
     "score_components": {
@@ -73,7 +73,7 @@
         "http_url": "https://whc.unesco.org/en/list/1749",
         "in_danger": true,
         "warning_level": 2,
-        "conflict_count": 1030,
+        "conflict_count": 674,
         "eq_level": "VLO",
         "fl_level": "LOW",
         "score_in_danger": 3,
@@ -103,14 +103,14 @@
         "http_url": "https://whc.unesco.org/en/list/1492",
         "in_danger": true,
         "warning_level": 2,
-        "conflict_count": 20,
+        "conflict_count": 19,
         "eq_level": "LOW",
         "fl_level": "VLO",
         "score_in_danger": 3,
         "score_travel": 3.0,
-        "score_conflict": 2.80334459294958,
+        "score_conflict": 2.758419437786075,
         "score_natural": 0.3333333333333333,
-        "total_score": 9.14,
+        "total_score": 9.09,
         "threat_level": "high",
         "threat_label": "High",
         "threat_color": "#d7191c"
@@ -151,36 +151,6 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          36.3097222222,
-          33.5108333333
-        ]
-      },
-      "properties": {
-        "site_id": 20,
-        "name": "Ancient City of Damascus",
-        "country_iso2": "SY",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/20",
-        "in_danger": true,
-        "warning_level": 2,
-        "conflict_count": 8,
-        "eq_level": "MED",
-        "fl_level": "LOW",
-        "score_in_danger": 3,
-        "score_travel": 3.0,
-        "score_conflict": 2.023167102350973,
-        "score_natural": 0.6666666666666666,
-        "total_score": 8.69,
-        "threat_level": "high",
-        "threat_label": "High",
-        "threat_color": "#d7191c"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
           37.1627777778,
           36.1991666667
         ]
@@ -201,36 +171,6 @@
         "score_conflict": 1.649821711835576,
         "score_natural": 1.0,
         "total_score": 8.65,
-        "threat_level": "high",
-        "threat_label": "High",
-        "threat_color": "#d7191c"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          35.1083333333,
-          31.5244444444
-        ]
-      },
-      "properties": {
-        "site_id": 1565,
-        "name": "Hebron/Al-Khalil Old Town",
-        "country_iso2": "PS",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1565",
-        "in_danger": true,
-        "warning_level": 2,
-        "conflict_count": 10,
-        "eq_level": "LOW",
-        "fl_level": "VLO",
-        "score_in_danger": 3,
-        "score_travel": 3.0,
-        "score_conflict": 2.2079412732084247,
-        "score_natural": 0.3333333333333333,
-        "total_score": 8.54,
         "threat_level": "high",
         "threat_label": "High",
         "threat_color": "#d7191c"
@@ -271,6 +211,66 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          35.1083333333,
+          31.5244444444
+        ]
+      },
+      "properties": {
+        "site_id": 1565,
+        "name": "Hebron/Al-Khalil Old Town",
+        "country_iso2": "PS",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1565",
+        "in_danger": true,
+        "warning_level": 2,
+        "conflict_count": 9,
+        "eq_level": "LOW",
+        "fl_level": "VLO",
+        "score_in_danger": 3,
+        "score_travel": 3.0,
+        "score_conflict": 2.1201812771259854,
+        "score_natural": 0.3333333333333333,
+        "total_score": 8.45,
+        "threat_level": "high",
+        "threat_label": "High",
+        "threat_color": "#d7191c"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          36.3097222222,
+          33.5108333333
+        ]
+      },
+      "properties": {
+        "site_id": 20,
+        "name": "Ancient City of Damascus",
+        "country_iso2": "SY",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/20",
+        "in_danger": true,
+        "warning_level": 2,
+        "conflict_count": 5,
+        "eq_level": "MED",
+        "fl_level": "LOW",
+        "score_in_danger": 3,
+        "score_travel": 3.0,
+        "score_conflict": 1.649821711835576,
+        "score_natural": 0.6666666666666666,
+        "total_score": 8.32,
+        "threat_level": "high",
+        "threat_label": "High",
+        "threat_color": "#d7191c"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           36.2944444444,
           34.7566666667
         ]
@@ -283,14 +283,14 @@
         "http_url": "https://whc.unesco.org/en/list/1229",
         "in_danger": true,
         "warning_level": 2,
-        "conflict_count": 5,
+        "conflict_count": 4,
         "eq_level": "MED",
         "fl_level": "MED",
         "score_in_danger": 3,
         "score_travel": 3.0,
-        "score_conflict": 1.649821711835576,
+        "score_conflict": 1.4819431164658958,
         "score_natural": 0.6666666666666666,
-        "total_score": 8.32,
+        "total_score": 8.15,
         "threat_level": "high",
         "threat_label": "High",
         "threat_color": "#d7191c"
@@ -343,44 +343,14 @@
         "http_url": "https://whc.unesco.org/en/list/385",
         "in_danger": true,
         "warning_level": 2,
-        "conflict_count": 5,
+        "conflict_count": 3,
         "eq_level": "NDA",
         "fl_level": "LOW",
         "score_in_danger": 3,
         "score_travel": 3.0,
-        "score_conflict": 1.649821711835576,
+        "score_conflict": 1.2764763213201789,
         "score_natural": 0.3333333333333333,
-        "total_score": 7.98,
-        "threat_level": "high",
-        "threat_label": "High",
-        "threat_color": "#d7191c"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          36.4680555556,
-          32.5169444445
-        ]
-      },
-      "properties": {
-        "site_id": 22,
-        "name": "Ancient City of Bosra",
-        "country_iso2": "SY",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/22",
-        "in_danger": true,
-        "warning_level": 2,
-        "conflict_count": 2,
-        "eq_level": "MED",
-        "fl_level": "MED",
-        "score_in_danger": 3,
-        "score_travel": 3.0,
-        "score_conflict": 1.0115835511754865,
-        "score_natural": 0.6666666666666666,
-        "total_score": 7.68,
+        "total_score": 7.61,
         "threat_level": "high",
         "threat_label": "High",
         "threat_color": "#d7191c"
@@ -411,6 +381,36 @@
         "score_conflict": 1.0115835511754865,
         "score_natural": 0.3333333333333333,
         "total_score": 7.34,
+        "threat_level": "high",
+        "threat_label": "High",
+        "threat_color": "#d7191c"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          36.4680555556,
+          32.5169444445
+        ]
+      },
+      "properties": {
+        "site_id": 22,
+        "name": "Ancient City of Bosra",
+        "country_iso2": "SY",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/22",
+        "in_danger": true,
+        "warning_level": 2,
+        "conflict_count": 1,
+        "eq_level": "MED",
+        "fl_level": "MED",
+        "score_in_danger": 3,
+        "score_travel": 3.0,
+        "score_conflict": 0.6382381606600894,
+        "score_natural": 0.6666666666666666,
+        "total_score": 7.3,
         "threat_level": "high",
         "threat_label": "High",
         "threat_color": "#d7191c"
@@ -553,14 +553,14 @@
         "http_url": "https://whc.unesco.org/en/list/1433",
         "in_danger": false,
         "warning_level": 2,
-        "conflict_count": 20,
+        "conflict_count": 19,
         "eq_level": "LOW",
         "fl_level": "VLO",
         "score_in_danger": 0,
         "score_travel": 3.0,
-        "score_conflict": 2.80334459294958,
+        "score_conflict": 2.758419437786075,
         "score_natural": 0.3333333333333333,
-        "total_score": 6.14,
+        "total_score": 6.09,
         "threat_level": "high",
         "threat_label": "High",
         "threat_color": "#d7191c"
@@ -583,14 +583,14 @@
         "http_url": "https://whc.unesco.org/en/list/148",
         "in_danger": true,
         "warning_level": 0,
-        "conflict_count": 19,
+        "conflict_count": 18,
         "eq_level": "LOW",
         "fl_level": "VLO",
         "score_in_danger": 3,
         "score_travel": 0.0,
-        "score_conflict": 2.758419437786075,
+        "score_conflict": 2.7111894427976213,
         "score_natural": 0.3333333333333333,
-        "total_score": 6.09,
+        "total_score": 6.04,
         "threat_level": "high",
         "threat_label": "High",
         "threat_color": "#d7191c"
@@ -613,7 +613,7 @@
         "http_url": "https://whc.unesco.org/en/list/1809",
         "in_danger": false,
         "warning_level": 2,
-        "conflict_count": 27,
+        "conflict_count": 26,
         "eq_level": "NDA",
         "fl_level": "NDA",
         "score_in_danger": 0,
@@ -703,7 +703,7 @@
         "http_url": "https://whc.unesco.org/en/list/299",
         "in_danger": false,
         "warning_level": 1,
-        "conflict_count": 113,
+        "conflict_count": 106,
         "eq_level": "MED",
         "fl_level": "LOW",
         "score_in_danger": 0,
@@ -711,36 +711,6 @@
         "score_conflict": 3.0,
         "score_natural": 0.6666666666666666,
         "total_score": 5.17,
-        "threat_level": "medium",
-        "threat_label": "Medium",
-        "threat_color": "#fdae61"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          35.9333333333,
-          33.7319444444
-        ]
-      },
-      "properties": {
-        "site_id": 293,
-        "name": "Anjar",
-        "country_iso2": "LB",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/293",
-        "in_danger": false,
-        "warning_level": 1,
-        "conflict_count": 12,
-        "eq_level": "MED",
-        "fl_level": "LOW",
-        "score_in_danger": 0,
-        "score_travel": 1.5,
-        "score_conflict": 2.3617618393399105,
-        "score_natural": 0.6666666666666666,
-        "total_score": 4.53,
         "threat_level": "medium",
         "threat_label": "Medium",
         "threat_color": "#fdae61"
@@ -793,7 +763,7 @@
         "http_url": "https://whc.unesco.org/en/list/1810",
         "in_danger": false,
         "warning_level": 1,
-        "conflict_count": 103,
+        "conflict_count": 96,
         "eq_level": "NDA",
         "fl_level": "NDA",
         "score_in_danger": 0,
@@ -811,21 +781,21 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          36.2041666667,
-          34.0066666667
+          35.9333333333,
+          33.7319444444
         ]
       },
       "properties": {
-        "site_id": 294,
-        "name": "Baalbek",
+        "site_id": 293,
+        "name": "Anjar",
         "country_iso2": "LB",
         "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/294",
+        "http_url": "https://whc.unesco.org/en/list/293",
         "in_danger": false,
         "warning_level": 1,
         "conflict_count": 10,
         "eq_level": "MED",
-        "fl_level": "VLO",
+        "fl_level": "LOW",
         "score_in_danger": 0,
         "score_travel": 1.5,
         "score_conflict": 2.2079412732084247,
@@ -901,21 +871,21 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          36.0488888889,
-          34.2430555555
+          36.2041666667,
+          34.0066666667
         ]
       },
       "properties": {
-        "site_id": 850,
-        "name": "Ouadi Qadisha (the Holy Valley) and the Forest of the Cedars of God (Horsh Arz el-Rab)",
+        "site_id": 294,
+        "name": "Baalbek",
         "country_iso2": "LB",
         "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/850",
+        "http_url": "https://whc.unesco.org/en/list/294",
         "in_danger": false,
         "warning_level": 1,
         "conflict_count": 8,
         "eq_level": "MED",
-        "fl_level": "LOW",
+        "fl_level": "VLO",
         "score_in_danger": 0,
         "score_travel": 1.5,
         "score_conflict": 2.023167102350973,
@@ -1501,6 +1471,36 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          36.0488888889,
+          34.2430555555
+        ]
+      },
+      "properties": {
+        "site_id": 850,
+        "name": "Ouadi Qadisha (the Holy Valley) and the Forest of the Cedars of God (Horsh Arz el-Rab)",
+        "country_iso2": "LB",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/850",
+        "in_danger": false,
+        "warning_level": 1,
+        "conflict_count": 6,
+        "eq_level": "MED",
+        "fl_level": "LOW",
+        "score_in_danger": 0,
+        "score_travel": 1.5,
+        "score_conflict": 1.791761041774094,
+        "score_natural": 0.6666666666666666,
+        "total_score": 3.96,
+        "threat_level": "medium",
+        "threat_label": "Medium",
+        "threat_color": "#fdae61"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           47.235,
           36.60388889
         ]
@@ -1933,14 +1933,14 @@
         "http_url": "https://whc.unesco.org/en/list/1370",
         "in_danger": false,
         "warning_level": 0,
-        "conflict_count": 11,
+        "conflict_count": 10,
         "eq_level": "MED",
         "fl_level": "VLO",
         "score_in_danger": 0,
         "score_travel": 0.0,
-        "score_conflict": 2.2880598724956656,
+        "score_conflict": 2.2079412732084247,
         "score_natural": 0.6666666666666666,
-        "total_score": 2.95,
+        "total_score": 2.87,
         "threat_level": "low",
         "threat_label": "Low",
         "threat_color": "#1a9641"
@@ -2113,14 +2113,14 @@
         "http_url": "https://whc.unesco.org/en/list/1042",
         "in_danger": false,
         "warning_level": 0,
-        "conflict_count": 6,
+        "conflict_count": 5,
         "eq_level": "MED",
         "fl_level": "VLO",
         "score_in_danger": 0,
         "score_travel": 0.0,
-        "score_conflict": 1.791761041774094,
+        "score_conflict": 1.649821711835576,
         "score_natural": 0.6666666666666666,
-        "total_score": 2.46,
+        "total_score": 2.32,
         "threat_level": "low",
         "threat_label": "Low",
         "threat_color": "#1a9641"
@@ -2391,36 +2391,6 @@
         "score_conflict": 0.0,
         "score_natural": 1.0,
         "total_score": 1.0,
-        "threat_level": "low",
-        "threat_label": "Low",
-        "threat_color": "#1a9641"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          36.37,
-          32.3269444444
-        ]
-      },
-      "properties": {
-        "site_id": 1721,
-        "name": "Umm Al-Jimāl",
-        "country_iso2": "JO",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1721",
-        "in_danger": false,
-        "warning_level": 0,
-        "conflict_count": 1,
-        "eq_level": "LOW",
-        "fl_level": "LOW",
-        "score_in_danger": 0,
-        "score_travel": 0.0,
-        "score_conflict": 0.6382381606600894,
-        "score_natural": 0.3333333333333333,
-        "total_score": 0.97,
         "threat_level": "low",
         "threat_label": "Low",
         "threat_color": "#1a9641"
@@ -3015,6 +2985,36 @@
         "warning_level": 0,
         "conflict_count": 0,
         "eq_level": "VLO",
+        "fl_level": "LOW",
+        "score_in_danger": 0,
+        "score_travel": 0.0,
+        "score_conflict": 0.0,
+        "score_natural": 0.3333333333333333,
+        "total_score": 0.33,
+        "threat_level": "low",
+        "threat_label": "Low",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          36.37,
+          32.3269444444
+        ]
+      },
+      "properties": {
+        "site_id": 1721,
+        "name": "Umm Al-Jimāl",
+        "country_iso2": "JO",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1721",
+        "in_danger": false,
+        "warning_level": 0,
+        "conflict_count": 0,
+        "eq_level": "LOW",
         "fl_level": "LOW",
         "score_in_danger": 0,
         "score_travel": 0.0,
