@@ -26,4 +26,4 @@ if "%MAPTILER_KEY%"=="" (
 )
 
 cd /d "%~dp0app"
-call C:\Users\sebas\heritage_win_env.bat flutter.bat build apk --debug --dart-define=ORS_API_KEY=%ORS_KEY% --dart-define=MAPTILER_KEY=%MAPTILER_KEY%
+call "%~dp0tooling\heritage_win_env.bat" flutter.bat build apk --debug --dart-define=ORS_API_KEY=%ORS_KEY% --dart-define=MAPTILER_KEY=%MAPTILER_KEY%
