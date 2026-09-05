@@ -26,4 +26,15 @@ if "%MAPTILER_KEY%"=="" (
 )
 
 cd /d "%~dp0app"
-call "%~dp0tooling\heritage_win_env.bat" flutter.bat build apk --debug --dart-define=ORS_API_KEY=%ORS_KEY% --dart-define=MAPTILER_KEY=%MAPTILER_KEY%
+
+REM tooling\heritage_win_env.bat is an optional local wrapper that pins JAVA_HOME,
+REM ANDROID_HOME and a clean PATH against MSYS shadowing. It is machine-specific
+REM and stays out of the repo. Without it the build uses the flutter and JDK
+REM already on PATH, which is what the manual steps in the README do as well.
+set "BUILD_ARGS=build apk --debug --dart-define=ORS_API_KEY=%ORS_KEY% --dart-define=MAPTILER_KEY=%MAPTILER_KEY%"
+
+if exist "%~dp0tooling\heritage_win_env.bat" (
+    call "%~dp0tooling\heritage_win_env.bat" flutter.bat %BUILD_ARGS%
+) else (
+    call flutter.bat %BUILD_ARGS%
+)
