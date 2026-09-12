@@ -2,7 +2,7 @@
   "type": "FeatureCollection",
   "metadata": {
     "title": "Heritage at Risk: threat score per UNESCO World Heritage site (MENA)",
-    "generated": "2026-09-11",
+    "generated": "2026-09-12",
     "site_count": 105,
     "score_max": 10,
     "score_components": {
@@ -2191,6 +2191,246 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          37.955,
+          26.7836111111
+        ]
+      },
+      "properties": {
+        "site_id": 1293,
+        "name": "Hegra Archaeological Site (al-Hijr / Madā ͐ in Ṣāliḥ)",
+        "country_iso2": "SA",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1293",
+        "in_danger": false,
+        "warning_level": 1,
+        "conflict_count": 0,
+        "eq_level": "MED",
+        "fl_level": "MED",
+        "score_in_danger": 0,
+        "score_travel": 1.5,
+        "score_conflict": 0.0,
+        "score_natural": 0.6666666666666666,
+        "total_score": 2.17,
+        "threat_level": "low",
+        "threat_label": "Low",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          46.5724666667,
+          24.7341333333
+        ]
+      },
+      "properties": {
+        "site_id": 1329,
+        "name": "At-Turaif District in ad-Dir'iyah",
+        "country_iso2": "SA",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1329",
+        "in_danger": false,
+        "warning_level": 1,
+        "conflict_count": 0,
+        "eq_level": "MED",
+        "fl_level": "MED",
+        "score_in_danger": 0,
+        "score_travel": 1.5,
+        "score_conflict": 0.0,
+        "score_natural": 0.6666666666666666,
+        "total_score": 2.17,
+        "threat_level": "low",
+        "threat_label": "Low",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          39.8916666667,
+          26.1536111111
+        ]
+      },
+      "properties": {
+        "site_id": 1472,
+        "name": "Rock Art in the Hail Region of Saudi Arabia",
+        "country_iso2": "SA",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1472",
+        "in_danger": false,
+        "warning_level": 1,
+        "conflict_count": 0,
+        "eq_level": "MED",
+        "fl_level": "MED",
+        "score_in_danger": 0,
+        "score_travel": 1.5,
+        "score_conflict": 0.0,
+        "score_natural": 0.6666666666666666,
+        "total_score": 2.17,
+        "threat_level": "low",
+        "threat_label": "Low",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          49.5769166667,
+          25.368025
+        ]
+      },
+      "properties": {
+        "site_id": 1563,
+        "name": "Al-Ahsa Oasis, an Evolving Cultural Landscape",
+        "country_iso2": "SA",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1563",
+        "in_danger": false,
+        "warning_level": 1,
+        "conflict_count": 0,
+        "eq_level": "MED",
+        "fl_level": "MED",
+        "score_in_danger": 0,
+        "score_travel": 1.5,
+        "score_conflict": 0.0,
+        "score_natural": 0.6666666666666666,
+        "total_score": 2.17,
+        "threat_level": "low",
+        "threat_label": "Low",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          45.5983333333,
+          19.3638888889
+        ]
+      },
+      "properties": {
+        "site_id": 1699,
+        "name": "‘Uruq Bani Ma’arid",
+        "country_iso2": "SA",
+        "category": "Natural",
+        "http_url": "https://whc.unesco.org/en/list/1699",
+        "in_danger": false,
+        "warning_level": 1,
+        "conflict_count": 0,
+        "eq_level": "MED",
+        "fl_level": "MED",
+        "score_in_danger": 0,
+        "score_travel": 1.5,
+        "score_conflict": 0.0,
+        "score_natural": 0.6666666666666666,
+        "total_score": 2.17,
+        "threat_level": "low",
+        "threat_label": "Low",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          45.1633888889,
+          19.7649166667
+        ]
+      },
+      "properties": {
+        "site_id": 1712,
+        "name": "The Cultural Landscape of Al-Faw Archaeological Area",
+        "country_iso2": "SA",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1712",
+        "in_danger": false,
+        "warning_level": 1,
+        "conflict_count": 0,
+        "eq_level": "MED",
+        "fl_level": "MED",
+        "score_in_danger": 0,
+        "score_travel": 1.5,
+        "score_conflict": 0.0,
+        "score_natural": 0.6666666666666666,
+        "total_score": 2.17,
+        "threat_level": "low",
+        "threat_label": "Low",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          39.1875,
+          21.4838888889
+        ]
+      },
+      "properties": {
+        "site_id": 1361,
+        "name": "Historic Jeddah, the Gate to Makkah",
+        "country_iso2": "SA",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1361",
+        "in_danger": false,
+        "warning_level": 1,
+        "conflict_count": 0,
+        "eq_level": "LOW",
+        "fl_level": "LOW",
+        "score_in_danger": 0,
+        "score_travel": 1.5,
+        "score_conflict": 0.0,
+        "score_natural": 0.3333333333333333,
+        "total_score": 1.83,
+        "threat_level": "low",
+        "threat_label": "Low",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          44.4628583333,
+          18.24375
+        ]
+      },
+      "properties": {
+        "site_id": 1619,
+        "name": "Ḥimā Cultural Area",
+        "country_iso2": "SA",
+        "category": "Cultural",
+        "http_url": "https://whc.unesco.org/en/list/1619",
+        "in_danger": false,
+        "warning_level": 1,
+        "conflict_count": 0,
+        "eq_level": "VLO",
+        "fl_level": "LOW",
+        "score_in_danger": 0,
+        "score_travel": 1.5,
+        "score_conflict": 0.0,
+        "score_natural": 0.3333333333333333,
+        "total_score": 1.83,
+        "threat_level": "low",
+        "threat_label": "Low",
+        "threat_color": "#1a9641"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           34.8408333333,
           31.2447222222
         ]
@@ -2581,66 +2821,6 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          37.955,
-          26.7836111111
-        ]
-      },
-      "properties": {
-        "site_id": 1293,
-        "name": "Hegra Archaeological Site (al-Hijr / Madā ͐ in Ṣāliḥ)",
-        "country_iso2": "SA",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1293",
-        "in_danger": false,
-        "warning_level": 0,
-        "conflict_count": 0,
-        "eq_level": "MED",
-        "fl_level": "MED",
-        "score_in_danger": 0,
-        "score_travel": 0.0,
-        "score_conflict": 0.0,
-        "score_natural": 0.6666666666666666,
-        "total_score": 0.67,
-        "threat_level": "low",
-        "threat_label": "Low",
-        "threat_color": "#1a9641"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          46.5724666667,
-          24.7341333333
-        ]
-      },
-      "properties": {
-        "site_id": 1329,
-        "name": "At-Turaif District in ad-Dir'iyah",
-        "country_iso2": "SA",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1329",
-        "in_danger": false,
-        "warning_level": 0,
-        "conflict_count": 0,
-        "eq_level": "MED",
-        "fl_level": "MED",
-        "score_in_danger": 0,
-        "score_travel": 0.0,
-        "score_conflict": 0.0,
-        "score_natural": 0.6666666666666666,
-        "total_score": 0.67,
-        "threat_level": "low",
-        "threat_label": "Low",
-        "threat_color": "#1a9641"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
           55.80663,
           24.067951
         ]
@@ -2701,36 +2881,6 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          39.8916666667,
-          26.1536111111
-        ]
-      },
-      "properties": {
-        "site_id": 1472,
-        "name": "Rock Art in the Hail Region of Saudi Arabia",
-        "country_iso2": "SA",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1472",
-        "in_danger": false,
-        "warning_level": 0,
-        "conflict_count": 0,
-        "eq_level": "MED",
-        "fl_level": "MED",
-        "score_in_danger": 0,
-        "score_travel": 0.0,
-        "score_conflict": 0.0,
-        "score_natural": 0.6666666666666666,
-        "total_score": 0.67,
-        "threat_level": "low",
-        "threat_label": "Low",
-        "threat_color": "#1a9641"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
           59.3781111111,
           22.6952222222
         ]
@@ -2746,96 +2896,6 @@
         "conflict_count": 0,
         "eq_level": "MED",
         "fl_level": "LOW",
-        "score_in_danger": 0,
-        "score_travel": 0.0,
-        "score_conflict": 0.0,
-        "score_natural": 0.6666666666666666,
-        "total_score": 0.67,
-        "threat_level": "low",
-        "threat_label": "Low",
-        "threat_color": "#1a9641"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          49.5769166667,
-          25.368025
-        ]
-      },
-      "properties": {
-        "site_id": 1563,
-        "name": "Al-Ahsa Oasis, an Evolving Cultural Landscape",
-        "country_iso2": "SA",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1563",
-        "in_danger": false,
-        "warning_level": 0,
-        "conflict_count": 0,
-        "eq_level": "MED",
-        "fl_level": "MED",
-        "score_in_danger": 0,
-        "score_travel": 0.0,
-        "score_conflict": 0.0,
-        "score_natural": 0.6666666666666666,
-        "total_score": 0.67,
-        "threat_level": "low",
-        "threat_label": "Low",
-        "threat_color": "#1a9641"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          45.5983333333,
-          19.3638888889
-        ]
-      },
-      "properties": {
-        "site_id": 1699,
-        "name": "‘Uruq Bani Ma’arid",
-        "country_iso2": "SA",
-        "category": "Natural",
-        "http_url": "https://whc.unesco.org/en/list/1699",
-        "in_danger": false,
-        "warning_level": 0,
-        "conflict_count": 0,
-        "eq_level": "MED",
-        "fl_level": "MED",
-        "score_in_danger": 0,
-        "score_travel": 0.0,
-        "score_conflict": 0.0,
-        "score_natural": 0.6666666666666666,
-        "total_score": 0.67,
-        "threat_level": "low",
-        "threat_label": "Low",
-        "threat_color": "#1a9641"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          45.1633888889,
-          19.7649166667
-        ]
-      },
-      "properties": {
-        "site_id": 1712,
-        "name": "The Cultural Landscape of Al-Faw Archaeological Area",
-        "country_iso2": "SA",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1712",
-        "in_danger": false,
-        "warning_level": 0,
-        "conflict_count": 0,
-        "eq_level": "MED",
-        "fl_level": "MED",
         "score_in_danger": 0,
         "score_travel": 0.0,
         "score_conflict": 0.0,
@@ -2925,66 +2985,6 @@
         "warning_level": 0,
         "conflict_count": 0,
         "eq_level": "LOW",
-        "fl_level": "LOW",
-        "score_in_danger": 0,
-        "score_travel": 0.0,
-        "score_conflict": 0.0,
-        "score_natural": 0.3333333333333333,
-        "total_score": 0.33,
-        "threat_level": "low",
-        "threat_label": "Low",
-        "threat_color": "#1a9641"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          39.1875,
-          21.4838888889
-        ]
-      },
-      "properties": {
-        "site_id": 1361,
-        "name": "Historic Jeddah, the Gate to Makkah",
-        "country_iso2": "SA",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1361",
-        "in_danger": false,
-        "warning_level": 0,
-        "conflict_count": 0,
-        "eq_level": "LOW",
-        "fl_level": "LOW",
-        "score_in_danger": 0,
-        "score_travel": 0.0,
-        "score_conflict": 0.0,
-        "score_natural": 0.3333333333333333,
-        "total_score": 0.33,
-        "threat_level": "low",
-        "threat_label": "Low",
-        "threat_color": "#1a9641"
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          44.4628583333,
-          18.24375
-        ]
-      },
-      "properties": {
-        "site_id": 1619,
-        "name": "Ḥimā Cultural Area",
-        "country_iso2": "SA",
-        "category": "Cultural",
-        "http_url": "https://whc.unesco.org/en/list/1619",
-        "in_danger": false,
-        "warning_level": 0,
-        "conflict_count": 0,
-        "eq_level": "VLO",
         "fl_level": "LOW",
         "score_in_danger": 0,
         "score_travel": 0.0,
