@@ -2,7 +2,7 @@
   "type": "FeatureCollection",
   "metadata": {
     "title": "Heritage at Risk: threat score per UNESCO World Heritage site (MENA)",
-    "generated": "2026-10-12",
+    "generated": "2026-10-13",
     "site_count": 105,
     "score_max": 10,
     "score_components": {
@@ -1441,8 +1441,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          36.2041666667,
-          34.0066666667
+          36.2,
+          33.9994444444
         ]
       },
       "properties": {
